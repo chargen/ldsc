@@ -5,7 +5,29 @@ package at.ac.tuwien.ldsc.group1.domain;
  *
  * @author Sebastian Geiger
  */
-public interface PhysicalMachine {
+public interface PhysicalMachine extends Machine{
+    /**
+     * Boot the physical machine
+     */
     void boot();
+
+    /**
+     * Shutdown the physical machine
+     */
     void shutdown();
+
+    /**
+     * Time since the machine was started
+     */
+    int uptime();
+
+    /**
+     * Power consumption since the physical machine was started
+     */
+    int powerConsumption();
+
+    /**
+     * Assign a virtual machine to this physical machine
+     */
+    void addVm(VirtualMachine vm);
 }
