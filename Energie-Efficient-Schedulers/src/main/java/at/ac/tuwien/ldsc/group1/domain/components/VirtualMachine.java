@@ -57,4 +57,9 @@ public interface VirtualMachine extends Machine {
      * to the base requirement for this machine.
      */
     void removeCpu(int value);
+    
+    /**
+     * Gets the Physical Machine of this Virtual Machine
+     */
+	PhysicalMachine getPhysicalMachine();
 }

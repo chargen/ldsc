@@ -30,7 +30,7 @@ public class MachineImpl implements Machine, Composite {
      * A list of components that are managed by this machine
      */
     private List<Component> components = new ArrayList<>();
-    private Machine parent = null;
+    protected Machine parent = null;
 
     //Constructors
     public MachineImpl(
@@ -146,7 +146,8 @@ public class MachineImpl implements Machine, Composite {
     @Override
     public int getRamAvailable() {
         if(parent != null) {
-            return parent.getRamMax() - parent.getRamAvailable();
+            //return parent.getRamMax() - parent.getRamAvailable();
+        	return parent.getRamAvailable();
         } else {
             return getRamMax() - getRam();
         }
@@ -154,14 +155,24 @@ public class MachineImpl implements Machine, Composite {
 
     @Override
     public int getCpuAvailable() {
-        // TODO Auto-generated method stub
-        return 0;
+    	 if(parent != null) {
+    		 // When Machine is child, get value from parent PM
+             return parent.getCpuAvailable();
+         } else {
+        	 // When Machine is a parent PM, return available CPU for all VMs
+        	 return getCpuInMhzMax() - getCpuInMhz();
+         }
     }
 
     @Override
     public int getHddAvailable() {
-        // TODO Auto-generated method stub
-        return 0;
+    	if(parent != null) {
+   		 	// When Machine is child, get value from parent PM
+    		return parent.getHddAvailable();
+        } else {
+	       	// When Machine is a parent PM, return available HDD for all VMs
+	       	return getHddMax() - getHddSize();
+        }
     }
 
     @Override

@@ -8,8 +8,10 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
     private int ram;
     private int hddSize;
     private int cpuInMhz;
-
+    private PhysicalMachine pm;
+    
     //Constructors
+    // TODO: First one seems to be deprecated
     public VirtualMachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
             int ramMax, int hddMax, int cpuInMhzMax)
@@ -20,6 +22,19 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         this.ram = ramBase;
         this.hddSize = hddBase;
         this.cpuInMhz = cpuInMhzBase;
+    }
+    
+    public VirtualMachineImpl(
+            int ramBase, int hddBase, int cpuInMhzBase,
+            PhysicalMachine pm)
+    {
+        super(ramBase, hddBase, cpuInMhzBase,
+            pm.getRamAvailable(), pm.getHddAvailable(), pm.getCpuAvailable());
+        //This virtual machine starts with a size equal to its base requirements
+        this.ram = ramBase;
+        this.hddSize = hddBase;
+        this.cpuInMhz = cpuInMhzBase;
+        this.setPhysicalMachine(pm);
     }
 
     //Methods
@@ -89,4 +104,13 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         super.hddMax = hddSizeMax;
         super.cpuInMhzMax = cpuInMhzMax;
     }
+
+	public PhysicalMachine getPhysicalMachine() {
+		return pm;
+	}
+
+	public void setPhysicalMachine(PhysicalMachine pm) {
+		this.pm = pm;
+		this.parent = pm;
+	}
 }
