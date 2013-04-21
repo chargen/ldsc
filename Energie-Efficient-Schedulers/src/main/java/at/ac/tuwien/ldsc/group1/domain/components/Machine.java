@@ -22,4 +22,10 @@ public interface Machine extends Component, Composite {
      * The max CPU of this machine
      */
     int getCpuInMhzMax();
+
+    int getRamAvailable();
+
+    int getCpuAvailable();
+
+    int getHddAvailable();
 }

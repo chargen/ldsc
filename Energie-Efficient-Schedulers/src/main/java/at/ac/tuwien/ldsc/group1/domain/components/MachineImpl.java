@@ -30,6 +30,7 @@ public class MachineImpl implements Machine, Composite {
      * A list of components that are managed by this machine
      */
     private List<Component> components = new ArrayList<>();
+    private Machine parent = null;
 
     //Constructors
     public MachineImpl(
@@ -135,6 +136,36 @@ public class MachineImpl implements Machine, Composite {
 
     @Override
     public int getCpuInMhzMax() {
-        return cpuInMhzMax;
+        int current = getCpuInMhzBase();
+        for(Component c : components) {
+            current += c.getCpuInMhz();
+        }
+        return cpuInMhzMax - current;
+    }
+
+    @Override
+    public int getRamAvailable() {
+        if(parent != null) {
+            return parent.getRamMax() - parent.getRamAvailable();
+        } else {
+            return getRamMax() - getRam();
+        }
+    }
+
+    @Override
+    public int getCpuAvailable() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getHddAvailable() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public Machine getParent() {
+        return parent;
     }
 }
