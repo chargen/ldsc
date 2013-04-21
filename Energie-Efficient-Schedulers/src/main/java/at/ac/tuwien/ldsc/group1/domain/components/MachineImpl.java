@@ -62,7 +62,7 @@ public class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             ram += c.getRam();
         }
-        assert(ram <= getRamMax());
+        assert(ram <= getRamAvailable());
         return ram;
     }
 
@@ -72,7 +72,7 @@ public class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             hddSize += c.getHddSize();
         }
-        assert(hddSize <= getHddMax());
+        assert(hddSize <= getHddAvailable());
         return hddSize;
     }
 
@@ -82,7 +82,7 @@ public class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             cpuInMhz += c.getCpuInMhz();
         }
-        assert(cpuInMhz <= getCpuInMhzMax());
+        assert(cpuInMhz <= getCpuAvailable());
         return cpuInMhz;
     }
 
@@ -135,31 +135,12 @@ public class MachineImpl implements Machine, Composite {
     }
 
     @Override
-    public int getHddMax() {
-        return hddMax;
-    }
-
-    @Override
-    public int getRamMax() {
-        return ramMax;
-    }
-
-    @Override
-    public int getCpuInMhzMax() {
-        int current = getCpuInMhzBase();
-        for(Component c : components) {
-            current += c.getCpuInMhz();
-        }
-        return cpuInMhzMax - current;
-    }
-
-    @Override
     public int getRamAvailable() {
         if(parent != null) {
             //return parent.getRamMax() - parent.getRamAvailable();
             return parent.getRamAvailable();
         } else {
-            return getRamMax() - getRam();
+            return ramMax - getRam();
         }
     }
 
@@ -170,7 +151,7 @@ public class MachineImpl implements Machine, Composite {
             return parent.getCpuAvailable();
         } else {
             // When Machine is a parent PM, return available CPU for all VMs
-            return getCpuInMhzMax() - getCpuInMhz();
+            return cpuInMhzMax - getCpuInMhz();
         }
     }
 
@@ -181,7 +162,7 @@ public class MachineImpl implements Machine, Composite {
             return parent.getHddAvailable();
         } else {
             // When Machine is a parent PM, return available HDD for all VMs
-            return getHddMax() - getHddSize();
+            return hddMax - getHddSize();
         }
     }
 

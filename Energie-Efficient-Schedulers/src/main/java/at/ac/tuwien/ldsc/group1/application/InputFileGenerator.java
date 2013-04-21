@@ -24,16 +24,16 @@ public class InputFileGenerator {
     public InputFileGenerator() {
         ResourceBundle resource = ResourceBundle.getBundle("applications");
         try {
-        timestampBase =   Integer.parseInt(resource.getString("timestampBase"));
-        timestampFactor = Integer.parseInt(resource.getString("timestampFactor"));
-        sizeBase =        Integer.parseInt(resource.getString("sizeBase"));
-        sizeFactor =      Integer.parseInt(resource.getString("sizeFactor"));
-        ramBase  =        Integer.parseInt(resource.getString("ramBase"));
-        ramFactor =       Integer.parseInt(resource.getString("ramFactor"));
-        cpuBase =         Integer.parseInt(resource.getString("cpuBase"));
-        cpuFactor =       Integer.parseInt(resource.getString("cpuFactor"));
-        durationBase =    Integer.parseInt(resource.getString("durationBase"));
-        durationFactor =  Integer.parseInt(resource.getString("durationFactor"));
+            timestampBase =   Integer.parseInt(resource.getString("timestampBase"));
+            timestampFactor = Integer.parseInt(resource.getString("timestampFactor"));
+            sizeBase =        Integer.parseInt(resource.getString("sizeBase"));
+            sizeFactor =      Integer.parseInt(resource.getString("sizeFactor"));
+            ramBase  =        Integer.parseInt(resource.getString("ramBase"));
+            ramFactor =       Integer.parseInt(resource.getString("ramFactor"));
+            cpuBase =         Integer.parseInt(resource.getString("cpuBase"));
+            cpuFactor =       Integer.parseInt(resource.getString("cpuFactor"));
+            durationBase =    Integer.parseInt(resource.getString("durationBase"));
+            durationFactor =  Integer.parseInt(resource.getString("durationFactor"));
         } catch(NumberFormatException e) {
             throw new RuntimeException("InputFileGenerator: Error in resource file");
         }

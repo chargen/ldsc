@@ -9,21 +9,6 @@ public interface Machine extends Component, Composite {
     double getPowerConsumption();
 
     /**
-     * The max HDD size of this machine
-     */
-    int getHddMax();
-
-    /**
-     * The max RAM of this machine
-     */
-    int getRamMax();
-
-    /**
-     * The max CPU of this machine
-     */
-    int getCpuInMhzMax();
-
-    /**
      * Return the maximum available RAM space of the machine,
      * that can be allocated to its child components.
      */
