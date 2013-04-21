@@ -2,10 +2,11 @@ package at.ac.tuwien.ldsc.group1.application;
 
 import java.util.List;
 
-import at.ac.tuwien.ldsc.group1.domain.Application;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
-import at.ac.tuwien.ldsc.group1.domain.PhysicalMachine;
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
+import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
+import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 
 public class Scheduler1 implements Schedulable {
     List<Application> applications;

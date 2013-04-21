@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.domain;
 
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
+
 public class Event {
     long eventTime; // time on the event time line.
     EventType eventType;

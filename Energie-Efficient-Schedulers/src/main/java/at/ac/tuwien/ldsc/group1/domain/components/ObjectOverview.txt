@@ -1,0 +1,14 @@
+A Component as an object in the cloud that has a RAM, HDD and CPU consumption,
+it can be started and stopped:
+    An Application     IS-A Component
+    A  PhysicalMachine IS-A Component
+    A  VirtualMachine  IS-A Component
+
+A Machine IS-A Component which has also a power consumption:
+    A PhysicalMachine IS-A Machine
+    A VirtualMachine  IS-A Machine 
+
+A Composite is an object of the cloud components that can contain other components
+and provides methods to add, remove and list components:
+    A PhysicalMachine IS-A Composite
+    A VirtualMachine IS-A Composite

@@ -2,7 +2,7 @@ package at.ac.tuwien.ldsc.group1.application;
 
 import java.util.List;
 
-import at.ac.tuwien.ldsc.group1.domain.Application;
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
 
 /**
  * Read a CSV file with Application definition and create an instances of

@@ -1,7 +1,7 @@
 package at.ac.tuwien.ldsc.group1.application;
 
-import at.ac.tuwien.ldsc.group1.domain.Application;
 import at.ac.tuwien.ldsc.group1.domain.Event;
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
 
 public interface Schedulable {
     void schedule(Event event);
