@@ -45,9 +45,4 @@ public interface Machine extends Component, Composite {
      * This function returns the parent object of a component.
      */
     Machine getParent();
-
-    /**
-     * This function sets the parent object of a component.
-     */
-    void setParent(Machine parent);
 }

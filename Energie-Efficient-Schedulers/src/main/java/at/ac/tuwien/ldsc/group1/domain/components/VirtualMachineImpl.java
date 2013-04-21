@@ -12,16 +12,14 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
     //Constructors
     public VirtualMachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
-            int ramMax, int hddMax, int cpuInMhzMax,
             Machine parent)
     {
         super(ramBase, hddBase, cpuInMhzBase,
-            ramMax, hddMax, cpuInMhzMax);
+            parent);
         //This virtual machine starts with a size equal to its base requirements
         this.ram = ramBase;
         this.hddSize = hddBase;
         this.cpuInMhz = cpuInMhzBase;
-        setParent(parent);
     }
 
     //Methods

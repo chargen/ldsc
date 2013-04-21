@@ -44,6 +44,16 @@ public class MachineImpl implements Machine, Composite {
         this.hddMax = hddMax;
         this.cpuInMhzMax = cpuInMhzMax;
     }
+    
+    public MachineImpl(
+            int ramBase, int hddBase, int cpuInMhzBase,
+            Machine parent)
+    {
+        this.ramBase = ramBase;
+        this.hddBase = hddBase;
+        this.cpuInMhzBase = cpuInMhzBase;
+        this.parent = parent;
+    }
 
     //Methods
     @Override
@@ -179,9 +189,8 @@ public class MachineImpl implements Machine, Composite {
     public Machine getParent() {
         return parent;
     }
-
-    @Override
-    public void setParent(Machine parent) {
+    
+    protected void setParent(Machine parent) {
         this.parent = parent;
     }
 }

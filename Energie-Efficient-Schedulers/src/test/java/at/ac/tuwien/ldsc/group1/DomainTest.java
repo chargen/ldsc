@@ -18,7 +18,7 @@ public class DomainTest {
         Application application2 = new ApplicationImpl(100, 3000, 900, 6000);
 
         PhysicalMachine pm1 = new PhysicalMachineImpl(300, 850, 500, 4700, 50000, 2400);
-        VirtualMachine vm1 = new VirtualMachineImpl(50, 100, 150, pm1.getRamMax(), pm1.getHddMax(), pm1.getCpuInMhzMax());
+        VirtualMachine vm1 = new VirtualMachineImpl(50, 100, 150, pm1);
 
         pm1.addComponent(vm1);
         vm1.addComponent(application1);
@@ -41,7 +41,6 @@ public class DomainTest {
         VirtualMachine vm1 = new VirtualMachineImpl(50, 100, 150, pm1);
         
         // Maybe kill getParent getter
-        Assert.assertTrue(vm1.getPhysicalMachine() == pm1);
         Assert.assertTrue(vm1.getParent() == pm1);
         
         // Still add it as component because of the costs
