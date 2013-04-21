@@ -17,11 +17,11 @@ public interface VirtualMachine extends Machine {
     void suspend();
 
     /**
-     * When a virtual machine is migrated to another physical machine,
-     * then its maximum values for RAM, HDD, and CPU changes and they
-     * must be updated using this method.
+     * When a virtual machine is migrated to another (physical) machine,
+     * this method must be called to pass set the new parent machine of
+     * this virtual machine.
      */
-    void updateMaxValues(int ramMax, int hddSizeMax, int cpuInMhzMax);
+    void migrate(Machine parent);
 
     /**
      * Tries to add more ram, and throws an exceptions if the maximum is reached
@@ -57,9 +57,4 @@ public interface VirtualMachine extends Machine {
      * to the base requirement for this machine.
      */
     void removeCpu(int value);
-    
-    /**
-     * Gets the Physical Machine of this Virtual Machine
-     */
-	PhysicalMachine getPhysicalMachine();
 }

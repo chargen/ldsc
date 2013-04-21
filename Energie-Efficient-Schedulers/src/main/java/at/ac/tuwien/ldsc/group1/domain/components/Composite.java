@@ -18,6 +18,4 @@ public interface Composite {
      * this machine.
      */
     List<Component> getComponents();
-
-    Component getParent();
 }

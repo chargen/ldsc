@@ -8,13 +8,12 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
     private int ram;
     private int hddSize;
     private int cpuInMhz;
-    private PhysicalMachine pm;
-    
+
     //Constructors
-    // TODO: First one seems to be deprecated
     public VirtualMachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
-            int ramMax, int hddMax, int cpuInMhzMax)
+            int ramMax, int hddMax, int cpuInMhzMax,
+            Machine parent)
     {
         super(ramBase, hddBase, cpuInMhzBase,
             ramMax, hddMax, cpuInMhzMax);
@@ -22,19 +21,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         this.ram = ramBase;
         this.hddSize = hddBase;
         this.cpuInMhz = cpuInMhzBase;
-    }
-    
-    public VirtualMachineImpl(
-            int ramBase, int hddBase, int cpuInMhzBase,
-            PhysicalMachine pm)
-    {
-        super(ramBase, hddBase, cpuInMhzBase,
-            pm.getRamAvailable(), pm.getHddAvailable(), pm.getCpuAvailable());
-        //This virtual machine starts with a size equal to its base requirements
-        this.ram = ramBase;
-        this.hddSize = hddBase;
-        this.cpuInMhz = cpuInMhzBase;
-        this.setPhysicalMachine(pm);
+        setParent(parent);
     }
 
     //Methods
@@ -99,18 +86,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
     }
 
     @Override
-    public void updateMaxValues(int ramMax, int hddSizeMax, int cpuInMhzMax) {
-        super.ramMax = ramMax;
-        super.hddMax = hddSizeMax;
-        super.cpuInMhzMax = cpuInMhzMax;
+    public void migrate(Machine parent) {
+        setParent(parent);
     }
-
-	public PhysicalMachine getPhysicalMachine() {
-		return pm;
-	}
-
-	public void setPhysicalMachine(PhysicalMachine pm) {
-		this.pm = pm;
-		this.parent = pm;
-	}
 }

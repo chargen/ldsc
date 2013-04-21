@@ -80,7 +80,7 @@ public class MachineImpl implements Machine, Composite {
     public double getPowerConsumption() {
         int powerConsumption = 0;
         for(Component c : components) {
-            powerConsumption += c.getCpuInMhz() * CURRENT_POWER_PER_MHZ/ MS_PER_SECOND;
+            powerConsumption += c.getCpuInMhz() * CURRENT_POWER_PER_MHZ / MS_PER_SECOND;
         }
         return powerConsumption;
     }
@@ -147,7 +147,7 @@ public class MachineImpl implements Machine, Composite {
     public int getRamAvailable() {
         if(parent != null) {
             //return parent.getRamMax() - parent.getRamAvailable();
-        	return parent.getRamAvailable();
+            return parent.getRamAvailable();
         } else {
             return getRamMax() - getRam();
         }
@@ -155,28 +155,33 @@ public class MachineImpl implements Machine, Composite {
 
     @Override
     public int getCpuAvailable() {
-    	 if(parent != null) {
-    		 // When Machine is child, get value from parent PM
-             return parent.getCpuAvailable();
-         } else {
-        	 // When Machine is a parent PM, return available CPU for all VMs
-        	 return getCpuInMhzMax() - getCpuInMhz();
-         }
+        if (parent != null) {
+            // When Machine is child, get value from parent PM
+            return parent.getCpuAvailable();
+        } else {
+            // When Machine is a parent PM, return available CPU for all VMs
+            return getCpuInMhzMax() - getCpuInMhz();
+        }
     }
 
     @Override
     public int getHddAvailable() {
-    	if(parent != null) {
-   		 	// When Machine is child, get value from parent PM
-    		return parent.getHddAvailable();
+        if (parent != null) {
+            // When Machine is child, get value from parent PM
+            return parent.getHddAvailable();
         } else {
-	       	// When Machine is a parent PM, return available HDD for all VMs
-	       	return getHddMax() - getHddSize();
+            // When Machine is a parent PM, return available HDD for all VMs
+            return getHddMax() - getHddSize();
         }
     }
 
     @Override
     public Machine getParent() {
         return parent;
+    }
+
+    @Override
+    public void setParent(Machine parent) {
+        this.parent = parent;
     }
 }
