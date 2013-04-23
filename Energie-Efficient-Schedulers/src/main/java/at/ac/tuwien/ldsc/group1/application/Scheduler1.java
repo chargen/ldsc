@@ -3,6 +3,7 @@ package at.ac.tuwien.ldsc.group1.application;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import at.ac.tuwien.ldsc.group1.domain.CloudInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
@@ -19,6 +20,7 @@ public class Scheduler1 implements Schedulable {
     Integer VMramBase;
     Integer VMhddBase;
     Integer VMcpuInMhzBase;
+    CsvWriter writer;
 
     public Scheduler1() {
     	
@@ -26,6 +28,7 @@ public class Scheduler1 implements Schedulable {
     	VMramBase = Integer.parseInt(res.getString("ramBase"));
 		VMhddBase = Integer.parseInt(res.getString("sizeBase"));
 		VMcpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
+		writer = new CsvWriter("TestOutput2.csv"); //TODO not here...
     	
 	}
 
@@ -69,9 +72,8 @@ public class Scheduler1 implements Schedulable {
     	}
 
         //Finally: Log current clould utilization details to output file 2
+    	this.writeLog(application.getTimeStamp());
     }
-
-  
 
 	@Override
     public void removeApplication(Application application) {
@@ -133,10 +135,9 @@ public class Scheduler1 implements Schedulable {
 		}else{
 			//do nothing
 		}
-		
-    	
     	
         //Finally: Log current clould utilization details to output file 2
+		this.writeLog(application.getTimeStamp());
     }
 	
 	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
@@ -180,6 +181,31 @@ public class Scheduler1 implements Schedulable {
 		
 		PhysicalMachine pm = new PhysicalMachineImpl(ramBase, hddBase, cpuInMhzBase, ramMax, hddMax, cpuInMhzMax);
 		return pm;
+	}
+	
+	private void writeLog(long timeStamp) {
+		int timestamp;
+		int totalRAM = 0;
+		int totalCPU = 0;
+		int totalSize = 0;
+		int runningPMs;
+		int runningVMs = 0;
+		int totalPowerConsumption = 0;
+		int inSourced = 0;		//TODO
+		int outSourced = 0;		//TODO
+		
+		timestamp = (int) timeStamp;
+		runningPMs = this.physicalMachines.size();
+		for(PhysicalMachine pm : this.physicalMachines){
+			totalRAM += pm.getRamAvailable();
+			totalCPU += pm.getCpuAvailable();
+			totalSize += pm.getHddAvailable();
+			runningVMs += pm.getComponents().size();
+			totalPowerConsumption += pm.getPowerConsumption(); //TODO -> Counting the Consumption of a machine -> updating consumption in each TimeStep
+		}
+		
+		CloudInfo info = new CloudInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
+		this.writer.writeCsv(info);
 	}
 
 }

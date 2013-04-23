@@ -22,6 +22,10 @@ public class E2CElasticityManager {
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, Schedulable scheduler) {
 
+    	this.csvParser = csvParser;
+    	this.csvWriter = csvWriter;
+    	this.scheduler = scheduler;
+    	
     }
 
     public void startSimulation() {
