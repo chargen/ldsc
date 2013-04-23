@@ -3,7 +3,7 @@ package at.ac.tuwien.ldsc.group1.domain.components;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MachineImpl implements Machine, Composite {
+public abstract class MachineImpl implements Machine, Composite {
     /**
      * A default component has a power consumption of 0.3 Watt per MHz,
      * concrete implementations of Component are allowed to
