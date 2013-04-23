@@ -14,8 +14,8 @@ public class DomainTest {
 
     @Test
     public void DomainObjectTest() {
-        Application application1 = new ApplicationImpl(200, 5000, 600, 4000);
-        Application application2 = new ApplicationImpl(100, 3000, 900, 6000);
+        Application application1 = new ApplicationImpl(200, 5000, 600, 4000,0);
+        Application application2 = new ApplicationImpl(100, 3000, 900, 6000,0);
 
         PhysicalMachine pm1 = new PhysicalMachineImpl(300, 850, 500, 4700, 50000, 2400);
         VirtualMachine vm1 = new VirtualMachineImpl(50, 100, 150, pm1);
@@ -33,8 +33,8 @@ public class DomainTest {
     @Test
     public void PMVMAvailableResourcesTest() {
     	// int ram, int hddSize, int cpuInMhz, long duration
-        Application application1 = new ApplicationImpl(200, 5000, 600, 4000);
-        Application application2 = new ApplicationImpl(100, 3000, 900, 6000);
+        Application application1 = new ApplicationImpl(200, 5000, 600, 4000,0);
+        Application application2 = new ApplicationImpl(100, 3000, 900, 6000,0);
         
         // int ramBase, int hddBase, int cpuInMhzBase, int ramMax, int hddMax, int cpuInMhzMax
         PhysicalMachine pm1 = new PhysicalMachineImpl(300, 850, 500, 4700, 50000, 2400);

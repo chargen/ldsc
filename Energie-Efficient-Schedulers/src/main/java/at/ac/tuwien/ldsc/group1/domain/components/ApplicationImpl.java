@@ -5,12 +5,14 @@ public class ApplicationImpl implements Application {
     private int ram;
     private int hddSize;
     private int cpuInMhz;
+    private long timeStamp;
 
-    public ApplicationImpl(int ram, int hddSize, int cpuInMhz, long duration) {
+    public ApplicationImpl(int ram, int hddSize, int cpuInMhz, long duration, long timeStamp) {
         this.duration = duration;
         this.ram = ram;
         this.hddSize = hddSize;
         this.cpuInMhz = cpuInMhz;
+        this.timeStamp = timeStamp;
     }
 
     @Override
@@ -44,4 +46,10 @@ public class ApplicationImpl implements Application {
         // TODO: Use log4j
         System.out.println("Application has finished");
     }
+
+	public long getTimeStamp() {
+		return timeStamp;
+	}
+    
+    
 }
