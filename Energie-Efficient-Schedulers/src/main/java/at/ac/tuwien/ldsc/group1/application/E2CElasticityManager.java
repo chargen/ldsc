@@ -59,6 +59,7 @@ public class E2CElasticityManager {
 
         for(Event event : events) {
             //3. Feed it into the scheduler
+        	//EVENTS ARE ORDERED
             scheduler.schedule(event);
         }
 
