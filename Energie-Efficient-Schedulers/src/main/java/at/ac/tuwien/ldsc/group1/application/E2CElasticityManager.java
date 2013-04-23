@@ -1,8 +1,12 @@
 package at.ac.tuwien.ldsc.group1.application;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import at.ac.tuwien.ldsc.group1.domain.Event;
+import at.ac.tuwien.ldsc.group1.domain.EventType;
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
 
 /**
  * This is our Energy-Efficient Cloud Elasticity Manager (E2CEM).
@@ -22,10 +26,36 @@ public class E2CElasticityManager {
 
     public void startSimulation() {
         //1. Get list of application from parser
+    	
+    	//TODO FileName??
+    	String fileName = "TestScenario1.csv";
+		CsvParser parser = new CsvParser();
+		List<Application> appList = parser.parse(fileName);
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
-        List<Event> events = null;
+		
+		Set<Event> events = new TreeSet<Event>();
+		for(Application app : appList){
+			
+			//For Each Application there is 
+			//One Event when the app STARTS
+			//One Event when the app STOPS
+			//
+			//Store Events ordered by their eventTime
+			
+			long startTime = app.getTimeStamp();
+			long stopTime = app.getTimeStamp()+app.getDuration();
+			
+			Event startEvent = new Event(startTime, EventType.START, app);
+			Event stopEvent = new Event(stopTime, EventType.STOP, app);
+			
+			
+			events.add(startEvent);
+			events.add(stopEvent);
+			
+		}
+		
 
         for(Event event : events) {
             //3. Feed it into the scheduler

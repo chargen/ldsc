@@ -12,4 +12,5 @@ public interface Application extends Component {
      * Returns the duration in [ms] that the application needs to run.
      */
     long getDuration();
+    long getTimeStamp();
 }
