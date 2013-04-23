@@ -22,8 +22,8 @@ public class E2CElasticityManager {
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, Schedulable scheduler) {
 
-    	this.csvParser = csvParser;
-    	this.csvWriter = csvWriter;
+    	this.csvParser = parser;
+    	this.csvWriter = writer;
     	this.scheduler = scheduler;
     	
     }
@@ -31,10 +31,10 @@ public class E2CElasticityManager {
     public void startSimulation() {
         //1. Get list of application from parser
     	
-    	//TODO FileName??
+    	//TODO where is the FileName coming from?
     	String fileName = "TestScenario1.csv";
-		CsvParser parser = new CsvParser();
-		List<Application> appList = parser.parse(fileName);
+//		CsvParser parser = new CsvParser();
+		List<Application> appList = csvParser.parse(fileName);
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
@@ -66,6 +66,9 @@ public class E2CElasticityManager {
         	//EVENTS ARE ORDERED
             scheduler.schedule(event);
         }
+        
+        //close streams
+        scheduler.finalize();
 
         // Finally log summary information of cloud to output file 1
         //String info = scheduler.getSummaryInfo();

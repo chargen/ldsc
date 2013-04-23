@@ -22,4 +22,7 @@ public class Scheduler2 implements Schedulable {
         // TODO Auto-generated method stub
 
     }
+    @Override
+	public void finalize(){
+	}
 }

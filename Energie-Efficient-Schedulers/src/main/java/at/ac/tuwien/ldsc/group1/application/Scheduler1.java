@@ -1,5 +1,6 @@
 package at.ac.tuwien.ldsc.group1.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -21,6 +22,7 @@ public class Scheduler1 implements Schedulable {
     Integer VMhddBase;
     Integer VMcpuInMhzBase;
     CsvWriter writer;
+    Event currentEvent = null;
 
     public Scheduler1() {
     	
@@ -34,6 +36,7 @@ public class Scheduler1 implements Schedulable {
 
 	@Override
     public void schedule(Event event) {
+		this.currentEvent = event;
         if(event.getEventType() == EventType.START) {
             //TODO: check resources
             this.addApplication(event.getApplication());
@@ -67,12 +70,12 @@ public class Scheduler1 implements Schedulable {
     	
     	} catch (ResourceUnavailableException e) {
     		System.out.println("Error while trying to allocate Resources, if we see this coming that means " +
-    				"either that i did the PM selection wrong" +
+    				"either that i did the PM selection wrong " +
     				"or (AppResources + VMBaseResources) > MaxPMResources");
     	}
 
         //Finally: Log current clould utilization details to output file 2
-    	this.writeLog(application.getTimeStamp());
+    	this.writeLog(this.currentEvent.getEventTime());
     }
 
 	@Override
@@ -137,14 +140,15 @@ public class Scheduler1 implements Schedulable {
 		}
     	
         //Finally: Log current clould utilization details to output file 2
-		this.writeLog(application.getTimeStamp());
+		this.writeLog(this.currentEvent.getEventTime());
     }
 	
 	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
 		
-		if(this.physicalMachines == null || this.physicalMachines.isEmpty()){
+		if(this.physicalMachines == null){
 			PhysicalMachine pm = this.createNewPhisicalMachine();
 			pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
+			this.physicalMachines = new ArrayList<PhysicalMachine>();
 			this.physicalMachines.add(pm);
 			return pm;
 		}else{
@@ -206,6 +210,11 @@ public class Scheduler1 implements Schedulable {
 		
 		CloudInfo info = new CloudInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
 		this.writer.writeCsv(info);
+	}
+	
+	@Override
+	public void finalize(){
+		this.writer.close();
 	}
 
 }

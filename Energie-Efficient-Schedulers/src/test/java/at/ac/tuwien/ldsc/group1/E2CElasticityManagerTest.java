@@ -20,6 +20,7 @@ public class E2CElasticityManagerTest {
 		Schedulable scheduler = new Scheduler1();
 		
 		E2CElasticityManager manager = new E2CElasticityManager(parser,writer,scheduler);
+		manager.startSimulation();
 		
 	}
 	
