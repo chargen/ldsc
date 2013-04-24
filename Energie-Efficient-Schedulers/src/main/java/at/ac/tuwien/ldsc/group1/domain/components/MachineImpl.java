@@ -53,6 +53,7 @@ public abstract class MachineImpl implements Machine, Composite {
         this.hddBase = hddBase;
         this.cpuInMhzBase = cpuInMhzBase;
         this.parent = parent;
+        parent.addComponent(this);
     }
 
     //Methods

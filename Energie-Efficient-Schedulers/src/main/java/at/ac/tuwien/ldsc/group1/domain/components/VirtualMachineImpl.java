@@ -31,7 +31,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void addRam(int value) throws ResourceUnavailableException {
-        if(ram + value <= getRamAvailable()) {
+        if(value <= getRamAvailable()) {
             this.ram += value;
         } else {
             throw new ResourceUnavailableException();
@@ -40,7 +40,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void addHddSize(int value) throws ResourceUnavailableException {
-        if(hddSize + value <= getHddAvailable()) {
+        if(value <= getHddAvailable()) {
             this.hddSize += value;
         } else {
             throw new ResourceUnavailableException();
@@ -49,7 +49,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void addCpu(int value) throws ResourceUnavailableException {
-        if(cpuInMhz + value <= getCpuAvailable()) {
+        if(value <= getCpuAvailable()) {
             this.cpuInMhz += value;
         } else {
             throw new ResourceUnavailableException();
@@ -85,6 +85,9 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void migrate(Machine parent) {
+    	Machine oldParent = this.getParent();
+    	oldParent.removeComponent(this);
         setParent(parent);
+        parent.addComponent(this);
     }
 }
