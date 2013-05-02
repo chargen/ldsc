@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
+import java.util.ResourceBundle;
+
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
 public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
@@ -9,7 +11,22 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 	private int hddSize;
     private int cpuInMhz;
 
+    static final Integer VMramBase;
+    static final Integer VMhddBase;
+    static final Integer VMcpuInMhzBase;
+    
+    static{
+    	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
+    	VMramBase = Integer.parseInt(res.getString("ramBase"));
+		VMhddBase = Integer.parseInt(res.getString("sizeBase"));
+		VMcpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
+    }
+    
     //Constructors
+    public VirtualMachineImpl(Machine parent){
+    	this(VMramBase,VMhddBase, VMcpuInMhzBase,parent);
+    }
+    
     public VirtualMachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
             Machine parent)

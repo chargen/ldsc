@@ -63,7 +63,7 @@ public class Scheduler1 implements Schedulable {
     	Integer neededCpuInMHz = application.getCpuInMhz() + this.VMcpuInMhzBase;
     	
     	PhysicalMachine pm = selectOptimalPM(neededRam,neededHddSize,neededCpuInMHz);
-    	VirtualMachine vm = new VirtualMachineImpl(VMramBase, VMhddBase, VMcpuInMhzBase, pm);
+    	VirtualMachine vm = new VirtualMachineImpl(pm);
 //    	pm.addComponent(vm); //TODO --> why we give the parent in the constructor if we use it for nothing there?
     	vm.start(); 		 //TODO what is start stand for? Can we do there the resource allocation?
     	//allocate resources
@@ -162,7 +162,7 @@ public class Scheduler1 implements Schedulable {
 	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
 		
 		if(this.physicalMachines == null){
-			PhysicalMachine pm = this.createNewPhisicalMachine();
+			PhysicalMachine pm = new PhysicalMachineImpl();
 			this.physicalMachines = new ArrayList<PhysicalMachine>();
 			this.physicalMachines.add(pm);
 			pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
@@ -180,7 +180,7 @@ public class Scheduler1 implements Schedulable {
 			}
 			
 			//list iterated and no pm could give back -> start new pm
-			PhysicalMachine pm = this.createNewPhisicalMachine();
+			PhysicalMachine pm = new PhysicalMachineImpl();
 			this.physicalMachines.add(pm);
 			pm.start();
 			return pm;
@@ -189,19 +189,6 @@ public class Scheduler1 implements Schedulable {
 
 	}
 
-	private PhysicalMachine createNewPhisicalMachine() {
-		ResourceBundle res = ResourceBundle.getBundle("physicalMachine");
-		
-		Integer ramBase = Integer.parseInt(res.getString("ramBase"));
-		Integer hddBase = Integer.parseInt(res.getString("sizeBase"));
-		Integer cpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
-		Integer ramMax = Integer.parseInt(res.getString("ramMax")); 
-		Integer hddMax = Integer.parseInt(res.getString("sizeMax")); 
-		Integer cpuInMhzMax = Integer.parseInt(res.getString("cpuMax")); 
-		
-		PhysicalMachine pm = new PhysicalMachineImpl(ramBase, hddBase, cpuInMhzBase, ramMax, hddMax, cpuInMhzMax);
-		return pm;
-	}
 	
 	private void writeLog(long timeStamp) {
 		int timestamp;
