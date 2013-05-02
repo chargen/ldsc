@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.0">
+  <zoom_level>4</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>656</x>
+      <y>204</y>
+      <w>160</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::Application
+--
+--
++getDuration: long
++getTimeStamp: long
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1324</x>
+      <y>560</y>
+      <w>96</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>12;20;88;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1412</x>
+      <y>544</y>
+      <w>180</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain.exceptions::ResourceUnavailableException
+--
+-serialVersionUID: long
+-m: at.ac.tuwien.ldsc.group1.domain.components.Machine
+--
++ResourceUnavailableException: ctor
++ResourceUnavailableException: ctor
++printErrorMsg: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1412</x>
+      <y>404</y>
+      <w>104</w>
+      <h>148</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>12;12;96;140</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>72</x>
+      <y>660</y>
+      <w>136</w>
+      <h>116</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::InputFileGenerator
+--
+-header: java.lang.String
+-timestampBase: int
+-timestampFactor: int
+-sizeBase: int
+-sizeFactor: int
+-ramBase: int
+-ramFactor: int
+-cpuBase: int
+-cpuFactor: int
+-durationBase: int
+-durationFactor: int
+--
++InputFileGenerator: ctor
++generateFile: boolean
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1076</x>
+      <y>140</y>
+      <w>60</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>12;124;52;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1068</x>
+      <y>120</y>
+      <w>120</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::CsvParser
+--
+--
++parse: List&lt;Application&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>900</x>
+      <y>472</y>
+      <w>384</w>
+      <h>68</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>376;12;12;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>316</x>
+      <y>252</y>
+      <w>76</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>12;80;68;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>344</x>
+      <y>684</y>
+      <w>152</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::PhysicalMachine
+--
+--
+~uptime: long
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1016</x>
+      <y>788</y>
+      <w>168</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain::Event
+--
+~eventTime: long
+~eventType: at.ac.tuwien.ldsc.group1.domain.EventType
+~application: at.ac.tuwien.ldsc.group1.domain.components.Application
+--
++Event: ctor
++getEventTime: long
++getEventType: at.ac.tuwien.ldsc.group1.domain.EventType
++getApplication: at.ac.tuwien.ldsc.group1.domain.components.Application
++compareTo: int
++toString: java.lang.String
++hashCode: int
++equals: boolean
++compareTo: int
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>464</x>
+      <y>168</y>
+      <w>116</w>
+      <h>524</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>108;12;12;516</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>220</x>
+      <y>332</y>
+      <w>160</w>
+      <h>164</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain.components::VirtualMachineImpl
+--
+-ram: int
+-hddSize: int
+-cpuInMhz: int
+~VMramBase: java.lang.Integer
+~VMhddBase: java.lang.Integer
+~VMcpuInMhzBase: java.lang.Integer
+--
+~VirtualMachineImpl: ctor
++VirtualMachineImpl: ctor
++VirtualMachineImpl: ctor
++suspend: void
++addRam: void
++addHddSize: void
++addCpu: void
++removeHddSize: void
++removeRam: void
++removeCpu: void
++getRam: int
++getHddSize: int
++getCpuInMhz: int
++migrate: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1140</x>
+      <y>536</y>
+      <w>196</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::Scheduler1
+--
+~applications: java.util.List
+~physicalMachines: java.util.List
+~VMramBase: java.lang.Integer
+~VMhddBase: java.lang.Integer
+~VMcpuInMhzBase: java.lang.Integer
+~writer: at.ac.tuwien.ldsc.group1.application.CsvWriter
+~currentEvent: at.ac.tuwien.ldsc.group1.domain.Event
+--
++Scheduler1: ctor
++schedule: void
++addApplication: void
++removeApplication: void
+-selectOptimalPM: at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine
+-writeLog: void
++finalize: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>844</x>
+      <y>548</y>
+      <w>408</w>
+      <h>244</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>12;12;400;236</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>976</x>
+      <y>168</y>
+      <w>28</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>20;92;12;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>584</x>
+      <y>116</y>
+      <w>148</w>
+      <h>44</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>140;12;12;36</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>872</x>
+      <y>548</y>
+      <w>276</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>268;32;12;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1032</x>
+      <y>884</y>
+      <w>80</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>72;12;12;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>120</x>
+      <y>20</y>
+      <w>172</w>
+      <h>240</h>
+    </coordinates>
+    <panel_attributes>/at.ac.tuwien.ldsc.group1.domain.components::MachineImpl/
+--
+-DEFAULT_POWER_PER_MHZ: double
++CURRENT_POWER_PER_MHZ: double
++POWER_PER_MHZ: double
++MS_PER_SECOND: int
+-hddBase: int
+-ramBase: int
+-cpuInMhzBase: int
+#hddMax: int
+#cpuInMhzMax: int
+#ramMax: int
+-components: java.util.List
+#parent: at.ac.tuwien.ldsc.group1.domain.components.Machine
+--
+~MachineImpl: ctor
++MachineImpl: ctor
++MachineImpl: ctor
++getRam: int
++getHddSize: int
++getCpuInMhz: int
++getPowerConsumption: double
++start: void
++stop: void
++addComponent: void
++removeComponent: void
++getComponents: java.util.List
++getHddBase: int
++getRamBase: int
++getCpuInMhzBase: int
++getRamAvailable: int
++getCpuAvailable: int
++getHddAvailable: int
++getParent: at.ac.tuwien.ldsc.group1.domain.components.Machine
+#setParent: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>64</x>
+      <y>504</y>
+      <w>356</w>
+      <h>188</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>12;12;348;180</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>152</x>
+      <y>500</y>
+      <w>636</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>628;48;12;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1340</x>
+      <y>500</y>
+      <w>80</w>
+      <h>68</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>12;12;72;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>796</x>
+      <y>548</y>
+      <w>180</w>
+      <h>384</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>12;12;172;376</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>500</x>
+      <y>44</y>
+      <w>64</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>56;12;12;76</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>668</x>
+      <y>296</y>
+      <w>164</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain.components::ApplicationImpl
+--
+~duration: long
+-ram: int
+-hddSize: int
+-cpuInMhz: int
+-timeStamp: long
+--
++ApplicationImpl: ctor
++getHddSize: int
++getRam: int
++getCpuInMhz: int
++getDuration: long
++start: void
++stop: void
++getTimeStamp: long
++hashCode: int
++equals: boolean
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>216</y>
+      <w>148</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::VirtualMachine
+--
+--
++suspend: void
++migrate: void
++addRam: void
++addHddSize: void
++addCpu: void
++removeHddSize: void
++removeRam: void
++removeCpu: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>780</x>
+      <y>500</y>
+      <w>132</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.application::Schedulable
+--
+--
++schedule: void
++addApplication: void
++removeApplication: void
++finalize: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>408</y>
+      <w>164</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain.components::PhysicalMachineImpl
+--
+~ramBase: java.lang.Integer
+~hddBase: java.lang.Integer
+~cpuInMhzBase: java.lang.Integer
+~ramMax: java.lang.Integer
+~hddMax: java.lang.Integer
+~cpuInMhzMax: java.lang.Integer
+~startTimestamp: long
+--
+~PhysicalMachineImpl: ctor
++PhysicalMachineImpl: ctor
++PhysicalMachineImpl: ctor
++uptime: long
++start: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1304</x>
+      <y>372</y>
+      <w>120</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::Scheduler3
+--
+--
++schedule: void
++addApplication: void
++removeApplication: void
++finalize: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>368</x>
+      <y>348</y>
+      <w>420</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>412;184;12;12</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>56</x>
+      <y>248</y>
+      <w>108</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100;12;12;160</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>824</x>
+      <y>308</y>
+      <w>244</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>236;12;12;192</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>468</x>
+      <y>172</y>
+      <w>24</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>16;12;12;44</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>484</x>
+      <y>4</y>
+      <w>156</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::Composite
+--
+--
++addComponent: void
++removeComponent: void
++getComponents: java.util.List
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>712</x>
+      <y>236</y>
+      <w>20</w>
+      <h>68</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>12;12;12;60</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>16</y>
+      <w>212</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>204;12;12;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>972</x>
+      <y>260</y>
+      <w>180</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::E2CElasticityManager
+--
+~scheduler: at.ac.tuwien.ldsc.group1.application.Schedulable
+~csvParser: at.ac.tuwien.ldsc.group1.application.CsvParser
+~csvWriter: at.ac.tuwien.ldsc.group1.application.CsvWriter
+--
++E2CElasticityManager: ctor
++startSimulation: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1200</x>
+      <y>784</y>
+      <w>108</w>
+      <h>164</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain::CloudInfo
+--
+~timestamp: int
+~totalRAM: int
+~totalCPU: int
+~totalSize: int
+~runningPMs: int
+~runningVMs: int
+~totalPowerConsumption: int
+~inSourced: int
+~outSourced: int
+--
++CloudInfo: ctor
++getTimestamp: int
++getTotalRAM: int
++getTotalCPU: int
++getTotalSize: int
++getRunningPMs: int
++getRunningVMs: int
++getTotalPowerConsumption: int
++getInSourced: int
++getOutSourced: int
++toString: java.lang.String
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1276</x>
+      <y>460</y>
+      <w>120</w>
+      <h>52</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::Scheduler2
+--
+--
++schedule: void
++addApplication: void
++removeApplication: void
++finalize: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>736</x>
+      <y>152</y>
+      <w>20</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>12;12;12;52</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>244</x>
+      <y>248</y>
+      <w>64</w>
+      <h>92</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>12;12;56;84</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>724</x>
+      <y>100</y>
+      <w>152</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::Component
+--
+--
+~start: void
+~stop: void
+~getRam: int
+~getHddSize: int
+~getCpuInMhz: int
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>928</x>
+      <y>108</y>
+      <w>116</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.application::CsvWriter
+--
+~filename: java.lang.String
+~file: java.io.File
+~fw: java.io.FileWriter
+~bw: java.io.BufferedWriter
+--
++CsvWriter: ctor
++writeCsv: void
++close: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>964</x>
+      <y>924</y>
+      <w>152</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.domain::EventType
+--
++START: at.ac.tuwien.ldsc.group1.domain.EventType
++STOP: at.ac.tuwien.ldsc.group1.domain.EventType
+~description: java.lang.String
+-ENUM$VALUES: at.ac.tuwien.ldsc.group1.domain.EventType[]
+--
+~EventType: ctor
+-EventType: ctor
+~getDescription: java.lang.String
++values: at.ac.tuwien.ldsc.group1.domain.EventType[]
++valueOf: at.ac.tuwien.ldsc.group1.domain.EventType
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>816</x>
+      <y>548</y>
+      <w>236</w>
+      <h>248</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>12;12;228;240</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>68</x>
+      <y>616</y>
+      <w>140</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>at.ac.tuwien.ldsc.group1.ui::StartUpSchedulers
+--
+--
++StartUpSchedulers: ctor
++main: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>280</x>
+      <y>128</y>
+      <w>152</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>144;12;12;16</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>424</x>
+      <y>120</y>
+      <w>172</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+at.ac.tuwien.ldsc.group1.domain.components::Machine
+--
+--
++getPowerConsumption: double
++getRamAvailable: int
++getCpuAvailable: int
++getHddAvailable: int
++getParent: at.ac.tuwien.ldsc.group1.domain.components.Machine
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>900</x>
+      <y>384</y>
+      <w>412</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>404;12;12;128</additional_attributes>
+  </element>
+</diagram>
