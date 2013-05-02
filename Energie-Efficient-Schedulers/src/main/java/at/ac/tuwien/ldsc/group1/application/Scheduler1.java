@@ -72,6 +72,16 @@ public class Scheduler1 implements Schedulable {
     		System.out.println("Error while trying to allocate Resources, if we see this coming that means " +
     				"either that i did the PM selection wrong " +
     				"or (AppResources + VMBaseResources) > MaxPMResources");
+    		System.out.println("Requirements: CPU: " + neededCpuInMHz + " HDD: "+ neededHddSize + " Ram: "+ neededRam);
+    		
+    		System.out.println("VM CPU Available: "+vm.getCpuAvailable() + "/ Max:" + vm.getCpuInMhz());
+    		System.out.println("VM HDD Available: "+vm.getHddAvailable() + "/ Max:" + vm.getHddSize()) ;
+    		System.out.println("VM RAM Available: "+vm.getRamAvailable()+ "/ Max:" + vm.getRam());
+    		System.out.println("PM CPU Available: "+pm.getCpuAvailable()+ "/ Max:" + pm.getCpuInMhz());
+    		System.out.println("PM HDD Available: "+pm.getHddAvailable()+ "/ Max:" + pm.getHddSize());
+    		System.out.println("PM RAM Available: "+pm.getRamAvailable()+ "/ Max:" + pm.getRam());
+    		
+    		
     	}
 
         //Finally: Log current clould utilization details to output file 2
