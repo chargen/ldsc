@@ -3,6 +3,8 @@ package at.ac.tuwien.ldsc.group1.domain.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.RuntimeErrorException;
+
 public abstract class MachineImpl implements Machine, Composite {
     /**
      * A default component has a power consumption of 0.3 Watt per MHz,
@@ -18,6 +20,8 @@ public abstract class MachineImpl implements Machine, Composite {
     private int hddBase;
     private int ramBase;
     private int cpuInMhzBase;
+    private int overallConsumption = 0;
+    private long currentEventTime = 0L;
 
     //The maximum resources that are available to this machine
     //they are based on the resources that the underlying hardware
@@ -86,9 +90,11 @@ public abstract class MachineImpl implements Machine, Composite {
 
     @Override
     public double getPowerConsumption() {
-        int powerConsumption = 0;
-        for(Component c : components) {
-            powerConsumption += c.getCpuInMhz() * CURRENT_POWER_PER_MHZ / MS_PER_SECOND;
+        double powerConsumption = 0;
+        if (parent != null) {
+        	powerConsumption += parent.getPowerConsumption();
+        } else {
+    		powerConsumption += (this.getCpuInMhz() * CURRENT_POWER_PER_MHZ) / MS_PER_SECOND;
         }
         return powerConsumption;
     }
@@ -172,4 +178,19 @@ public abstract class MachineImpl implements Machine, Composite {
     protected void setParent(Machine parent) {
         this.parent = parent;
     }
+    
+    @Override
+	public void setEventTime(long eventTime) {
+		long elapsedTime = eventTime - this.currentEventTime;
+		this.currentEventTime = eventTime;
+		int lastConsumption = this.overallConsumption;
+		this.overallConsumption += elapsedTime * this.getPowerConsumption();
+		if(lastConsumption > this.overallConsumption) throw new RuntimeException();
+	}
+
+
+	@Override
+	public int getOverallConsumption() {
+		return this.overallConsumption;
+	}
 }

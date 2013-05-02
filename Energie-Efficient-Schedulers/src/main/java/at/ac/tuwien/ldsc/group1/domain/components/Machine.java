@@ -30,4 +30,8 @@ public interface Machine extends Component, Composite {
      * This function returns the parent object of a component.
      */
     Machine getParent();
+
+	int getOverallConsumption();
+
+	void setEventTime(long eventTime);
 }

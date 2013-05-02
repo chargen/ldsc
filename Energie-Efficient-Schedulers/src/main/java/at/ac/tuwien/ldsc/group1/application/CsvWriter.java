@@ -25,7 +25,8 @@ public class CsvWriter {
     		
     		fw = new FileWriter(file.getAbsoluteFile());
 			bw = new BufferedWriter(fw);
-//			bw.write("");
+			bw.write("Timestamp; TotalRAM; TotalCPU; TotalSize; RunningPMs; RunningVMs; TotalPowerConsumption; InSourced; OutSourced");
+			bw.newLine();
     		
     	} catch (IOException e) {
     		e.printStackTrace();

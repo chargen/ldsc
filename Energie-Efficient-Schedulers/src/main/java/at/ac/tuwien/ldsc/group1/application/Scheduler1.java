@@ -9,6 +9,7 @@ import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.components.Component;
+import at.ac.tuwien.ldsc.group1.domain.components.Machine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
@@ -203,12 +204,13 @@ public class Scheduler1 implements Schedulable {
 		
 		timestamp = (int) timeStamp;
 		runningPMs = this.physicalMachines.size();
-		for(PhysicalMachine pm : this.physicalMachines){
+		for(Machine pm : this.physicalMachines){
 			totalRAM += pm.getRamAvailable();
 			totalCPU += pm.getCpuAvailable();
 			totalSize += pm.getHddAvailable();
 			runningVMs += pm.getComponents().size();
-			totalPowerConsumption += pm.getPowerConsumption(); //TODO -> Counting the Consumption of a machine -> updating consumption in each TimeStep
+			pm.setEventTime(timeStamp);
+			totalPowerConsumption += pm.getOverallConsumption();
 		}
 		
 		CloudInfo info = new CloudInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
