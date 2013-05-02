@@ -26,6 +26,7 @@ public class E2CElasticityManager {
     	this.csvWriter = writer;
     	this.scheduler = scheduler;
     	
+    	
     }
 
     public void startSimulation() {

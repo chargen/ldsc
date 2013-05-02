@@ -17,7 +17,7 @@ public class E2CElasticityManagerTest {
 		
 		CsvParser parser= new CsvParser();
 		CsvWriter writer = new CsvWriter(testOutput);
-		Schedulable scheduler = new Scheduler1();
+		Schedulable scheduler = new Scheduler1(writer);
 		
 		E2CElasticityManager manager = new E2CElasticityManager(parser,writer,scheduler);
 		manager.startSimulation();

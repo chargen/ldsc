@@ -24,13 +24,13 @@ public class Scheduler1 implements Schedulable {
     CsvWriter writer;
     Event currentEvent = null;
 
-    public Scheduler1() {
+    public Scheduler1(CsvWriter writer) {
     	
     	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
     	VMramBase = Integer.parseInt(res.getString("ramBase"));
 		VMhddBase = Integer.parseInt(res.getString("sizeBase"));
 		VMcpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
-		writer = new CsvWriter("TestOutput2.csv"); //TODO not here...
+		this.writer = writer; 
     	
 	}
 
