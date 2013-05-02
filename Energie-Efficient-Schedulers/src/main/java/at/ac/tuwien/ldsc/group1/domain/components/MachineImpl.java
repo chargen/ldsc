@@ -63,7 +63,6 @@ public abstract class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             ram += c.getRam();
         }
-        assert(ram <= getRamAvailable());
         return ram;
     }
 
@@ -73,7 +72,6 @@ public abstract class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             hddSize += c.getHddSize();
         }
-        assert(hddSize <= getHddAvailable());
         return hddSize;
     }
 
@@ -83,7 +81,6 @@ public abstract class MachineImpl implements Machine, Composite {
         for(Component c : components) {
             cpuInMhz += c.getCpuInMhz();
         }
-        assert(cpuInMhz <= getCpuAvailable());
         return cpuInMhz;
     }
 

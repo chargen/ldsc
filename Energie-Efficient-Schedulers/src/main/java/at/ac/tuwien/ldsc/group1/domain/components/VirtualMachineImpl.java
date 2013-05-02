@@ -6,7 +6,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     //Fields
     private int ram;
-    private int hddSize;
+	private int hddSize;
     private int cpuInMhz;
 
     //Constructors
@@ -17,9 +17,9 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         super(ramBase, hddBase, cpuInMhzBase,
             parent);
         //This virtual machine starts with a size equal to its base requirements
-        this.ram = ramBase;
-        this.hddSize = hddBase;
-        this.cpuInMhz = cpuInMhzBase;
+        this.ram = 0;
+        this.hddSize = 0;
+        this.cpuInMhz = 0;
     }
 
     //Methods
@@ -34,7 +34,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         if(value <= getRamAvailable()) {
             this.ram += value;
         } else {
-            throw new ResourceUnavailableException();
+            throw new ResourceUnavailableException(this);
         }
     }
 
@@ -43,7 +43,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         if(value <= getHddAvailable()) {
             this.hddSize += value;
         } else {
-            throw new ResourceUnavailableException();
+            throw new ResourceUnavailableException(this);
         }
     }
 
@@ -52,7 +52,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         if(value <= getCpuAvailable()) {
             this.cpuInMhz += value;
         } else {
-            throw new ResourceUnavailableException();
+            throw new ResourceUnavailableException(this);
         }
     }
 
@@ -82,6 +82,21 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
             this.cpuInMhz = getCpuInMhzBase();
         }
     }
+
+    @Override
+    public int getRam() {
+		return ram;
+	}
+
+    @Override
+	public int getHddSize() {
+		return hddSize;
+	}
+
+    @Override
+	public int getCpuInMhz() {
+		return cpuInMhz;
+	}
 
     @Override
     public void migrate(Machine parent) {
