@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
+import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,9 +51,9 @@ public abstract class MachineImpl implements Machine, Composite {
         this.cpuInMhzMax = cpuInMhzMax;
     }
     
-    public MachineImpl(
+    public MachineImpl (
             int ramBase, int hddBase, int cpuInMhzBase,
-            Machine parent)
+            Machine parent) throws ResourceUnavailableException
     {
         this.ramBase = ramBase;
         this.hddBase = hddBase;
@@ -112,7 +114,7 @@ public abstract class MachineImpl implements Machine, Composite {
     }
 
     @Override
-    public void addComponent(Component component) {
+    public void addComponent(Component component) throws ResourceUnavailableException {
         components.add(component);
     }
 

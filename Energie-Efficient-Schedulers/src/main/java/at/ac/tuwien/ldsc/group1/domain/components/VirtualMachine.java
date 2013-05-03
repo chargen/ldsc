@@ -21,7 +21,7 @@ public interface VirtualMachine extends Machine {
      * this method must be called to pass set the new parent machine of
      * this virtual machine.
      */
-    void migrate(Machine parent);
+    void migrate(Machine parent) throws ResourceUnavailableException;
 
     /**
      * Tries to add more ram, and throws an exceptions if the maximum is reached

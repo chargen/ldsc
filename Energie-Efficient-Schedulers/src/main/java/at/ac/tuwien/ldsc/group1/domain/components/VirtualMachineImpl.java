@@ -11,32 +11,31 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 	private int hddSize;
     private int cpuInMhz;
 
-    static final Integer VMramBase;
-    static final Integer VMhddBase;
-    static final Integer VMcpuInMhzBase;
+    static final Integer VmRamBase;
+    static final Integer VmHddBase;
+    static final Integer VmCpuInMhzBase;
     
     static{
-    	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
-    	VMramBase = Integer.parseInt(res.getString("ramBase"));
-		VMhddBase = Integer.parseInt(res.getString("sizeBase"));
-		VMcpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
+        ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
+        VmRamBase = Integer.parseInt(res.getString("ramBase"));
+        VmHddBase = Integer.parseInt(res.getString("sizeBase"));
+        VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
     }
     
     //Constructors
-    public VirtualMachineImpl(Machine parent){
-    	this(VMramBase,VMhddBase, VMcpuInMhzBase,parent);
+    public VirtualMachineImpl(Machine parent) throws ResourceUnavailableException {
+        this(VmRamBase, VmHddBase, VmCpuInMhzBase, parent);
     }
     
     public VirtualMachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
-            Machine parent)
+            Machine parent) throws ResourceUnavailableException
     {
-        super(ramBase, hddBase, cpuInMhzBase,
-            parent);
+        super(ramBase, hddBase, cpuInMhzBase, parent);
         //This virtual machine starts with a size equal to its base requirements
-        this.ram = 0;
-        this.hddSize = 0;
-        this.cpuInMhz = 0;
+        this.ram = ramBase;
+        this.hddSize = hddBase;
+        this.cpuInMhz = cpuInMhzBase;
     }
 
     //Methods
@@ -116,10 +115,29 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 	}
 
     @Override
-    public void migrate(Machine parent) {
+    public void migrate(Machine parent) throws ResourceUnavailableException {
     	Machine oldParent = this.getParent();
     	oldParent.removeComponent(this);
         setParent(parent);
         parent.addComponent(this);
+    }
+
+    /* We need to override the addComponent and removeComponent methods, because they need to handle
+     * the resizing of the vm.
+     */
+    @Override
+    public void addComponent(Component component) throws ResourceUnavailableException {
+        super.addComponent(component);
+        this.addCpu(component.getCpuInMhz());
+        this.addHddSize(component.getHddSize());
+        this.addRam(component.getRam());
+    }
+
+    @Override
+    public void removeComponent(Component component) {
+        super.removeComponent(component);
+        this.removeCpu(component.getCpuInMhz());
+        this.removeRam(component.getRam());
+        this.removeHddSize(component.getHddSize());
     }
 }
