@@ -64,16 +64,11 @@ public class Scheduler1 implements Schedulable {
     	
     	PhysicalMachine pm = selectOptimalPM(neededRam,neededHddSize,neededCpuInMHz);
     	VirtualMachine vm = new VirtualMachineImpl(pm);
-//    	pm.addComponent(vm); //TODO --> why we give the parent in the constructor if we use it for nothing there?
 
     	vm.start(); 		 //TODO what is start stand for? Can we do there the resource allocation?
     	//allocate resources
     	try {
     		vm.addComponent(application);
-    		vm.addCpu(application.getCpuInMhz());
-    		vm.addHddSize(application.getHddSize());
-    		vm.addRam(application.getRam());
-			
 		} catch (ResourceUnavailableException e) {
 			
 			//TODO  implement inputStream Exception
