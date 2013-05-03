@@ -101,16 +101,19 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public int getRam() {
+        assert(super.getRam() == ram);
 		return ram;
 	}
 
     @Override
 	public int getHddSize() {
+        assert(super.getHddSize() == hddSize);
 		return hddSize;
 	}
 
     @Override
 	public int getCpuInMhz() {
+        assert(super.getCpuInMhz() == cpuInMhz);
 		return cpuInMhz;
 	}
 
@@ -127,10 +130,10 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
      */
     @Override
     public void addComponent(Component component) throws ResourceUnavailableException {
-        super.addComponent(component);
         this.addCpu(component.getCpuInMhz());
         this.addHddSize(component.getHddSize());
         this.addRam(component.getRam());
+        super.addComponent(component);
     }
 
     @Override
