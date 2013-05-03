@@ -25,49 +25,45 @@ public class E2CElasticityManager {
     	this.csvParser = parser;
     	this.csvWriter = writer;
     	this.scheduler = scheduler;
-    	
-    	
+
     }
 
     public void startSimulation() {
         //1. Get list of application from parser
-    	
-    	//TODO where is the FileName coming from?
-    	String fileName = "TestScenario1.csv";
-//		CsvParser parser = new CsvParser();
-		List<Application> appList = csvParser.parse(fileName);
+
+		List<Application> appList = csvParser.parse();
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
-		
+
 		Set<Event> events = new TreeSet<Event>();
 		for(Application app : appList){
-			
-			//For Each Application there is 
+
+			//For Each Application there is
 			//One Event when the app STARTS
 			//One Event when the app STOPS
 			//
 			//Store Events ordered by their eventTime
-			
+
 			long startTime = app.getTimeStamp();
 			long stopTime = app.getTimeStamp()+app.getDuration();
-			
+
 			Event startEvent = new Event(startTime, EventType.START, app);
 			Event stopEvent = new Event(stopTime, EventType.STOP, app);
-			
-			
+
+
 			events.add(startEvent);
 			events.add(stopEvent);
-			
+
 		}
-		
+
 
         for(Event event : events) {
             //3. Feed it into the scheduler
         	//EVENTS ARE ORDERED
             scheduler.schedule(event);
         }
-        
+
         //close streams
         scheduler.finalize();
 

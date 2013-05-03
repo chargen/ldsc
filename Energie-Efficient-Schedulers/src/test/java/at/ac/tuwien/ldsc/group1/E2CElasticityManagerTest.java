@@ -14,10 +14,10 @@ public class E2CElasticityManagerTest {
 	
 	@Test
 	public void testSimulation(){
-		
-		CsvParser parser= new CsvParser();
-		CsvWriter writer = new CsvWriter(testOutput);
-		Schedulable scheduler = new Scheduler1(writer);
+        String fileName = "TestScenario1.csv";
+        CsvParser parser= new CsvParser(fileName);
+        CsvWriter writer = new CsvWriter(testOutput);
+        Schedulable scheduler = new Scheduler1(writer);
 		
 		E2CElasticityManager manager = new E2CElasticityManager(parser,writer,scheduler);
 		manager.startSimulation();

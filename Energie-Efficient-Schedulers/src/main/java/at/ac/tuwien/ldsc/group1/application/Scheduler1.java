@@ -26,7 +26,6 @@ public class Scheduler1 implements Schedulable {
     Event currentEvent = null;
 
     public Scheduler1(CsvWriter writer) {
-    	
     	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
     	VMramBase = Integer.parseInt(res.getString("ramBase"));
 		VMhddBase = Integer.parseInt(res.getString("sizeBase"));
@@ -66,6 +65,7 @@ public class Scheduler1 implements Schedulable {
     	PhysicalMachine pm = selectOptimalPM(neededRam,neededHddSize,neededCpuInMHz);
     	VirtualMachine vm = new VirtualMachineImpl(pm);
 //    	pm.addComponent(vm); //TODO --> why we give the parent in the constructor if we use it for nothing there?
+
     	vm.start(); 		 //TODO what is start stand for? Can we do there the resource allocation?
     	//allocate resources
     	try {
@@ -76,7 +76,7 @@ public class Scheduler1 implements Schedulable {
 			
 		} catch (ResourceUnavailableException e) {
 			
-			//TODO  implement in Exception
+			//TODO  implement inputStream Exception
 			System.out.println("Error while trying to allocate Resources, if we see this coming that means " +
 					"either that i did the PM selection wrong " +
 					"or (AppResources + VMBaseResources) > MaxPMResources");
@@ -91,7 +91,7 @@ public class Scheduler1 implements Schedulable {
     	
     	
 
-        //Finally: Log current clould utilization details to output file 2
+        //Finally: Log current cloud utilization details to output file 2
     	this.writeLog(this.currentEvent.getEventTime());
     }
 

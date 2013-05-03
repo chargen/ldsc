@@ -35,7 +35,7 @@ public class InputFileGenerator {
             durationBase =    Integer.parseInt(resource.getString("durationBase"));
             durationFactor =  Integer.parseInt(resource.getString("durationFactor"));
         } catch(NumberFormatException e) {
-            throw new RuntimeException("InputFileGenerator: Error in resource file");
+            throw new RuntimeException("InputFileGenerator: Error inputStream resource file");
         }
     }
 
