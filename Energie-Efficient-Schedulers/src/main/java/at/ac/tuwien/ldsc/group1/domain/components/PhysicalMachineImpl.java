@@ -1,7 +1,10 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+
+import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
 public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine {
 
@@ -51,6 +54,7 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     }
 
 
+    
 
 
 	
