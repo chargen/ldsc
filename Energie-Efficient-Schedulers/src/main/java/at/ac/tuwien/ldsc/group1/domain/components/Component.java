@@ -1,6 +1,5 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
-import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
 /**
  * A component represents a part of the cloud with resource requirements.
