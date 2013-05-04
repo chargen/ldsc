@@ -200,6 +200,8 @@ public class Scheduler1 implements Schedulable {
 		this.writer.writeCsv(info);
 	}
 	
+	
+	
 	@Override
 	public void finalize(){
 		this.writer.close();
