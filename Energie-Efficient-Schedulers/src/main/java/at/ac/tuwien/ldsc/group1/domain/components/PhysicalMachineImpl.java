@@ -47,11 +47,15 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     @Override
     public void start() {
         this.startTimestamp = new Date().getTime();
-        super.start();
+        System.out.println("PM Started");
     }
 
 
-    
+    @Override
+    public void stop() {
+        //TODO: Use log4j
+        System.out.println("PM Stopped");
+    }
 
 
 	

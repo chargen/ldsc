@@ -46,6 +46,8 @@ public class ParserTest {
 		}
 		System.out.println("Number of Events: "+ events.size());
 		Assert.assertEquals(200, events.size());
+		
+		
 	}
 
 }

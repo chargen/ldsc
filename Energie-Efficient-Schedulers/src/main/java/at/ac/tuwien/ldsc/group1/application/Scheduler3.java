@@ -8,7 +8,6 @@ public class Scheduler3 implements Schedulable {
     @Override
     public void schedule(Event event) {
         // TODO Auto-generated method stub
-
     }
 
     @Override

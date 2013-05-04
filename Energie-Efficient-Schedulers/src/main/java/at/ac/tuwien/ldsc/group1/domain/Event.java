@@ -6,6 +6,7 @@ public class Event implements Comparable<Event> {
     long eventTime; // time on the event time line.
     EventType eventType;
     Application application;
+    boolean toBeSkipped = false;
 
     public Event(long eventTime, EventType eventType, Application application) {
         this.eventTime = eventTime;
@@ -23,6 +24,14 @@ public class Event implements Comparable<Event> {
         return application;
     }
 
+	public boolean isToBeSkipped() {
+		return toBeSkipped;
+	}
+
+	public void setToBeSkipped(boolean toBeSkipped) {
+		this.toBeSkipped = toBeSkipped;
+	}
+
 	@Override
 	public int compareTo(Event e) {
 		final int BEFORE = -1;
@@ -35,8 +44,47 @@ public class Event implements Comparable<Event> {
 		}else if (this.eventTime > e.getEventTime()){
 			return AFTER;
 		}else{
-			//TODO WTF is happening when two Events are in the same time?
-			return BEFORE;
+			
+			if(this.getEventType().equals(EventType.STOP) && e.getEventType().equals(EventType.START)){
+				return BEFORE;
+			}else if(this.getEventType().equals(EventType.START) && e.getEventType().equals(EventType.STOP)){
+				return AFTER;
+			}else{
+				if(this.getApplication().getCpuInMhz() < e.getApplication().getCpuInMhz()){
+					return BEFORE;
+				}else if(this.getApplication().getCpuInMhz() > e.getApplication().getCpuInMhz()){
+					return AFTER;
+				}else{
+					if(this.getApplication().getDuration() < e.getApplication().getDuration()){
+						return BEFORE;
+					}else if(this.getApplication().getDuration() > e.getApplication().getDuration()){
+						return AFTER;
+					}else{
+						if(this.getApplication().getHddSize() < e.getApplication().getHddSize()){
+							return BEFORE;
+						}else if(this.getApplication().getHddSize() > e.getApplication().getHddSize()){
+							return AFTER;
+						}else{
+							if(this.getApplication().getRam() < e.getApplication().getRam()){
+								return BEFORE;
+							}else if(this.getApplication().getRam() > e.getApplication().getRam()){
+								return AFTER;
+							}else{
+								if(this.getApplication().getTimeStamp() < e.getApplication().getTimeStamp()){
+									return BEFORE;
+								}else if(this.getApplication().getTimeStamp() > e.getApplication().getTimeStamp()){
+									return AFTER;
+								}else{
+									return EQUAL;
+								}
+								
+							}
+						}
+					}
+				}
+			}
+			
+			
 		}
 	}
 	

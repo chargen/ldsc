@@ -16,10 +16,12 @@ import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
+import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 
 public class Scheduler1 implements Schedulable {
 	
 	int maxPMs;
+	long internalTime = 0L;
 	
     List<Application> applications;
     List<PhysicalMachine> physicalMachines;
@@ -27,10 +29,11 @@ public class Scheduler1 implements Schedulable {
     Integer VMhddBase;
     Integer VMcpuInMhzBase;
     CsvWriter writer;
-    Event currentEvent = null;
+    Event lastEvent = null;
 
     CloudStateInfo lastState = null;
     CloudOverallInfo overallInfo;
+    
     
     
     public Scheduler1(CsvWriter writer) {
@@ -43,23 +46,35 @@ public class Scheduler1 implements Schedulable {
 	}
 
 	@Override
-    public void schedule(Event event) {
-		this.currentEvent = event;
+    public void schedule(Event event) throws SchedulingNotPossibleException {
         if(event.getEventType() == EventType.START) {
             //TODO: check resources
             try {
             	this.addApplication(event.getApplication());
             }catch (ResourceUnavailableException e) {
 				e.printErrorMsg();
+				throw new SchedulingNotPossibleException();
 			}
             
         } else {
             this.removeApplication(event.getApplication());
         }
+        
+        long previousTimeStamp = 0L;
+        if(lastEvent != null){
+        	previousTimeStamp = lastEvent.getEventTime();
+        }
+        if(event.getEventTime() - previousTimeStamp > 0){
+        	internalTime = internalTime + (event.getEventTime() - previousTimeStamp);
+        }else{
+        	//leave internal time as it is. //the entire time scale will be shifted
+        }
+        this.writeLog();
+        this.lastEvent = event;
     }
 
     @Override
-    public void addApplication(Application application) throws ResourceUnavailableException {
+    public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
         //1. make a decision on which virtual machine this application will run
     	   	
     	//A.) Create VM
@@ -86,7 +101,6 @@ public class Scheduler1 implements Schedulable {
     	
 
         //Finally: Log current cloud utilization details to output file 2
-    	this.writeLog(this.currentEvent.getEventTime());
     }
 
 	@Override
@@ -147,14 +161,13 @@ public class Scheduler1 implements Schedulable {
 		}
     	
         //Finally: Log current clould utilization details to output file 2
-		this.writeLog(this.currentEvent.getEventTime());
     }
 	
-	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
+	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
 		
 		if(this.physicalMachines == null){
-			PhysicalMachine pm = new PhysicalMachineImpl();
 			this.physicalMachines = new ArrayList<PhysicalMachine>();
+			PhysicalMachine pm = createNewPM();
 			this.physicalMachines.add(pm);
 			pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
 			return pm;
@@ -171,7 +184,7 @@ public class Scheduler1 implements Schedulable {
 			}
 			
 			//list iterated and no pm could give back -> start new pm
-			PhysicalMachine pm = new PhysicalMachineImpl();
+			PhysicalMachine pm = createNewPM();
 			this.physicalMachines.add(pm);
 			pm.start();
 			return pm;
@@ -181,7 +194,15 @@ public class Scheduler1 implements Schedulable {
 	}
 
 	
-	private void writeLog(long timeStamp) {
+	private PhysicalMachine createNewPM() throws SchedulingNotPossibleException {
+		if(this.physicalMachines.size() < maxPMs){
+			return new PhysicalMachineImpl();
+		}else{
+			throw new SchedulingNotPossibleException();
+		}
+	}
+
+	private void writeLog() {
 		int timestamp;
 		int totalRAM = 0;
 		int totalCPU = 0;
@@ -192,7 +213,7 @@ public class Scheduler1 implements Schedulable {
 		int inSourced = 0;		//TODO
 		int outSourced = 0;		//TODO
 		
-		timestamp = (int) timeStamp;
+		timestamp = (int) internalTime;
 		runningPMs = this.physicalMachines.size();
 		for(Machine pm : this.physicalMachines){
 			totalRAM += pm.getRamAvailable();

@@ -1,5 +1,6 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
@@ -142,5 +143,17 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         this.removeCpu(component.getCpuInMhz());
         this.removeRam(component.getRam());
         this.removeHddSize(component.getHddSize());
+    }
+    
+    @Override
+    public void start() {
+        System.out.println("    VM Started");
+    }
+
+
+    @Override
+    public void stop() {
+        //TODO: Use log4j
+        System.out.println("    VM Stopped");
     }
 }
