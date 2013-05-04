@@ -185,4 +185,10 @@ public class Scheduler2 implements Schedulable {
         this.writer.close();
     }
 
+	@Override
+	public void setMaxNumberOfPhysicalMachines(int nr) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

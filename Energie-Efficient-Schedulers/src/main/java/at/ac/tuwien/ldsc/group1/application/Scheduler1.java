@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
@@ -17,6 +18,9 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
 public class Scheduler1 implements Schedulable {
+	
+	int maxPMs;
+	
     List<Application> applications;
     List<PhysicalMachine> physicalMachines;
     Integer VMramBase;
@@ -24,8 +28,11 @@ public class Scheduler1 implements Schedulable {
     Integer VMcpuInMhzBase;
     CsvWriter writer;
     Event currentEvent = null;
-    Integer overAllConsumption;
 
+    CloudStateInfo lastState = null;
+    CloudOverallInfo overallInfo;
+    
+    
     public Scheduler1(CsvWriter writer) {
     	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
     	VMramBase = Integer.parseInt(res.getString("ramBase"));
@@ -197,14 +204,30 @@ public class Scheduler1 implements Schedulable {
 		}
 		
 		CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
+		this.updateOverallInfo(info);
 		this.writer.writeCsv(info);
 	}
 	
 	
 	
+	private void updateOverallInfo(CloudStateInfo info) {
+		if(this.overallInfo == null) {
+			overallInfo = new CloudOverallInfo();
+			//TODO
+		}
+		
+	}
+	
+
 	@Override
 	public void finalize(){
 		this.writer.close();
+	}
+
+	@Override
+	public void setMaxNumberOfPhysicalMachines(int nr) {
+		this.maxPMs = nr;
+		
 	}
 
 }

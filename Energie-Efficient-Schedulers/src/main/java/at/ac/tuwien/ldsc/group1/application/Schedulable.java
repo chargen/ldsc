@@ -22,4 +22,6 @@ public interface Schedulable {
      *  to close the streams
      */
     void finalize();
+    
+    void setMaxNumberOfPhysicalMachines(int nr);
 }

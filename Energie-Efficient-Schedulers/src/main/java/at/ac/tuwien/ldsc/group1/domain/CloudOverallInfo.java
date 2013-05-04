@@ -6,26 +6,17 @@ package at.ac.tuwien.ldsc.group1.domain;
  */
 public class CloudOverallInfo {
 	
-	String Scheduler;
-	String Scenario;
-	int totalPMs,totalVMs, totalInSourced, totalOutSourced;
-	long totalDuration;
-	double totalPowerConsumption;
+	String Scheduler = "N/A";
+	String Scenario  = "N/A";
+	int totalPMs = 0, totalVMs = 0, totalInSourced = 0, totalOutSourced = 0;
+	long totalDuration = 0L;
+	double totalPowerConsumption = 0;
 	
     
 	
-	public CloudOverallInfo(String scheduler, String scenario, int totalPMs,
-			int totalVMs, int totalInSourced, int totalOutSourced,
-			long totalDuration, double totalPowerConsumption) {
+	public CloudOverallInfo() {
 		super();
-		Scheduler = scheduler;
-		Scenario = scenario;
-		this.totalPMs = totalPMs;
-		this.totalVMs = totalVMs;
-		this.totalInSourced = totalInSourced;
-		this.totalOutSourced = totalOutSourced;
-		this.totalDuration = totalDuration;
-		this.totalPowerConsumption = totalPowerConsumption;
+		
 	}
 
 	public String getScheduler() {
@@ -58,6 +49,38 @@ public class CloudOverallInfo {
 
 	public double getTotalPowerConsumption() {
 		return totalPowerConsumption;
+	}
+	
+	public void setScheduler(String scheduler) {
+		Scheduler = scheduler;
+	}
+
+	public void setScenario(String scenario) {
+		Scenario = scenario;
+	}
+
+	public void setTotalPMs(int totalPMs) {
+		this.totalPMs = totalPMs;
+	}
+
+	public void setTotalVMs(int totalVMs) {
+		this.totalVMs = totalVMs;
+	}
+
+	public void setTotalInSourced(int totalInSourced) {
+		this.totalInSourced = totalInSourced;
+	}
+
+	public void setTotalOutSourced(int totalOutSourced) {
+		this.totalOutSourced = totalOutSourced;
+	}
+
+	public void setTotalDuration(long totalDuration) {
+		this.totalDuration = totalDuration;
+	}
+
+	public void setTotalPowerConsumption(double totalPowerConsumption) {
+		this.totalPowerConsumption = totalPowerConsumption;
 	}
 
 	@Override

@@ -26,4 +26,10 @@ public class Scheduler3 implements Schedulable {
     @Override
    	public void finalize(){
    	}
+
+	@Override
+	public void setMaxNumberOfPhysicalMachines(int nr) {
+		// TODO Auto-generated method stub
+		
+	}
 }
