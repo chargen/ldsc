@@ -4,7 +4,7 @@ package at.ac.tuwien.ldsc.group1.domain;
  * This is a DTO that contains all the data from the scheduler that is required by the
  * CsvWriter to log the cloud utilization.
  */
-public class CloudInfo {
+public class CloudStateInfo {
     int timestamp;
     int totalRAM;
     int totalCPU;
@@ -15,7 +15,7 @@ public class CloudInfo {
     int inSourced;
     int outSourced;
     
-	public CloudInfo(int timestamp, int totalRAM, int totalCPU, int totalSize,
+	public CloudStateInfo(int timestamp, int totalRAM, int totalCPU, int totalSize,
 			int runningPMs, int runningVMs, double totalPowerConsumption,
 			int inSourced, int outSourced) {
 		super();
