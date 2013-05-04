@@ -68,20 +68,11 @@ public class Scheduler1 implements Schedulable {
     	vm.start(); 		 //TODO what is start stand for? Can we do there the resource allocation?
     	//allocate resources
     	try {
-    		vm.addComponent(application);
+    		vm.addComponent(application);		//allocate resources inside this method
 		} catch (ResourceUnavailableException e) {
 			
-			//TODO  implement inputStream Exception
-			System.out.println("Error while trying to allocate Resources, if we see this coming that means " +
-					"either that i did the PM selection wrong " +
-					"or (AppResources + VMBaseResources) > MaxPMResources");
-			System.out.println("Requirements: CPU: " + neededCpuInMHz + " HDD: "+ neededHddSize + " Ram: "+ neededRam);
-			System.out.println("VM CPU Available: "+vm.getCpuAvailable() + "/ Used:" + vm.getCpuInMhz());
-			System.out.println("VM HDD Available: "+vm.getHddAvailable() + "/ Used:" + vm.getHddSize()) ;
-			System.out.println("VM RAM Available: "+vm.getRamAvailable()+ "/ Used:" + vm.getRam());
-			System.out.println("PM CPU Available: "+pm.getCpuAvailable()+ "/ Used:" + pm.getCpuInMhz());
-			System.out.println("PM HDD Available: "+pm.getHddAvailable()+ "/ Used:" + pm.getHddSize());
-			System.out.println("PM RAM Available: "+pm.getRamAvailable()+ "/ Used:" + pm.getRam());
+			e.printResourceAllocationErrorLog(pm,vm,neededCpuInMHz,neededHddSize,neededRam);
+			
 		}
     	
     	
@@ -107,11 +98,7 @@ public class Scheduler1 implements Schedulable {
 			}
 		}
 		if(hostVM != null)	{
-			hostVM.removeComponent(application);
-			//free resources on VM:
-			hostVM.removeCpu(application.getCpuInMhz());
-			hostVM.removeHddSize(application.getHddSize());
-			hostVM.removeRam(application.getRam());
+			hostVM.removeComponent(application);	 // free resources inside this method
 		}else{
 			System.out.println("How come app is running on no virtual machine?");
 		}
