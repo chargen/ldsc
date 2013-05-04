@@ -2,6 +2,7 @@ package at.ac.tuwien.ldsc.group1.domain.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
@@ -20,8 +21,6 @@ public abstract class MachineImpl implements Machine, Composite {
     private int hddBase;
     private int ramBase;
     private int cpuInMhzBase;
-    private int overallConsumption = 0;
-    private long currentEventTime = 0L;
 
     //The maximum resources that are available to this machine
     //they are based on the resources that the underlying hardware
@@ -29,13 +28,21 @@ public abstract class MachineImpl implements Machine, Composite {
     protected int hddMax;
     protected int cpuInMhzMax;
     protected int ramMax;
-
+    static final int initialConsumption;
+    static final double consumptionPerMHz;
+    
     /**
      * A list of components that are managed by this machine
      */
     private List<Component> components = new ArrayList<>();
     protected Machine parent = null;
 
+    static{ 
+		ResourceBundle res = ResourceBundle.getBundle("physicalMachine");
+		initialConsumption = Integer.parseInt(res.getString("initialConsumption"));
+		consumptionPerMHz = Double.parseDouble(res.getString("consumptionPerMHz"));
+	}
+    
     //Constructors
     public MachineImpl(
             int ramBase, int hddBase, int cpuInMhzBase,
@@ -94,7 +101,7 @@ public abstract class MachineImpl implements Machine, Composite {
         if (parent != null) {
         	powerConsumption += parent.getPowerConsumption();
         } else {
-    		powerConsumption += (this.getCpuInMhz() * CURRENT_POWER_PER_MHZ) / MS_PER_SECOND;
+    		powerConsumption += initialConsumption + (this.getCpuInMhz() * consumptionPerMHz);
         }
         return powerConsumption;
     }
@@ -179,18 +186,4 @@ public abstract class MachineImpl implements Machine, Composite {
         this.parent = parent;
     }
     
-    @Override
-	public void setEventTime(long eventTime) {
-		long elapsedTime = eventTime - this.currentEventTime;
-		this.currentEventTime = eventTime;
-		int lastConsumption = this.overallConsumption;
-		this.overallConsumption += elapsedTime * this.getPowerConsumption();
-		if(lastConsumption > this.overallConsumption) throw new RuntimeException();
-	}
-
-
-	@Override
-	public int getOverallConsumption() {
-		return this.overallConsumption;
-	}
-}
+   }

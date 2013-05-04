@@ -31,7 +31,5 @@ public interface Machine extends Component, Composite {
      */
     Machine getParent();
 
-	int getOverallConsumption();
 
-	void setEventTime(long eventTime);
 }

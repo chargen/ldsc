@@ -173,8 +173,7 @@ public class Scheduler2 implements Schedulable {
             totalCPU += pm.getCpuAvailable();
             totalSize += pm.getHddAvailable();
             runningVMs += pm.getComponents().size();
-            pm.setEventTime(timeStamp);
-            totalPowerConsumption += pm.getOverallConsumption();
+            totalPowerConsumption += pm.getPowerConsumption();
         }
         
         CloudInfo info = new CloudInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);

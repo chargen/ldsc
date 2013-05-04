@@ -11,12 +11,12 @@ public class CloudInfo {
     int totalSize;
     int runningPMs;
     int runningVMs;
-    int totalPowerConsumption;
+    double totalPowerConsumption;
     int inSourced;
     int outSourced;
     
 	public CloudInfo(int timestamp, int totalRAM, int totalCPU, int totalSize,
-			int runningPMs, int runningVMs, int totalPowerConsumption,
+			int runningPMs, int runningVMs, double totalPowerConsumption,
 			int inSourced, int outSourced) {
 		super();
 		this.timestamp = timestamp;
@@ -54,7 +54,7 @@ public class CloudInfo {
 		return runningVMs;
 	}
 
-	public int getTotalPowerConsumption() {
+	public double getTotalPowerConsumption() {
 		return totalPowerConsumption;
 	}
 

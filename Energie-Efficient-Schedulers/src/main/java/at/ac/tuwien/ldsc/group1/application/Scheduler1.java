@@ -24,6 +24,7 @@ public class Scheduler1 implements Schedulable {
     Integer VMcpuInMhzBase;
     CsvWriter writer;
     Event currentEvent = null;
+    Integer overAllConsumption;
 
     public Scheduler1(CsvWriter writer) {
     	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
@@ -180,7 +181,7 @@ public class Scheduler1 implements Schedulable {
 		int totalSize = 0;
 		int runningPMs;
 		int runningVMs = 0;
-		int totalPowerConsumption = 0;
+		double totalPowerConsumption = 0;
 		int inSourced = 0;		//TODO
 		int outSourced = 0;		//TODO
 		
@@ -191,8 +192,8 @@ public class Scheduler1 implements Schedulable {
 			totalCPU += pm.getCpuAvailable();
 			totalSize += pm.getHddAvailable();
 			runningVMs += pm.getComponents().size();
-			pm.setEventTime(timeStamp);
-			totalPowerConsumption += pm.getOverallConsumption();
+			//this consumption is the overall powerconsuption of the cloud in the moment
+			totalPowerConsumption += pm.getPowerConsumption();
 		}
 		
 		CloudInfo info = new CloudInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
