@@ -12,6 +12,7 @@ public class CsvWriter {
     File file;
 	FileWriter fw;
 	BufferedWriter bw;
+	boolean headerAdded = false;
 
     public CsvWriter(String filename) {
     	this.filename = filename;
@@ -25,11 +26,34 @@ public class CsvWriter {
     		
     		fw = new FileWriter(file.getAbsoluteFile());
 			bw = new BufferedWriter(fw);
-			bw.write("Timestamp; TotalRAM; TotalCPU; TotalSize; RunningPMs; RunningVMs; TotalPowerConsumption; InSourced; OutSourced");
-			bw.newLine();
+			
     		
     	} catch (IOException e) {
     		e.printStackTrace();
+    	}
+    }
+    
+    public void writeHeader1(){
+    	if(!headerAdded){
+    		try {
+    			bw.write("Timestamp; TotalRAM; TotalCPU; TotalSize; RunningPMs; RunningVMs; TotalPowerConsumption; InSourced; OutSourced");
+    			bw.newLine();
+    			headerAdded = true;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    }
+    
+    public void writeHeader2(){
+    	if(!headerAdded){
+    		try {
+    			bw.write("Scheduler;Scenario;TotalPMs;TotalVMs;TotalDuration;TotalPowerConsumption;TotalInSourced;TotalOutSourced");
+    			bw.newLine();
+    			headerAdded = true;
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
     	}
     }
 
