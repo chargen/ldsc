@@ -33,7 +33,7 @@ public class Scheduler1 implements Schedulable {
     Event lastEvent = null;
 
     CloudStateInfo lastState = null;
-    CloudOverallInfo overallInfo;
+    final CloudOverallInfo overallInfo = new CloudOverallInfo();
     Set<Event> events;
     
     public Scheduler1(CsvWriter writer) {
@@ -117,6 +117,7 @@ public class Scheduler1 implements Schedulable {
     	VirtualMachine vm = new VirtualMachineImpl(pm);
 
     	vm.start(); 		 //TODO what is start stand for? Can we do there the resource allocation?
+    	overallInfo.setTotalVMs(overallInfo.getTotalVMs()+1);
     	//allocate resources
     	try {
     		vm.addComponent(application);		//allocate resources inside this method
@@ -198,6 +199,7 @@ public class Scheduler1 implements Schedulable {
 			PhysicalMachine pm = createNewPM();
 			this.physicalMachines.add(pm);
 			pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
+			overallInfo.setTotalPMs(overallInfo.getTotalPMs()+1);
 			return pm;
 		}else{
 			//iterate over PMList give back first possible
@@ -215,6 +217,7 @@ public class Scheduler1 implements Schedulable {
 			PhysicalMachine pm = createNewPM();
 			this.physicalMachines.add(pm);
 			pm.start();
+			overallInfo.setTotalPMs(overallInfo.getTotalPMs()+1);
 			return pm;
 			
 		}
@@ -253,23 +256,22 @@ public class Scheduler1 implements Schedulable {
 		}
 		
 		CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
-		this.updateOverallInfo(info);
+		this.updatePowerConsumption(info);
 		this.writer.writeCsv(info);
 	}
 	
 	
 	
-	private void updateOverallInfo(CloudStateInfo info) {
-		if(this.overallInfo == null) {
-			overallInfo = new CloudOverallInfo();
-			//TODO
-		}
+	private void updatePowerConsumption(CloudStateInfo info) {
+		
 		
 	}
 	
 
 	@Override
 	public void finalize(){
+		overallInfo.setScheduler(this.getClass().getName());
+		overallInfo.setTotalDuration(internalTime);
 		this.writer.close();
 	}
 
