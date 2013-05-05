@@ -1,7 +1,9 @@
 package at.ac.tuwien.ldsc.group1.application;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ResourceBundle;
 
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
@@ -23,7 +25,7 @@ public class Scheduler1 implements Schedulable {
 	int maxPMs;
 	long internalTime = 0L;
 	
-    List<Application> applications;
+    List<Application> applications = new ArrayList<>();
     List<PhysicalMachine> physicalMachines;
     Integer VMramBase;
     Integer VMhddBase;
@@ -33,6 +35,7 @@ public class Scheduler1 implements Schedulable {
 
     CloudStateInfo lastState = null;
     CloudOverallInfo overallInfo;
+    Queue<Event> eventQueue = new LinkedList<>();
     
     
     
@@ -46,14 +49,30 @@ public class Scheduler1 implements Schedulable {
 	}
 
 	@Override
-    public void schedule(Event event) throws SchedulingNotPossibleException {
-        if(event.getEventType() == EventType.START) {
-            //TODO: check resources
+    public void schedule(Event event){
+		if(event.getEventType() == EventType.STOP) {
+			if(applications.contains(event.getApplication())){
+				handleEvent(event);
+			}else{
+				eventQueue.add(event);
+				return;
+			}
+			while(eventQueue.size() > 0) {			
+				handleEvent(eventQueue.poll());
+			}
+		} else {
+			handleEvent(event);
+		}
+    }
+
+	private void handleEvent(Event event) {
+		if(event.getEventType() == EventType.START) {
             try {
             	this.addApplication(event.getApplication());
             }catch (ResourceUnavailableException e) {
-				e.printErrorMsg();
-				throw new SchedulingNotPossibleException();
+            	//If we catch this exceptions it means that there are not enough physical machines available.
+            	eventQueue.add(event);
+            	return;
 			}
             
         } else {
@@ -71,10 +90,10 @@ public class Scheduler1 implements Schedulable {
         }
         this.writeLog();
         this.lastEvent = event;
-    }
+	}
 
     @Override
-    public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
+    public void addApplication(Application application) throws ResourceUnavailableException {
         //1. make a decision on which virtual machine this application will run
     	   	
     	//A.) Create VM
@@ -93,12 +112,11 @@ public class Scheduler1 implements Schedulable {
     	try {
     		vm.addComponent(application);		//allocate resources inside this method
 		} catch (ResourceUnavailableException e) {
-			
 			e.printResourceAllocationErrorLog(pm,vm,neededCpuInMHz,neededHddSize,neededRam);
-			
+			throw new RuntimeException("Unexpected Error");
 		}
     	
-    	
+    	applications.add(application);
 
         //Finally: Log current cloud utilization details to output file 2
     }
@@ -123,6 +141,7 @@ public class Scheduler1 implements Schedulable {
 			hostVM.removeComponent(application);	 // free resources inside this method
 		}else{
 			System.out.println("How come app is running on no virtual machine?");
+			new RuntimeException().printStackTrace();
 		}
 		
 		
@@ -159,11 +178,13 @@ public class Scheduler1 implements Schedulable {
 		}else{
 			//do nothing
 		}
+		
+		applications.remove(application);
     	
         //Finally: Log current clould utilization details to output file 2
     }
 	
-	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
+	private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws ResourceUnavailableException {
 		
 		if(this.physicalMachines == null){
 			this.physicalMachines = new ArrayList<PhysicalMachine>();
@@ -194,11 +215,11 @@ public class Scheduler1 implements Schedulable {
 	}
 
 	
-	private PhysicalMachine createNewPM() throws SchedulingNotPossibleException {
+	private PhysicalMachine createNewPM() throws ResourceUnavailableException{
 		if(this.physicalMachines.size() < maxPMs){
 			return new PhysicalMachineImpl();
 		}else{
-			throw new SchedulingNotPossibleException();
+			throw new ResourceUnavailableException();
 		}
 	}
 

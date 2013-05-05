@@ -6,14 +6,17 @@ import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 
 public interface Schedulable {
-    void schedule(Event event) throws SchedulingNotPossibleException;
+	/**
+	 * This method is called by the Elasticity manager to schedule events.
+	 */
+    void schedule(Event event);
 
     /**
      * Template method for use inside the scheduler
      * this function is called by the schedule method.
-     * @throws SchedulingNotPossibleException 
+     * 
      */
-    void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException;
+    void addApplication(Application application) throws ResourceUnavailableException;
 
     /**
      * Template method for use inside the scheduler,
