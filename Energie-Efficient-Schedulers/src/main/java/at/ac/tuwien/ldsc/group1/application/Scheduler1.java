@@ -36,8 +36,6 @@ public class Scheduler1 implements Schedulable {
     CloudOverallInfo overallInfo;
     Set<Event> events;
     
-    
-    
     public Scheduler1(CsvWriter writer) {
     	ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
     	VMramBase = Integer.parseInt(res.getString("ramBase"));
@@ -73,6 +71,35 @@ public class Scheduler1 implements Schedulable {
         this.writeLog();
         this.lastEvent = event;
     }
+	
+	@Override
+	public void callScheduling(Set<Event> events) {
+		this.events = events;
+		for(Event e: events){
+			if(!e.isToBeSkipped()) handleEvent(e);
+		}
+	}
+	
+	private void handleEvent(Event event) {
+		
+		try {
+			this.schedule(event);
+			applications.add(event.getApplication());
+		} catch (SchedulingNotPossibleException e) {
+			
+			//getnextStopEvent
+			Event stopEvent = getNextStopEvent(event);
+			//set additional scheduler time
+//			scheduler.addToInternalTime(stopEvent.getEventTime() - event.getEventTime());
+			//schedule stop
+			this.handleEvent(stopEvent);
+			//remove this stop event from the event list
+			stopEvent.setToBeSkipped(true);
+			//schedule original event
+			this.handleEvent(event);
+			
+		}
+	}
 
     @Override
     public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
@@ -249,40 +276,6 @@ public class Scheduler1 implements Schedulable {
 	@Override
 	public void setMaxNumberOfPhysicalMachines(int nr) {
 		this.maxPMs = nr;
-		
-	}
-
-	@Override
-	public void callScheduling(Set<Event> events) {
-		this.events = events;
-		for(Event e: events){
-			if(!e.isToBeSkipped()) handleEvent(e);
-		}
-		
-	}
-	
-	private void handleEvent(Event event) {
-		
-		try {
-			this.schedule(event);
-			applications.add(event.getApplication());
-		} catch (SchedulingNotPossibleException e) {
-			
-			//getnextStopEvent
-			Event stopEvent = getNextStopEvent(event);
-			//set additional scheduler time
-//			scheduler.addToInternalTime(stopEvent.getEventTime() - event.getEventTime());
-			//schedule stop
-			this.handleEvent(stopEvent);
-			//remove this stop event from the event list
-			
-//			events.remove(stopEvent);
-			stopEvent.setToBeSkipped(true);
-			//schedule original event
-			this.handleEvent(event);
-			
-		}
-		
 		
 	}
 
