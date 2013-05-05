@@ -50,7 +50,6 @@ public class Scheduler1 implements Schedulable {
 	@Override
     public void schedule(Event event) throws SchedulingNotPossibleException {
         if(event.getEventType() == EventType.START) {
-            //TODO: check resources
             try {
             	this.addApplication(event.getApplication());
             }catch (ResourceUnavailableException e) {
