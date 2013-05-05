@@ -3,6 +3,7 @@ package at.ac.tuwien.ldsc.group1.application;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
@@ -23,7 +24,7 @@ public class Scheduler1 implements Schedulable {
 	int maxPMs;
 	long internalTime = 0L;
 	
-    List<Application> applications;
+    List<Application> applications = new ArrayList<>();
     List<PhysicalMachine> physicalMachines;
     Integer VMramBase;
     Integer VMhddBase;
@@ -33,6 +34,7 @@ public class Scheduler1 implements Schedulable {
 
     CloudStateInfo lastState = null;
     CloudOverallInfo overallInfo;
+    Set<Event> events;
     
     
     
@@ -249,6 +251,50 @@ public class Scheduler1 implements Schedulable {
 	public void setMaxNumberOfPhysicalMachines(int nr) {
 		this.maxPMs = nr;
 		
+	}
+
+	@Override
+	public void callScheduling(Set<Event> events) {
+		this.events = events;
+		for(Event e: events){
+			if(!e.isToBeSkipped()) handleEvent(e);
+		}
+		
+	}
+	
+	private void handleEvent(Event event) {
+		
+		try {
+			this.schedule(event);
+			applications.add(event.getApplication());
+		} catch (SchedulingNotPossibleException e) {
+			
+			//getnextStopEvent
+			Event stopEvent = getNextStopEvent(event);
+			//set additional scheduler time
+//			scheduler.addToInternalTime(stopEvent.getEventTime() - event.getEventTime());
+			//schedule stop
+			this.handleEvent(stopEvent);
+			//remove this stop event from the event list
+			
+//			events.remove(stopEvent);
+			stopEvent.setToBeSkipped(true);
+			//schedule original event
+			this.handleEvent(event);
+			
+		}
+		
+		
+	}
+
+	private Event getNextStopEvent(Event event) {
+		for(Event e : events){
+			if(e.getEventTime() > event.getEventTime() && e.getEventType().equals(EventType.STOP) && applications.contains(e.getApplication()) && !e.isToBeSkipped()){
+				return e;
+			}
+		}
+		System.out.println("Cloud is full and no App can be stopped.");
+		return null;
 	}
 
 }

@@ -62,11 +62,13 @@ public class E2CElasticityManager {
 
 		}
 
-        for(Event event : events) {
-            //3. Feed it into the scheduler
-        	//EVENTS ARE ORDERED
-        	if(!event.isToBeSkipped())  callScheduling(event);
-        }
+		scheduler.callScheduling(events);
+		
+//        for(Event event : events) {
+//            //3. Feed it into the scheduler
+//        	//EVENTS ARE ORDERED
+//        	if(!event.isToBeSkipped())  callScheduling(event);
+//        }
 
         //close streams
         scheduler.finalize();
@@ -75,40 +77,7 @@ public class E2CElasticityManager {
         //String info = scheduler.getSummaryInfo();
     }
 
-	private void callScheduling(Event event) {
-		
-		try {
-			scheduler.schedule(event);
-			runningApps.add(event.getApplication());
-		} catch (SchedulingNotPossibleException e) {
-			
-			//getnextStopEvent
-			Event stopEvent = getNextStopEvent(event);
-			//set additional scheduler time
-//			scheduler.addToInternalTime(stopEvent.getEventTime() - event.getEventTime());
-			//schedule stop
-			this.callScheduling(stopEvent);
-			//remove this stop event from the event list
-			
-//			events.remove(stopEvent);
-			stopEvent.setToBeSkipped(true);
-			//schedule original event
-			this.callScheduling(event);
-			
-		}
-		
-		
-	}
 
-	private Event getNextStopEvent(Event event) {
-		for(Event e : events){
-			if(e.getEventTime() > event.getEventTime() && e.getEventType().equals(EventType.STOP) && runningApps.contains(e.getApplication()) && !e.isToBeSkipped()){
-				return e;
-			}
-		}
-		System.out.println("Cloud is full and no App can be stopped.");
-		return null;
-	}
 }
 
 

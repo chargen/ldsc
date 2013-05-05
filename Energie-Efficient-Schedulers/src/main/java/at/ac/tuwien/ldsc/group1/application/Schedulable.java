@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.application;
 
+import java.util.Set;
+
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
@@ -26,4 +28,6 @@ public interface Schedulable {
     void finalize();
     
     void setMaxNumberOfPhysicalMachines(int nr);
+
+	void callScheduling(Set<Event> events);
 }

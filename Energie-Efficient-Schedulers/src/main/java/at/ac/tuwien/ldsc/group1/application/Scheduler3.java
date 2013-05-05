@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.application;
 
+import java.util.Set;
+
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 
@@ -28,6 +30,12 @@ public class Scheduler3 implements Schedulable {
 
 	@Override
 	public void setMaxNumberOfPhysicalMachines(int nr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void callScheduling(Set<Event> events) {
 		// TODO Auto-generated method stub
 		
 	}
