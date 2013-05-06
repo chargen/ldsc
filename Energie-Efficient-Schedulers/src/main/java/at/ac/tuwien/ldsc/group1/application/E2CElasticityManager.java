@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
@@ -23,7 +24,7 @@ public class E2CElasticityManager {
     CsvParser csvParser;
     CsvWriter csvWriter;
     Set<Event> events;
-    List<Application> runningApps = new ArrayList<Application>();
+    List<CloudOverallInfo> infoListe = new ArrayList<>();
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, Schedulable scheduler) {
 
@@ -72,12 +73,16 @@ public class E2CElasticityManager {
 
         //close streams
         scheduler.finalize();
-
+        infoListe.add(scheduler.getOverAllInfo());
         // Finally log summary information of cloud to output file 1
         //String info = scheduler.getSummaryInfo();
     }
 
 
+    public List<CloudOverallInfo> getCloudOverAllInfos(){
+    	return this.infoListe;
+    }
+    
 }
 
 

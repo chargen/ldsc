@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 
 public class CsvWriter {
@@ -58,6 +59,17 @@ public class CsvWriter {
     }
 
     public void writeCsv(CloudStateInfo cloudInfo) {
+    	
+    	try {
+			bw.write(cloudInfo.toString());
+			bw.newLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+    }
+    
+  public void writeCsv(CloudOverallInfo cloudInfo) {
     	
     	try {
 			bw.write(cloudInfo.toString());

@@ -23,6 +23,7 @@ public class Scheduler1 implements Schedulable {
 	
 	int maxPMs;
 	long internalTime = 0L;
+	long lastinternalTime = 0L;
 	
     List<Application> applications = new ArrayList<>();
     List<PhysicalMachine> physicalMachines;
@@ -31,6 +32,7 @@ public class Scheduler1 implements Schedulable {
     Integer VMcpuInMhzBase;
     CsvWriter writer;
     Event lastEvent = null;
+    double lastTotalCosumption = 0;
 
     CloudStateInfo lastState = null;
     final CloudOverallInfo overallInfo = new CloudOverallInfo();
@@ -64,6 +66,7 @@ public class Scheduler1 implements Schedulable {
         	previousTimeStamp = lastEvent.getEventTime();
         }
         if(event.getEventTime() - previousTimeStamp > 0){
+        	lastinternalTime = internalTime;
         	internalTime = internalTime + (event.getEventTime() - previousTimeStamp);
         }else{
         	//leave internal time as it is. //the entire time scale will be shifted
@@ -256,23 +259,31 @@ public class Scheduler1 implements Schedulable {
 		}
 		
 		CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
-		this.updatePowerConsumption(info);
+		this.updatePowerConsumption(lastTotalCosumption);
+		lastTotalCosumption = totalPowerConsumption;
 		this.writer.writeCsv(info);
 	}
 	
 	
 	
-	private void updatePowerConsumption(CloudStateInfo info) {
-		
+	private void updatePowerConsumption(double lastTotalCosumption) {
+		//total consumption after the previous event * time interval between last and new event in seconds
+		this.overallInfo.setTotalPowerConsumption(lastTotalCosumption*(lastinternalTime/1000));
 		
 	}
 	
 
 	@Override
 	public void finalize(){
+		
+		this.writer.close();
+	}
+	
+	@Override
+	public CloudOverallInfo getOverAllInfo(){
 		overallInfo.setScheduler(this.getClass().getName());
 		overallInfo.setTotalDuration(internalTime);
-		this.writer.close();
+		return this.overallInfo;
 	}
 
 	@Override

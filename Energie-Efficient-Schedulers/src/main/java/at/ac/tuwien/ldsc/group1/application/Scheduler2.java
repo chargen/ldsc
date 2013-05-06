@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
@@ -196,6 +197,12 @@ public class Scheduler2 implements Schedulable {
 	public void callScheduling(Set<Event> events) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public CloudOverallInfo getOverAllInfo() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
