@@ -629,7 +629,7 @@ at.ac.tuwien.ldsc.group1.domain.components::Composite
     </coordinates>
     <panel_attributes>at.ac.tuwien.ldsc.group1.application::E2CElasticityManager
 --
-~scheduler: at.ac.tuwien.ldsc.group1.application.Schedulable
+~scheduler: at.ac.tuwien.ldsc.group1.application.Scheduler
 ~csvParser: at.ac.tuwien.ldsc.group1.application.CsvParser
 ~csvWriter: at.ac.tuwien.ldsc.group1.application.CsvWriter
 --

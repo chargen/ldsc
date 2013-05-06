@@ -23,7 +23,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
-public class Scheduler2 implements Schedulable {
+public class Scheduler2 implements Scheduler {
     
     List<Application> applications;
     List<PhysicalMachine> physicalMachines;
