@@ -24,7 +24,6 @@ public class E2CElasticityManagerTest {
 		scheduler.setMaxNumberOfPhysicalMachines(5);
 		E2CElasticityManager manager = new E2CElasticityManager(parser,writer,scheduler);
 		manager.startSimulation();
-		System.out.println("Why the fuck is this text not in console?");
 		
 		CsvWriter writer2 = new CsvWriter(testOutput2);
 		writer2.writeHeader2();

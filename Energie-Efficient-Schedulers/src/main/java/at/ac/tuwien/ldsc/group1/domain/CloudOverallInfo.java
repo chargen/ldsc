@@ -86,7 +86,7 @@ public class CloudOverallInfo {
 	@Override
     public String toString(){
     	return this.getScheduler() + ";" + this.getScenario() + ";" + this.getTotalPMs() + ";" + this.getTotalVMs()+ ";" +
-    			this.getTotalInSourced() + ";" + this.getTotalOutSourced() + ";" + this.getTotalDuration() + ";" + this.getTotalPowerConsumption();
+    			+ this.getTotalDuration() + ";" + this.getTotalPowerConsumption() + ";" + this.getTotalInSourced() + ";" + this.getTotalOutSourced() ;
     }
     
 }
