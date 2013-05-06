@@ -20,13 +20,13 @@ import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException
  * duration).
  */
 public class E2CElasticityManager {
-    Schedulable scheduler;
+    Scheduler scheduler;
     CsvParser csvParser;
     CsvWriter csvWriter;
     Set<Event> events;
     List<CloudOverallInfo> infoListe = new ArrayList<>();
 
-    public E2CElasticityManager(CsvParser parser, CsvWriter writer, Schedulable scheduler) {
+    public E2CElasticityManager(CsvParser parser, CsvWriter writer, Scheduler scheduler) {
 
     	this.csvParser = parser;
     	this.csvWriter = writer;

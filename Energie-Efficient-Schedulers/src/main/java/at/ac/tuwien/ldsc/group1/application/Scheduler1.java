@@ -19,7 +19,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 
-public class Scheduler1 implements Schedulable {
+public class Scheduler1 implements Scheduler {
 	
 	int maxPMs;
 	long internalTime = 0L;

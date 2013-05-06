@@ -6,7 +6,7 @@ import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 
-public class Scheduler3 implements Schedulable {
+public class Scheduler3 implements Scheduler {
 
     @Override
     public void schedule(Event event) {

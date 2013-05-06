@@ -8,7 +8,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 
-public interface Schedulable {
+public interface Scheduler {
     void schedule(Event event) throws SchedulingNotPossibleException;
 
     /**
@@ -31,6 +31,5 @@ public interface Schedulable {
     void setMaxNumberOfPhysicalMachines(int nr);
 
 	void callScheduling(Set<Event> events);
-	
 	public CloudOverallInfo getOverAllInfo();
 }
