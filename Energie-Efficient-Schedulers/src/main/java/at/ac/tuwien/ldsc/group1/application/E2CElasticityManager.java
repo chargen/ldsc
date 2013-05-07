@@ -1,20 +1,18 @@
 package at.ac.tuwien.ldsc.group1.application;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
-import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * This is our Energy-Efficient Cloud Elasticity Manager (E2CEM).
- *
+ * <br/>
  * It will initialise a scheduler and then control when an application is
  * added (based on the timestamp) and when it needs to be removed (based on the
  * duration).
@@ -27,49 +25,35 @@ public class E2CElasticityManager {
     List<CloudOverallInfo> infoListe = new ArrayList<>();
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, Scheduler scheduler) {
-
-    	this.csvParser = parser;
-    	this.csvWriter = writer;
-    	this.scheduler = scheduler;
-
+        this.csvParser = parser;
+        this.csvWriter = writer;
+        this.scheduler = scheduler;
     }
 
     public void startSimulation() {
         //1. Get list of application from parser
-
-		List<Application> appList = csvParser.parse();
+        List<Application> appList = csvParser.parse();
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
+        events = new TreeSet<>();
 
-		events = new TreeSet<Event>();
-		for(Application app : appList){
+        for (Application app : appList) {
 
-			//For Each Application there is
-			//One Event when the app STARTS
-			//One Event when the app STOPS
-			//
-			//Store Events ordered by their eventTime
+            //For Each Application there is
+            //One Event when the app STARTS
+            //One Event when the app STOPS
+            long startTime = app.getTimeStamp();
+            long stopTime = app.getTimeStamp() + app.getDuration();
 
-			long startTime = app.getTimeStamp();
-			long stopTime = app.getTimeStamp()+app.getDuration();
+            Event startEvent = new Event(startTime, EventType.START, app);
+            Event stopEvent = new Event(stopTime, EventType.STOP, app);
 
-			Event startEvent = new Event(startTime, EventType.START, app);
-			Event stopEvent = new Event(stopTime, EventType.STOP, app);
+            events.add(startEvent);
+            events.add(stopEvent);
+        }
 
-
-			events.add(startEvent);
-			events.add(stopEvent);
-
-		}
-
-		scheduler.callScheduling(events);
-		
-//        for(Event event : events) {
-//            //3. Feed it into the scheduler
-//        	//EVENTS ARE ORDERED
-//        	if(!event.isToBeSkipped())  callScheduling(event);
-//        }
+        scheduler.callScheduling(events);
 
         //close streams
         scheduler.finalize();

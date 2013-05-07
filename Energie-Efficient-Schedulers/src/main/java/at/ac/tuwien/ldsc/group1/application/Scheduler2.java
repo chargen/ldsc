@@ -179,7 +179,7 @@ public class Scheduler2 implements Scheduler {
         }
         
         CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
-        this.writer.writeCsv(info);
+        this.writer.writeLine(info);
     }
     
     @Override

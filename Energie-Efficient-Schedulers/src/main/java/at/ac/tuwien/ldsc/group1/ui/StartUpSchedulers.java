@@ -1,5 +1,7 @@
 package at.ac.tuwien.ldsc.group1.ui;
 
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 public class StartUpSchedulers {
 
     /**
@@ -7,8 +9,8 @@ public class StartUpSchedulers {
      * @param args
      */
     public static void main(String[] args) {
-        //1. Read user data
-
+        //Initialize Spring Application Context
+        new ClassPathXmlApplicationContext("spring.xml");
 
         //2. Initialize Domain objects
 

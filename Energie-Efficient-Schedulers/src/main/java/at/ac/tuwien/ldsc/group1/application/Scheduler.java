@@ -23,8 +23,9 @@ public interface Scheduler {
      * this function is called by the schedule method.
      */
     void removeApplication(Application application);
+
     /**
-     *  to close the streams
+     *  To close the streams
      */
     void finalize();
     
