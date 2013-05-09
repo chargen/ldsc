@@ -6,11 +6,6 @@
  */
 package at.ac.tuwien.ldsc.group1.application;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
-
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
@@ -24,8 +19,13 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
+
 public class Scheduler2 implements Scheduler {
-    
+
     List<Application> applications;
     List<PhysicalMachine> physicalMachines;
     Integer VmRamBase;
@@ -38,21 +38,21 @@ public class Scheduler2 implements Scheduler {
         ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
         VmRamBase = Integer.parseInt(res.getString("ramBase"));
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
-        VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase")); 
-        this.writer = writer; 
+        VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
+        this.writer = writer;
     }
-    
+
     @Override
     public void schedule(Event event) {
         this.currentEvent = event;
-        if(event.getEventType() == EventType.START) {
+        if (event.getEventType() == EventType.START) {
             //TODO: check resources
             try {
                 this.addApplication(event.getApplication());
-            }catch (ResourceUnavailableException e) {
+            } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             }
-            
+
         } else {
             this.removeApplication(event.getApplication());
         }
@@ -64,13 +64,13 @@ public class Scheduler2 implements Scheduler {
         // If an application arrives, try to modify size, CPU and RAM of an existing VM to run the application. 
         // If no VM is running, create a new one (start a new PM if necessary). If the application has finished decrease the size, CPU and RAM of 
         // the VM. 
-        
-        
+
+
         Integer neededRam = application.getRam() + this.VmRamBase;
         Integer neededHddSize = application.getHddSize() + this.VmHddBase;
         Integer neededCpuInMHz = application.getCpuInMhz() + this.VmCpuInMhzBase;
-        
-        PhysicalMachine pm = selectOptimalPM(neededRam,neededHddSize,neededCpuInMHz);
+
+        PhysicalMachine pm = selectOptimalPM(neededRam, neededHddSize, neededCpuInMHz);
         VirtualMachine vm = selectOptimalVM(pm, application);
 
         //vm.start();          //TODO what is start stand for? Can we do there the resource allocation?
@@ -78,21 +78,20 @@ public class Scheduler2 implements Scheduler {
         try {
             vm.addComponent(application);
         } catch (ResourceUnavailableException e) {
-            
+
             //TODO  implement inputStream Exception
             System.out.println("Error while trying to allocate Resources, if we see this coming that means " +
                     "either that i did the PM selection wrong " +
                     "or (AppResources + VMBaseResources) > MaxPMResources");
-            System.out.println("Requirements: CPU: " + neededCpuInMHz + " HDD: "+ neededHddSize + " Ram: "+ neededRam);
-            System.out.println("VM CPU Available: "+vm.getCpuAvailable() + "/ Used:" + vm.getCpuInMhz());
-            System.out.println("VM HDD Available: "+vm.getHddAvailable() + "/ Used:" + vm.getHddSize()) ;
-            System.out.println("VM RAM Available: "+vm.getRamAvailable()+ "/ Used:" + vm.getRam());
-            System.out.println("PM CPU Available: "+pm.getCpuAvailable()+ "/ Used:" + pm.getCpuInMhz());
-            System.out.println("PM HDD Available: "+pm.getHddAvailable()+ "/ Used:" + pm.getHddSize());
-            System.out.println("PM RAM Available: "+pm.getRamAvailable()+ "/ Used:" + pm.getRam());
+            System.out.println("Requirements: CPU: " + neededCpuInMHz + " HDD: " + neededHddSize + " Ram: " + neededRam);
+            System.out.println("VM CPU Available: " + vm.getCpuAvailable() + "/ Used:" + vm.getCpuInMhz());
+            System.out.println("VM HDD Available: " + vm.getHddAvailable() + "/ Used:" + vm.getHddSize());
+            System.out.println("VM RAM Available: " + vm.getRamAvailable() + "/ Used:" + vm.getRam());
+            System.out.println("PM CPU Available: " + pm.getCpuAvailable() + "/ Used:" + pm.getCpuInMhz());
+            System.out.println("PM HDD Available: " + pm.getHddAvailable() + "/ Used:" + pm.getHddSize());
+            System.out.println("PM RAM Available: " + pm.getRamAvailable() + "/ Used:" + pm.getRam());
         }
-        
-        
+
 
         //Finally: Log current cloud utilization details to output file 2
         this.writeLog(this.currentEvent.getEventTime());
@@ -104,10 +103,10 @@ public class Scheduler2 implements Scheduler {
         // TODO Auto-generated method stub
 
     }
-    
+
     private VirtualMachine selectOptimalVM(PhysicalMachine pm, Application application) throws ResourceUnavailableException {
         VirtualMachine vm = null;
-        for(Component c : pm.getComponents()) {
+        for (Component c : pm.getComponents()) {
             vm = (VirtualMachineImpl) c;
         }
         if (vm == null) return new VirtualMachineImpl(pm);
@@ -116,47 +115,47 @@ public class Scheduler2 implements Scheduler {
             return vm;
         }
     }
-    
+
     private VirtualMachine tryMigrateVm(List<PhysicalMachine> physicalMachines) {
-        for(PhysicalMachine iPm : physicalMachines){
-            for(Component c : iPm.getComponents()){
+        for (PhysicalMachine iPm : physicalMachines) {
+            for (Component c : iPm.getComponents()) {
                 VirtualMachine vm = (VirtualMachine) c;
             }
         }
         return null;
     }
-    
+
     private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
-        
-        if(this.physicalMachines == null){
+
+        if (this.physicalMachines == null) {
             PhysicalMachine pm = new PhysicalMachineImpl();
             this.physicalMachines = new ArrayList<PhysicalMachine>();
             this.physicalMachines.add(pm);
             pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
             return pm;
-        }else{
+        } else {
             //iterate over PMList give back first possible
             //TODO find more clever solution
             for (PhysicalMachine pm : this.physicalMachines) {
-                if( pm.getCpuAvailable() >= neededCpuInMHz &&
-                    pm.getRamAvailable() >= neededRam &&
-                    pm.getHddAvailable() >= neededHddSize){
-                
+                if (pm.getCpuAvailable() >= neededCpuInMHz &&
+                        pm.getRamAvailable() >= neededRam &&
+                        pm.getHddAvailable() >= neededHddSize) {
+
                     return pm;
                 }
             }
-            
+
             //list iterated and no pm could give back -> start new pm
             PhysicalMachine pm = new PhysicalMachineImpl();
             this.physicalMachines.add(pm);
             pm.start();
             return pm;
-            
+
         }
 
     }
 
-    
+
     private void writeLog(long timeStamp) {
         int timestamp;
         int totalRAM = 0;
@@ -167,42 +166,42 @@ public class Scheduler2 implements Scheduler {
         int totalPowerConsumption = 0;
         int inSourced = 0;      //TODO
         int outSourced = 0;     //TODO
-        
+
         timestamp = (int) timeStamp;
         runningPMs = this.physicalMachines.size();
-        for(Machine pm : this.physicalMachines){
+        for (Machine pm : this.physicalMachines) {
             totalRAM += pm.getRamAvailable();
             totalCPU += pm.getCpuAvailable();
             totalSize += pm.getHddAvailable();
             runningVMs += pm.getComponents().size();
             totalPowerConsumption += pm.getPowerConsumption();
         }
-        
+
         CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, runningPMs, runningVMs, totalPowerConsumption, inSourced, outSourced);
         this.writer.writeLine(info);
     }
-    
+
     @Override
-    public void finalize(){
+    public void finalize() {
         this.writer.close();
     }
 
-	@Override
-	public void setMaxNumberOfPhysicalMachines(int nr) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void setMaxNumberOfPhysicalMachines(int nr) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void callScheduling(Set<Event> events) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public CloudOverallInfo getOverAllInfo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public void handleEvents(Set<Event> events) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public CloudOverallInfo getOverAllInfo() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

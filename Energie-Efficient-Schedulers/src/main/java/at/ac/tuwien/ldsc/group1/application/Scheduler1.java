@@ -4,25 +4,38 @@ import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
-import at.ac.tuwien.ldsc.group1.domain.components.*;
+import at.ac.tuwien.ldsc.group1.domain.components.Application;
+import at.ac.tuwien.ldsc.group1.domain.components.Machine;
+import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
+import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
+import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
+import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 public class Scheduler1 implements Scheduler {
 
     private int maxPMs;
     private int currentPms = 0;
     private long internalTime = 0L;
-    long lastinternalTime = 0L;
-    double lastTotalCosumption = 0;
+    long lastInternalTime = 0L;
+    double lastTotalConsumption = 0;
 
     //Use maps to map VM --> PM and App --> VM
-    private Map<VirtualMachine, PhysicalMachine> vmAllocations;
+    private Map<VirtualMachine, PhysicalMachine> pmAllocations;
     private Map<Application, VirtualMachine> appAllocations = new Hashtable<>();
+    private Queue<Application> queuedApplications = new LinkedList<>();
 
     private Integer VmRamBase;
     private Integer VmHddBase;
@@ -45,24 +58,36 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void schedule(Event event) throws SchedulingNotPossibleException {
+    public void schedule(Event event) {
+        Application application = event.getApplication();
         if (event.getEventType() == EventType.START) {
             try {
-                this.addApplication(event.getApplication());
+                this.addApplication(application);
+                updateEventTime(event);
+                events.add(new Event(application.getTimeStamp() + application.getDuration(), EventType.STOP, application));
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
-                throw new SchedulingNotPossibleException();
+            } catch (SchedulingNotPossibleException e) {
+                queuedApplications.add(application);
             }
         } else {
-            this.removeApplication(event.getApplication());
+            this.removeApplication(application);
+            updateEventTime(event);
+            Application nextApplication = queuedApplications.poll();
+            if (nextApplication != null) {
+                long startTime = internalTime;
+                events.add(new Event(startTime, EventType.START, application));
+            }
         }
+    }
 
+    private void updateEventTime(Event event) {
         long previousTimeStamp = 0L;
         if (lastEvent != null) {
             previousTimeStamp = lastEvent.getEventTime();
         }
         if (event.getEventTime() - previousTimeStamp > 0) {
-            lastinternalTime = internalTime;
+            lastInternalTime = internalTime;
             internalTime = internalTime + (event.getEventTime() - previousTimeStamp);
         } // else leave internal time as it is, the entire time scale will be shifted
 
@@ -71,38 +96,26 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void callScheduling(Set<Event> events) {
+    public void handleEvents(Set<Event> events) {
         this.events = events;
-        for (Event e : events) {
-            if (!e.isToBeSkipped()) handleEvent(e);
-        }
-    }
-
-    private void handleEvent(Event event) {
-        try {
-            this.schedule(event);
-        } catch (SchedulingNotPossibleException e) {
-            Event stopEvent = getNextStopEvent(event);
-            //schedule stop
-            this.handleEvent(stopEvent);
-            //remove this stop event from the event list
-            stopEvent.setToBeSkipped(true);
-            //schedule original event
-            this.handleEvent(event);
-
+        while (events.size() > 0) {
+            Iterator<Event> iterator = events.iterator();
+            Event event = iterator.next();
+            iterator.remove();
+            schedule(event);
         }
     }
 
     @Override
     public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
         //1. Find a physical machine which can host this application
-        Integer neededRam = application.getRam() + this.VmRamBase;
-        Integer neededHddSize = application.getHddSize() + this.VmHddBase;
-        Integer neededCpuInMHz = application.getCpuInMhz() + this.VmCpuInMhzBase;
+        int neededRam = application.getRam() + this.VmRamBase;
+        int neededHddSize = application.getHddSize() + this.VmHddBase;
+        int neededCpuInMHz = application.getCpuInMhz() + this.VmCpuInMhzBase;
         PhysicalMachine pm = selectOptimalPM(neededRam, neededHddSize, neededCpuInMHz);
         //2. This is the first scenario, so we create one virtual machine per application
         VirtualMachine vm = new VirtualMachineImpl(pm);
-        vmAllocations.put(vm, pm);
+        pmAllocations.put(vm, pm);
 
         //Try to allocate resources and start the VM
         try {
@@ -129,13 +142,13 @@ public class Scheduler1 implements Scheduler {
                 currentVm.stop(); //this also removes this VM from its parent
                 // if there are no applications running on this VM then it implies that appAllocations does not
                 // contain the currentVM
-                assert(!appAllocations.containsValue(currentVm));
+                assert (!appAllocations.containsValue(currentVm));
 
                 //3. Kill PM if not needed anymore (we just removed the last VM from it)
-                PhysicalMachine currentPm = vmAllocations.remove(currentVm);
+                PhysicalMachine currentPm = pmAllocations.remove(currentVm);
                 if (currentPm != null && (currentPm.getComponents() == null || currentPm.getComponents().isEmpty())) {
                     currentPm.stop();
-                    vmAllocations.remove(currentPm);
+                    pmAllocations.remove(currentPm);
                 }
             }
         } else {
@@ -145,8 +158,8 @@ public class Scheduler1 implements Scheduler {
     }
 
     private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
-        if (this.vmAllocations == null) {
-            this.vmAllocations = new Hashtable<>();
+        if (this.pmAllocations == null) {
+            this.pmAllocations = new Hashtable<>();
             PhysicalMachine pm = createNewPM();
             pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
@@ -154,7 +167,7 @@ public class Scheduler1 implements Scheduler {
         } else {
             //iterate over PMList give back first possible
             //TODO this finds the first pm that has enough space, use a more efficient heuristic to find a pm???
-            for (PhysicalMachine pm : this.vmAllocations.values()) {
+            for (PhysicalMachine pm : this.pmAllocations.values()) {
                 if (pm.getCpuAvailable() >= neededCpuInMHz &&
                         pm.getRamAvailable() >= neededRam &&
                         pm.getHddAvailable() >= neededHddSize) {
@@ -184,34 +197,33 @@ public class Scheduler1 implements Scheduler {
         int totalRAM = 0;
         int totalCPU = 0;
         int totalSize = 0;
-        int runningPMs;
         int runningVMs = 0;
         double totalPowerConsumption = 0;
         int inSourced = 0;        //TODO
         int outSourced = 0;        //TODO
 
         timestamp = (int) internalTime;
-        //Note that the vmAllocations map can contain each PM several times, thus we need to create a set from it first
-        Set<PhysicalMachine> pms = new HashSet<>(vmAllocations.values());
+        //Note that the pmAllocations map can contain each PM several times, thus we need to create a set from it first
+        Set<PhysicalMachine> pms = new HashSet<>(pmAllocations.values());
         for (Machine pm : pms) {
             totalRAM += pm.getRamAvailable();
             totalCPU += pm.getCpuAvailable();
             totalSize += pm.getHddAvailable();
             runningVMs += pm.getComponents().size();
-            //this consumption is the overall powerconsuption of the cloud in the moment
+            //this consumption is the overall powerConsumption of the cloud in the moment
             totalPowerConsumption += pm.getPowerConsumption();
         }
 
         CloudStateInfo info = new CloudStateInfo(timestamp, totalRAM, totalCPU, totalSize, currentPms, runningVMs, totalPowerConsumption, inSourced, outSourced);
-        this.updatePowerConsumption(lastTotalCosumption);
-        lastTotalCosumption = totalPowerConsumption;
+        this.updatePowerConsumption(lastTotalConsumption);
+        lastTotalConsumption = totalPowerConsumption;
         this.scenarioWriter.writeLine(info);
     }
 
 
-    private void updatePowerConsumption(double lastTotalCosumption) {
+    private void updatePowerConsumption(double lastTotalConsumption) {
         //total consumption after the previous event * time interval between last and new event in seconds
-        this.overallInfo.setTotalPowerConsumption(lastTotalCosumption*(lastinternalTime/1000));
+        this.overallInfo.setTotalPowerConsumption(lastTotalConsumption * (lastInternalTime / 1000));
     }
 
     @Override
@@ -220,7 +232,7 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public CloudOverallInfo getOverAllInfo(){
+    public CloudOverallInfo getOverAllInfo() {
         overallInfo.setScheduler(this.getClass().getName());
         overallInfo.setTotalDuration(internalTime);
         return this.overallInfo;
@@ -229,17 +241,5 @@ public class Scheduler1 implements Scheduler {
     @Override
     public void setMaxNumberOfPhysicalMachines(int nr) {
         this.maxPMs = nr;
-
     }
-
-    private Event getNextStopEvent(Event event) {
-        for (Event e : events) {
-            if (e.getEventTime() > event.getEventTime() && e.getEventType().equals(EventType.STOP) && appAllocations.containsKey(e.getApplication()) && !e.isToBeSkipped()) {
-                return e;
-            }
-        }
-        System.out.println("Cloud is full and no App can be stopped.");
-        return null;
-    }
-
 }

@@ -39,21 +39,14 @@ public class E2CElasticityManager {
         events = new TreeSet<>();
 
         for (Application app : appList) {
-
-            //For Each Application there is
-            //One Event when the app STARTS
-            //One Event when the app STOPS
+            // For each Application there is one Event when the app STARTS, a stop event will be created by
+            // the scheduler, when the application is started.
             long startTime = app.getTimeStamp();
-            long stopTime = app.getTimeStamp() + app.getDuration();
-
             Event startEvent = new Event(startTime, EventType.START, app);
-            Event stopEvent = new Event(stopTime, EventType.STOP, app);
-
             events.add(startEvent);
-            events.add(stopEvent);
         }
 
-        scheduler.callScheduling(events);
+        scheduler.handleEvents(events);
 
         //close streams
         scheduler.finalize();

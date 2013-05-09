@@ -36,8 +36,6 @@ public class E2CElasticityManagerTest {
         for(CloudOverallInfo c : manager.getCloudOverAllInfos()){
             overviewWriter.writeLine(c);
         }
-
         overviewWriter.close();
-
     }
 }

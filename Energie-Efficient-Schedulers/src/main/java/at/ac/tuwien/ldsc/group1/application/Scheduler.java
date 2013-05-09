@@ -9,7 +9,7 @@ import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException
 import java.util.Set;
 
 public interface Scheduler {
-    void schedule(Event event) throws SchedulingNotPossibleException;
+    void schedule(Event event);
 
     /**
      * Template method for use inside the scheduler
@@ -31,6 +31,7 @@ public interface Scheduler {
     
     void setMaxNumberOfPhysicalMachines(int nr);
 
-	void callScheduling(Set<Event> events);
-	public CloudOverallInfo getOverAllInfo();
+    void handleEvents(Set<Event> events);
+
+    public CloudOverallInfo getOverAllInfo();
 }
