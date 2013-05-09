@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.annotation.Resource;
+import java.util.List;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring.xml")
 public class E2CElasticityManagerTest {
@@ -25,13 +28,13 @@ public class E2CElasticityManagerTest {
     @Qualifier("overviewWriter")
     CsvWriter overviewWriter;
     
-    @Autowired Scheduler scheduler;
+    @Resource(name="schedulers")
+    List<Scheduler> schedulers;
 
     @Test
     public void testSimulation() {
-        scheduler.setMaxNumberOfPhysicalMachines(5);
-        E2CElasticityManager manager = new E2CElasticityManager(parser, scenarioWriter, scheduler);
-        manager.startSimulation();
+        E2CElasticityManager manager = new E2CElasticityManager(parser, scenarioWriter, schedulers);
+        manager.startSimulations();
 
         for(CloudOverallInfo c : manager.getCloudOverAllInfos()){
             overviewWriter.writeLine(c);

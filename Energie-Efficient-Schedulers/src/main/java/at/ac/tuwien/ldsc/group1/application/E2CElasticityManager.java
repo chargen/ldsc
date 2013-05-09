@@ -18,19 +18,26 @@ import java.util.TreeSet;
  * duration).
  */
 public class E2CElasticityManager {
-    Scheduler scheduler;
+    List<Scheduler> schedulers;
     CsvParser csvParser;
     CsvWriter csvWriter;
     Set<Event> events;
     List<CloudOverallInfo> infoList = new ArrayList<>();
 
-    public E2CElasticityManager(CsvParser parser, CsvWriter writer, Scheduler scheduler) {
+    public E2CElasticityManager(CsvParser parser, CsvWriter writer, List<Scheduler> schedulers) {
         this.csvParser = parser;
         this.csvWriter = writer;
-        this.scheduler = scheduler;
+        this.schedulers = schedulers;
     }
 
-    public void startSimulation() {
+    public void startSimulations() {
+        for(Scheduler scheduler : this.schedulers) {
+            startSimulation(scheduler);
+            //TODO: Somehow tell the scenarioWriter that it should start writing into the next .csv file.
+        }
+    }
+
+    public void startSimulation(Scheduler scheduler) {
         //1. Get list of application from parser
         List<Application> appList = csvParser.parse();
 
