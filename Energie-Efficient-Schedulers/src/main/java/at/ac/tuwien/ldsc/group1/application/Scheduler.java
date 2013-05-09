@@ -1,12 +1,12 @@
 package at.ac.tuwien.ldsc.group1.application;
 
-import java.util.Set;
-
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+
+import java.util.Set;
 
 public interface Scheduler {
     void schedule(Event event) throws SchedulingNotPossibleException;

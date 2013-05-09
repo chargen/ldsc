@@ -22,7 +22,7 @@ public class E2CElasticityManager {
     CsvParser csvParser;
     CsvWriter csvWriter;
     Set<Event> events;
-    List<CloudOverallInfo> infoListe = new ArrayList<>();
+    List<CloudOverallInfo> infoList = new ArrayList<>();
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, Scheduler scheduler) {
         this.csvParser = parser;
@@ -57,16 +57,14 @@ public class E2CElasticityManager {
 
         //close streams
         scheduler.finalize();
-        infoListe.add(scheduler.getOverAllInfo());
-        // Finally log summary information of cloud to output file 1
-        //String info = scheduler.getSummaryInfo();
+        infoList.add(scheduler.getOverAllInfo());
     }
 
 
-    public List<CloudOverallInfo> getCloudOverAllInfos(){
-    	return this.infoListe;
+    public List<CloudOverallInfo> getCloudOverAllInfos() {
+        return this.infoList;
     }
-    
+
 }
 
 

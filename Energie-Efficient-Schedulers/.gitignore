@@ -1,5 +1,3 @@
-/testOutput.csv
-/TestOutput2.csv
+/results/*.csv
 /.idea
 /Energie-Efficient-Schedulers.iml
-/testOutput2.csv

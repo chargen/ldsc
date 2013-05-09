@@ -7,16 +7,16 @@
     <context:component-scan base-package="at.ac.tuwien.ldsc.group1.*"/>
 
     <bean class="at.ac.tuwien.ldsc.group1.application.CsvParser" id="csvParser">
-        <constructor-arg name="fileName" value="TestScenario1.csv"/>
+        <constructor-arg name="fileName" value="data/TestScenario1.csv"/>
     </bean>
 
     <bean class="at.ac.tuwien.ldsc.group1.application.CsvWriter" id="scenarioWriter">
-        <constructor-arg name="filename" value="testOutput.csv"/>
+        <constructor-arg name="baseName" value="results/scenario"/>
         <constructor-arg name="type" value="SCENARIO"/>
     </bean>
 
     <bean class="at.ac.tuwien.ldsc.group1.application.CsvWriter" id="overviewWriter">
-        <constructor-arg name="filename" value="testOutput.csv"/>
+        <constructor-arg name="baseName" value="results/overview"/>
         <constructor-arg name="type" value="OVERVIEW"/>
     </bean>
 

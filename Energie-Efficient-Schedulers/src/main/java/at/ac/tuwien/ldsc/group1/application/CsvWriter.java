@@ -3,22 +3,28 @@ package at.ac.tuwien.ldsc.group1.application;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.WriterType;
+import org.joda.time.DateTime;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
 public class CsvWriter {
-    String filename;
     File file;
     FileWriter fw;
     BufferedWriter bw;
 
-    public CsvWriter(String filename, WriterType type) {
-        this.filename = filename;
+    /**
+     * @param baseName The base name of the file (the filename will in the style <pre>baseName-yyyy-MM-dd.csv</pre>
+     *                 <br/>Where yyyy-MM-dd is the current date
+     */
+    public CsvWriter(String baseName, WriterType type) {
+        DateTime date = new DateTime();
+        String dateString = date.toString("yyyy-MM-dd");
         try {
-            this.file = new File(filename);
+            this.file = new File(baseName + "-" + dateString + ".csv");
 
             // if file doesn't exist, then create it
             if (!file.exists()) {
