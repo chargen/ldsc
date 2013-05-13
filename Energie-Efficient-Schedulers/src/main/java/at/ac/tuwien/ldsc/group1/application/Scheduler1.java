@@ -50,7 +50,8 @@ public class Scheduler1 implements Scheduler {
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private Set<Event> events;
 
-    public Scheduler1() {
+    public Scheduler1(int maxPMs) {
+        this.maxPMs = maxPMs;
         ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
         VmRamBase = Integer.parseInt(res.getString("ramBase"));
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
@@ -97,6 +98,8 @@ public class Scheduler1 implements Scheduler {
 
     @Override
     public void handleEvents(Set<Event> events) {
+        if(maxPMs <= 0)
+            throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;
         while (events.size() > 0) {
             Iterator<Event> iterator = events.iterator();
@@ -104,6 +107,11 @@ public class Scheduler1 implements Scheduler {
             iterator.remove();
             schedule(event);
         }
+        /* TODO: check if queue still contains some applications and schedule them
+                  It might be possible that the queue still contains some applications which have not been
+                  executed yet. Simply calling another loop at this point, could possibly introduce an endless loop.
+                  We need to also consider the case that there are applications which are too large to run on any
+                  physical machine (even if its empty).*/
     }
 
     @Override
