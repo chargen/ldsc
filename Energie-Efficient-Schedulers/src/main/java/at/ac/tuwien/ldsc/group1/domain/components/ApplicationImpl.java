@@ -6,7 +6,8 @@ public class ApplicationImpl implements Application {
     private int hddSize;
     private int cpuInMhz;
     private long timeStamp;
-    private static int id = 0;
+    private static int nextId = 0;
+    private final int id;
 
     public ApplicationImpl(int ram, int hddSize, int cpuInMhz, long duration, long timeStamp) {
         this.duration = duration;
@@ -14,6 +15,7 @@ public class ApplicationImpl implements Application {
         this.hddSize = hddSize;
         this.cpuInMhz = cpuInMhz;
         this.timeStamp = timeStamp;
+        this.id = ++nextId;
     }
 
     @Override
@@ -43,14 +45,12 @@ public class ApplicationImpl implements Application {
 
     @Override
     public void start() {
-        id++;
-        System.out.println("        Application " + getId() + " has started");
+        System.out.println("        Application " + getId() + " has started; takes: " + getDuration());
     }
 
     @Override
     public void stop() {
         System.out.println("        Application " + getId() + " has finished");
-        id--;
     }
 
 	public long getTimeStamp() {
@@ -90,7 +90,4 @@ public class ApplicationImpl implements Application {
 			return false;
 		return true;
 	}
-    
-	
-    
 }

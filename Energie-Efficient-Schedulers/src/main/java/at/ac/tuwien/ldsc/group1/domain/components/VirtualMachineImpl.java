@@ -22,7 +22,8 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
     }
 
-    private static int id = 0;
+    private static int nextId = 0;
+    private final int id;
 
     //Constructors
     public VirtualMachineImpl(Machine parent) throws ResourceUnavailableException {
@@ -38,6 +39,7 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         this.ram = ramBase;
         this.hddSize = hddBase;
         this.cpuInMhz = cpuInMhzBase;
+        this.id = ++nextId;
     }
 
     //Methods
@@ -153,14 +155,12 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void start() {
-        id++;
-        System.out.println("    VM Started on Parent: " + parent.getId());
+        System.out.println("    VM " + getId() + " Started on Parent: " + parent.getId());
     }
 
     @Override
     public void stop() {
-        System.out.println("    VM Stopped on Parent: " + parent.getId());
-        id--;
+        System.out.println("    VM " + getId() + " Stopped on Parent: " + parent.getId());
         this.getParent().removeComponent(this);
     }
 }

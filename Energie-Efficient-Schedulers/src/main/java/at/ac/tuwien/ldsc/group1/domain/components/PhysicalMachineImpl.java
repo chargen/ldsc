@@ -5,13 +5,14 @@ import java.util.ResourceBundle;
 
 public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine {
 
-    private static int id = 0;
+    private static int nextId = 0;
     static final Integer ramBase;
     static final Integer hddBase;
     static final Integer cpuInMhzBase;
     static final Integer ramMax;
     static final Integer hddMax;
 	static final Integer cpuInMhzMax;
+    private final int id;
     long startTimestamp;
 
 	static{
@@ -25,7 +26,7 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
 	}
 
     public PhysicalMachineImpl() {
-		super(ramBase, hddBase, cpuInMhzBase, ramMax, hddMax, cpuInMhzMax);
+		this(ramBase, hddBase, cpuInMhzBase, ramMax, hddMax, cpuInMhzMax);
 	}
 
     public PhysicalMachineImpl(
@@ -34,6 +35,7 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     {
         super(ramBase, hddBase, cpuInMhzBase,
             ramMax, hddMax, cpuInMhzMax);
+        this.id = ++nextId;
     }
 
     @Override
@@ -44,7 +46,6 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     @Override
     public void start() {
         this.startTimestamp = new Date().getTime();
-        id++;
         System.out.println("PM " + getId() + " Started");
     }
 
@@ -52,7 +53,6 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     @Override
     public void stop() {
         System.out.println("PM " + getId() + " Stopped");
-        id--;
     }
 
     @Override

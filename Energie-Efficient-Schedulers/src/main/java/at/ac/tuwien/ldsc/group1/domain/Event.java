@@ -91,14 +91,17 @@ public class Event implements Comparable<Event> {
 	
 	@Override
 	public String toString(){
-		return "[EventTime: "+this.eventTime + " | EventType: "+ this.eventType.getDescription() + " | Application: [ Cpu: " + this.application.getCpuInMhz() + ", Dur: " +
-				this.application.getDuration() + ", Size: " +
-				this.application.getHddSize() + ", Ram: " +
-				this.application.getRam() + ", TimeStamp: " +
-				this.application.getTimeStamp() + " ] ]"; 
+		return "[EventTime: "+this.eventTime + " | EventType: "+ this.eventType.getDescription() +" | Application: " +
+                "[ Id: " + this.application.getId() +
+                ", Cpu: " + this.application.getCpuInMhz() +
+                ", Dur: " + this.application.getDuration() +
+                ", Size: " + this.application.getHddSize() +
+                ", Ram: " + this.application.getRam() +
+                ", TimeStamp: " + this.application.getTimeStamp() +
+                " ] ]";
 	}
-	
-	
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
