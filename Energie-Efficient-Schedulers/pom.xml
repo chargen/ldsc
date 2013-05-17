@@ -54,6 +54,14 @@
             <version>2.2</version>
         </dependency>
 
+        <!-- Google Commons Guava Library -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>13.0</version>
+        </dependency>
+
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>junit</groupId>
