@@ -80,7 +80,7 @@ public class Scheduler1 implements Scheduler {
             Application nextApplication = queuedApplications.poll();
             if (nextApplication != null) {
                 long startTime = internalTime;
-                events.add(new Event(startTime, EventType.START, application));
+                events.add(new Event(startTime, EventType.START, nextApplication));
             }
         }
     }
