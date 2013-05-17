@@ -70,6 +70,7 @@ public class Scheduler1 implements Scheduler {
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
+                System.out.println("[" + internalTime + "/" + event.getEventTime() + "] Application delayed...");
                 queuedApplications.add(application);
             }
         } else {
