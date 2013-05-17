@@ -20,7 +20,6 @@ public class ResourceUnavailableException extends Exception {
 	}
 	
 	public void printErrorMsg() {
-		// TODO Auto-generated method stub
 		super.printStackTrace();
 		
 	}

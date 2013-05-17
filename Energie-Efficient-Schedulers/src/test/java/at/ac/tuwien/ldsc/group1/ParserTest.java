@@ -1,23 +1,30 @@
 package at.ac.tuwien.ldsc.group1;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import at.ac.tuwien.ldsc.group1.application.CsvParser;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration("classpath:spring.xml")
 public class ParserTest {
+
+    @Autowired
+    CsvParser parser;
 
 	@Test
 	public void ParsingTest(){
-		String fileName = "TestScenario1.csv";
-		CsvParser parser = new CsvParser(fileName);
+
 		List<Application> appList = parser.parse();
 		Assert.assertEquals(100, appList.size());
 

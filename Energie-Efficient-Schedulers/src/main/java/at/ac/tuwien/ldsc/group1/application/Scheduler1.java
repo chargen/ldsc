@@ -29,7 +29,7 @@ public class Scheduler1 implements Scheduler {
     private int maxPMs;
     private int currentPms = 0;
     private long internalTime = 0L;
-    long lastInternalTime = 0L;
+    long lastInternalTime = -1L;
     double lastTotalConsumption = 0;
 
     //Use maps to map VM --> PM and App --> VM
@@ -45,7 +45,6 @@ public class Scheduler1 implements Scheduler {
     @Qualifier("scenarioWriter")
     CsvWriter scenarioWriter;
 
-    private Event lastEvent = null;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private Set<Event> events;
@@ -65,7 +64,8 @@ public class Scheduler1 implements Scheduler {
             try {
                 this.addApplication(application);
                 updateEventTime(event);
-                events.add(new Event(application.getTimeStamp() + application.getDuration(), EventType.STOP, application));
+                assert (event.getEventTime() == internalTime);
+                events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
@@ -83,21 +83,15 @@ public class Scheduler1 implements Scheduler {
     }
 
     private void updateEventTime(Event event) {
-        long previousTimeStamp = 0L;
-        if (lastEvent != null) {
-            previousTimeStamp = lastEvent.getEventTime();
+        lastInternalTime = internalTime;
+        internalTime = event.getEventTime();
+        if(lastInternalTime != internalTime) {
+            this.writeLog();
         }
-        if (event.getEventTime() - previousTimeStamp > 0) {
-            lastInternalTime = internalTime;
-            internalTime = internalTime + (event.getEventTime() - previousTimeStamp);
-        } // else leave internal time as it is, the entire time scale will be shifted
-
-        this.writeLog();
-        this.lastEvent = event;
     }
 
     @Override
-    public void handleEvents(Set<Event> events) {
+    public void handleEvents(Set <Event> events) {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;
@@ -107,6 +101,7 @@ public class Scheduler1 implements Scheduler {
             iterator.remove();
             schedule(event);
         }
+        System.out.println("Number of queued applications:" + queuedApplications.size());
         /* TODO: check if queue still contains some applications and schedule them
                   It might be possible that the queue still contains some applications which have not been
                   executed yet. Simply calling another loop at this point, could possibly introduce an endless loop.
@@ -214,9 +209,9 @@ public class Scheduler1 implements Scheduler {
         //Note that the pmAllocations map can contain each PM several times, thus we need to create a set from it first
         Set<PhysicalMachine> pms = new HashSet<>(pmAllocations.values());
         for (Machine pm : pms) {
-            totalRAM += pm.getRamAvailable();
-            totalCPU += pm.getCpuAvailable();
-            totalSize += pm.getHddAvailable();
+            totalRAM += pm.getRam();
+            totalCPU += pm.getCpuInMhz();
+            totalSize += pm.getHddSize();
             runningVMs += pm.getComponents().size();
             //this consumption is the overall powerConsumption of the cloud in the moment
             totalPowerConsumption += pm.getPowerConsumption();
