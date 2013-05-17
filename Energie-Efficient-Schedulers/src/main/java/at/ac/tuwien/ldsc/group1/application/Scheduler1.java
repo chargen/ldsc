@@ -40,11 +40,11 @@ public class Scheduler1 implements Scheduler {
     private Integer VmRamBase;
     private Integer VmHddBase;
     private Integer VmCpuInMhzBase;
+    private boolean eventHandled = false;
 
     @Autowired
     @Qualifier("scenarioWriter")
     CsvWriter scenarioWriter;
-
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private Set<Event> events;
@@ -62,10 +62,17 @@ public class Scheduler1 implements Scheduler {
         Application application = event.getApplication();
         if (event.getEventType() == EventType.START) {
             try {
+                //Handle logging
+                if(event.getEventTime() != internalTime && eventHandled)
+                    this.writeLog();
+                //Add Application
+                eventHandled = false;
                 this.addApplication(application);
                 application.start();
                 updateEventTime(event);
-                assert (event.getEventTime() == internalTime);
+                eventHandled = true;
+
+                //Add stop event
                 events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
@@ -74,9 +81,12 @@ public class Scheduler1 implements Scheduler {
                 queuedApplications.add(application);
             }
         } else {
+            if(event.getEventTime() != internalTime && eventHandled)
+                this.writeLog();
             this.removeApplication(application);
             application.stop();
             updateEventTime(event);
+            eventHandled = true;
             Application nextApplication = queuedApplications.poll();
             if (nextApplication != null) {
                 long startTime = internalTime;
@@ -88,9 +98,6 @@ public class Scheduler1 implements Scheduler {
     private void updateEventTime(Event event) {
         lastInternalTime = internalTime;
         internalTime = event.getEventTime();
-        if(lastInternalTime != internalTime) {
-            this.writeLog();
-        }
     }
 
     @Override
