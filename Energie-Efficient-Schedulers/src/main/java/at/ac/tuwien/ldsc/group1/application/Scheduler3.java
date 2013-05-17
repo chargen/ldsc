@@ -3,8 +3,7 @@ package at.ac.tuwien.ldsc.group1.application;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
-
-import java.util.Set;
+import com.google.common.collect.TreeMultiset;
 
 public class Scheduler3 implements Scheduler {
 
@@ -36,7 +35,7 @@ public class Scheduler3 implements Scheduler {
 	}
 
 	@Override
-	public void handleEvents(Set<Event> events) {
+	public void handleEvents(TreeMultiset<Event> events) {
 		// TODO Auto-generated method stub
 		
 	}

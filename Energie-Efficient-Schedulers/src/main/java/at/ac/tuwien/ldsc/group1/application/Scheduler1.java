@@ -12,6 +12,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+import com.google.common.collect.TreeMultiset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -47,7 +48,7 @@ public class Scheduler1 implements Scheduler {
     CsvWriter scenarioWriter;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
-    private Set<Event> events;
+    private TreeMultiset<Event> events;
 
     public Scheduler1(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -101,7 +102,7 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void handleEvents(Set <Event> events) {
+    public void handleEvents(TreeMultiset<Event> events) {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;

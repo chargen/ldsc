@@ -37,59 +37,27 @@ public class Event implements Comparable<Event> {
 		final int BEFORE = -1;
 		final int EQUAL = 0;
 		final int AFTER = 1;
-		
-		
-		if(this.eventTime < e.getEventTime()) {
-			return BEFORE;
-		}else if (this.eventTime > e.getEventTime()){
-			return AFTER;
-		}else{
-			
-			if(this.getEventType().equals(EventType.STOP) && e.getEventType().equals(EventType.START)){
-				return BEFORE;
-			}else if(this.getEventType().equals(EventType.START) && e.getEventType().equals(EventType.STOP)){
-				return AFTER;
-			}else{
-				if(this.getApplication().getCpuInMhz() < e.getApplication().getCpuInMhz()){
-					return BEFORE;
-				}else if(this.getApplication().getCpuInMhz() > e.getApplication().getCpuInMhz()){
-					return AFTER;
-				}else{
-					if(this.getApplication().getDuration() < e.getApplication().getDuration()){
-						return BEFORE;
-					}else if(this.getApplication().getDuration() > e.getApplication().getDuration()){
-						return AFTER;
-					}else{
-						if(this.getApplication().getHddSize() < e.getApplication().getHddSize()){
-							return BEFORE;
-						}else if(this.getApplication().getHddSize() > e.getApplication().getHddSize()){
-							return AFTER;
-						}else{
-							if(this.getApplication().getRam() < e.getApplication().getRam()){
-								return BEFORE;
-							}else if(this.getApplication().getRam() > e.getApplication().getRam()){
-								return AFTER;
-							}else{
-								if(this.getApplication().getTimeStamp() < e.getApplication().getTimeStamp()){
-									return BEFORE;
-								}else if(this.getApplication().getTimeStamp() > e.getApplication().getTimeStamp()){
-									return AFTER;
-								}else{
-									return EQUAL;
-								}
-								
-							}
-						}
-					}
-				}
-			}
-			
-			
-		}
-	}
-	
-	
-	@Override
+
+
+        if (this.eventTime < e.getEventTime()) {
+            return BEFORE;
+        } else if (this.eventTime > e.getEventTime()) {
+            return AFTER;
+        } else {
+            if (this.getEventType().equals(EventType.STOP) && e.getEventType().equals(EventType.START)) {
+                return BEFORE;
+            } else if (this.getEventType().equals(EventType.START) && e.getEventType().equals(EventType.STOP)) {
+                return AFTER;
+            } else {
+                // Two events should never be equal unless they are the same object, we are generating a new event
+                // for every application, even if all its properties are equal these are still two separate events,
+                // so we will use the id of the application to enforce inequality.
+                return Integer.signum(this.getApplication().getId() - e.getApplication().getId());
+            }
+        }
+    }
+
+    @Override
 	public String toString(){
 		return "[EventTime: "+this.eventTime + " | EventType: "+ this.eventType.getDescription() +" | Application: " +
                 "[ Id: " + this.application.getId() +

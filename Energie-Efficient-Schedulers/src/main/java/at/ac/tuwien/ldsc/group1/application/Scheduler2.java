@@ -18,11 +18,11 @@ import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
+import com.google.common.collect.TreeMultiset;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class Scheduler2 implements Scheduler {
 
@@ -193,7 +193,7 @@ public class Scheduler2 implements Scheduler {
     }
 
     @Override
-    public void handleEvents(Set<Event> events) {
+    public void handleEvents(TreeMultiset<Event> events) {
         // TODO Auto-generated method stub
 
     }

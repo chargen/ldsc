@@ -4,11 +4,10 @@ import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
+import com.google.common.collect.TreeMultiset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * This is our Energy-Efficient Cloud Elasticity Manager (E2CEM).
@@ -21,7 +20,7 @@ public class E2CElasticityManager {
     List<Scheduler> schedulers;
     CsvParser csvParser;
     CsvWriter csvWriter;
-    Set<Event> events;
+    TreeMultiset<Event> events;
     List<CloudOverallInfo> infoList = new ArrayList<>();
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, List<Scheduler> schedulers) {
@@ -43,7 +42,7 @@ public class E2CElasticityManager {
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
-        events = new TreeSet<>();
+        events = TreeMultiset.create();
 
         for (Application app : appList) {
             // For each Application there is one Event when the app STARTS, a stop event will be created by
