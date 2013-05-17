@@ -21,7 +21,9 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
         VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
     }
-    
+
+    private static int id = 0;
+
     //Constructors
     public VirtualMachineImpl(Machine parent) throws ResourceUnavailableException {
         this(VmRamBase, VmHddBase, VmCpuInMhzBase, parent);
@@ -118,6 +120,11 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 	}
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public void migrate(Machine parent) throws ResourceUnavailableException {
     	Machine oldParent = this.getParent();
     	oldParent.removeComponent(this);
@@ -146,13 +153,14 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
 
     @Override
     public void start() {
-        System.out.println("    VM Started");
+        id++;
+        System.out.println("    VM Started on Parent: " + parent.getId());
     }
 
     @Override
     public void stop() {
-        //TODO: Use log4j
-        System.out.println("    VM Stopped");
+        System.out.println("    VM Stopped on Parent: " + parent.getId());
+        id--;
         this.getParent().removeComponent(this);
     }
 }

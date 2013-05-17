@@ -63,6 +63,7 @@ public class Scheduler1 implements Scheduler {
         if (event.getEventType() == EventType.START) {
             try {
                 this.addApplication(application);
+                application.start();
                 updateEventTime(event);
                 assert (event.getEventTime() == internalTime);
                 events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
@@ -73,6 +74,7 @@ public class Scheduler1 implements Scheduler {
             }
         } else {
             this.removeApplication(application);
+            application.stop();
             updateEventTime(event);
             Application nextApplication = queuedApplications.poll();
             if (nextApplication != null) {

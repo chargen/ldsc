@@ -6,6 +6,7 @@ public class ApplicationImpl implements Application {
     private int hddSize;
     private int cpuInMhz;
     private long timeStamp;
+    private static int id = 0;
 
     public ApplicationImpl(int ram, int hddSize, int cpuInMhz, long duration, long timeStamp) {
         this.duration = duration;
@@ -31,20 +32,25 @@ public class ApplicationImpl implements Application {
     }
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public long getDuration() {
         return duration;
     }
 
     @Override
     public void start() {
-        //TODO: Use log4j
-        System.out.println("Application has started");
+        id++;
+        System.out.println("        Application " + getId() + " has started");
     }
 
     @Override
     public void stop() {
-        // TODO: Use log4j
-        System.out.println("Application has finished");
+        System.out.println("        Application " + getId() + " has finished");
+        id--;
     }
 
 	public long getTimeStamp() {

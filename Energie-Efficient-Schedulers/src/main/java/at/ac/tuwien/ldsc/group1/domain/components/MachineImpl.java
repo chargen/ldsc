@@ -1,10 +1,10 @@
 package at.ac.tuwien.ldsc.group1.domain.components;
 
+import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
-import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 
 public abstract class MachineImpl implements Machine, Composite {
     /**

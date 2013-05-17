@@ -48,5 +48,6 @@ public interface Component {
      */
     int getCpuInMhz();
 
-    
+
+    int getId();
 }

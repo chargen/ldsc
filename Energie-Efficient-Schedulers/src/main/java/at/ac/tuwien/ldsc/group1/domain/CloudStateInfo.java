@@ -68,7 +68,10 @@ public class CloudStateInfo {
 	@Override
     public String toString(){
     	return this.getTimestamp() + ";" + this.getTotalRAM() + ";" + this.getTotalCPU() + ";" + this.getTotalSize()+ ";" +
-    			this.getRunningPMs() + ";" + this.getRunningVMs() + ";" + this.getTotalPowerConsumption() + ";" + this.getInSourced() + ";" + this.getOutSourced();
+    			this.getRunningPMs() + ";" + this.getRunningVMs() + ";" +
+                String.format("%.2f", this.getTotalPowerConsumption())
+                + ";" + this.getInSourced() + ";" + this.getOutSourced();
     }
-    
+
+
 }
