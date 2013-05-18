@@ -27,6 +27,7 @@ import java.util.Set;
 
 public class Scheduler1 implements Scheduler {
 
+	private final double MAGICPROPORTION = 4400/1900;
     private int maxPMs;
     private int currentPms = 0;
     private long internalTime = 0L;
@@ -172,28 +173,74 @@ public class Scheduler1 implements Scheduler {
     }
 
     private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
+    	
+    	
+    	
         if (this.pmAllocations == null) {
             this.pmAllocations = new Hashtable<>();
             PhysicalMachine pm = createNewPM();
-            pm.start(); //TODO start method is empty --> Count Initial Power Consumption there?
+            pm.start();
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
             return pm;
         } else {
-            //iterate over PMList give back first possible
-            //TODO this finds the first pm that has enough space, use a more efficient heuristic to find a pm???
-            for (PhysicalMachine pm : this.pmAllocations.values()) {
-                if (pm.getCpuAvailable() >= neededCpuInMHz &&
-                        pm.getRamAvailable() >= neededRam &&
-                        pm.getHddAvailable() >= neededHddSize) {
-                    return pm;
-                }
-            }
+      
+        	if(neededRam/neededCpuInMHz > MAGICPROPORTION){
+        		
+        		PhysicalMachine pm = selectPMwithMoreRAMProportion(neededRam, neededHddSize, neededCpuInMHz);
+        		if(pm != null) return pm;
+        		
+        	}else{
+        		
+        		PhysicalMachine pm = selectPMwithMoreCPUProportion(neededRam, neededHddSize, neededCpuInMHz);
+        		if(pm != null) return pm;
+        		
+        	}
+        	
+        	PhysicalMachine firstPossiblePM = selectFirstPossiblePM(neededRam, neededHddSize, neededCpuInMHz);
+        	if(firstPossiblePM != null) return firstPossiblePM;
+        	
             //list iterated and no pm could give back -> start new pm
             PhysicalMachine pm = createNewPM();
             pm.start();
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
             return pm;
         }
+    }
+    
+    private PhysicalMachine selectPMwithMoreCPUProportion(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
+    	for (PhysicalMachine pm : this.pmAllocations.values()) {
+    		if (pm.getCpuAvailable() >= neededCpuInMHz &&
+    				pm.getRamAvailable() >= neededRam &&
+    				pm.getHddAvailable() >= neededHddSize &&
+    				pm.getRamAvailable()/pm.getCpuAvailable() > MAGICPROPORTION) {
+    			return pm;
+    		}
+    	}
+    	return null;
+    }
+
+	private PhysicalMachine selectPMwithMoreRAMProportion(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
+		for (PhysicalMachine pm : this.pmAllocations.values()) {
+    		if (pm.getCpuAvailable() >= neededCpuInMHz &&
+    				pm.getRamAvailable() >= neededRam &&
+    				pm.getHddAvailable() >= neededHddSize &&
+    				pm.getRamAvailable()/pm.getCpuAvailable() < MAGICPROPORTION) {
+    			return pm;
+    		}
+    	}
+    	return null;
+	}
+
+	//iterate over PMList give back first possible
+    private PhysicalMachine selectFirstPossiblePM(int neededRam,int neededHddSize,int neededCpuInMHz){
+    	 for (PhysicalMachine pm : this.pmAllocations.values()) {
+             if (pm.getCpuAvailable() >= neededCpuInMHz &&
+                     pm.getRamAvailable() >= neededRam &&
+                     pm.getHddAvailable() >= neededHddSize) {
+                 return pm;
+             }
+         }
+    	 return null;
     }
 
 

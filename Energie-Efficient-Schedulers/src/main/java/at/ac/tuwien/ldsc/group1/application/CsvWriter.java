@@ -69,6 +69,7 @@ public class CsvWriter {
 
     public void writeLine(CloudStateInfo cloudInfo) {
         try {
+        	System.out.println("[Writing to LOG:] "+cloudInfo.toString());
             bw.write(cloudInfo.toString());
             bw.newLine();
         } catch (IOException e) {
