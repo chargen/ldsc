@@ -25,7 +25,7 @@
     <util:list id="schedulers">
         <bean class="at.ac.tuwien.ldsc.group1.application.Scheduler1" id="scheduler1">
             <!-- Initialize the number of physical machines for this Scheduler -->
-            <constructor-arg name="maxPMs" value="1"/>
+            <constructor-arg name="maxPMs" value="30"/>
         </bean>
     </util:list>
 
