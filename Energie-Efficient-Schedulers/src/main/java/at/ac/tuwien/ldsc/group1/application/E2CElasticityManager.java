@@ -22,6 +22,7 @@ public class E2CElasticityManager {
     CsvWriter csvWriter;
     TreeMultiset<Event> events;
     List<CloudOverallInfo> infoList = new ArrayList<>();
+    List<Application> appList;
 
     public E2CElasticityManager(CsvParser parser, CsvWriter writer, List<Scheduler> schedulers) {
         this.csvParser = parser;
@@ -30,6 +31,8 @@ public class E2CElasticityManager {
     }
 
     public void startSimulations() {
+    	//1. Get list of application from parser
+        appList = csvParser.parse();
         for(Scheduler scheduler : this.schedulers) {
             startSimulation(scheduler);
             //TODO: Somehow tell the scenarioWriter that it should start writing into the next .csv file.
@@ -37,8 +40,7 @@ public class E2CElasticityManager {
     }
 
     public void startSimulation(Scheduler scheduler) {
-        //1. Get list of application from parser
-        List<Application> appList = csvParser.parse();
+       
 
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
