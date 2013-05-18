@@ -1,5 +1,16 @@
 package at.ac.tuwien.ldsc.group1.application;
 
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
@@ -12,18 +23,8 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
-import com.google.common.collect.TreeMultiset;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.ResourceBundle;
-import java.util.Set;
+import com.google.common.collect.TreeMultiset;
 
 public class Scheduler2 implements Scheduler {
 
@@ -39,9 +40,7 @@ public class Scheduler2 implements Scheduler {
     private Map<Application, VirtualMachine> appAllocations = new Hashtable<>();
     private Queue<Application> queuedApplications = new LinkedList<>();
 
-    private Integer VmRamBase;
-    private Integer VmHddBase;
-    private Integer VmCpuInMhzBase;
+    
     private boolean eventHandled = false;
 
     @Autowired
@@ -53,10 +52,7 @@ public class Scheduler2 implements Scheduler {
 
     public Scheduler2(int maxPMs) {
         this.maxPMs = maxPMs;
-        ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
-        VmRamBase = Integer.parseInt(res.getString("ramBase"));
-        VmHddBase = Integer.parseInt(res.getString("sizeBase"));
-        VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
+       
     }
 
     @Override
@@ -124,19 +120,21 @@ public class Scheduler2 implements Scheduler {
     @Override
     public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
         //1. Find a physical machine which can host this application
-        int neededRam = application.getRam() + this.VmRamBase;
-        int neededHddSize = application.getHddSize() + this.VmHddBase;
-        int neededCpuInMHz = application.getCpuInMhz() + this.VmCpuInMhzBase;
+        int neededRam = application.getRam();
+        int neededHddSize = application.getHddSize();
+        int neededCpuInMHz = application.getCpuInMhz();
         PhysicalMachine pm = selectOptimalPM(neededRam, neededHddSize, neededCpuInMHz);
-        //2. This is the first scenario, so we create one virtual machine per application
-        VirtualMachine vm = new VirtualMachineImpl(pm);
-        pmAllocations.put(vm, pm);
+               
+        //2 get VM and resize it, every PM will have max 1 VM
+        VirtualMachine vm = (VirtualMachine) pm.getComponents().get(0);
 
+        
+        
+        
         //Try to allocate resources and start the VM
         try {
             vm.addComponent(application); //resources are allocated inside this method
-            vm.start();
-            overallInfo.setTotalVMs(overallInfo.getTotalVMs() + 1);
+            
         } catch (ResourceUnavailableException e) {
             e.printResourceAllocationErrorLog(pm, vm, neededCpuInMHz, neededHddSize, neededRam);
         }
@@ -174,12 +172,20 @@ public class Scheduler2 implements Scheduler {
 
     private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
     	
-    	
-    	
         if (this.pmAllocations == null) {
             this.pmAllocations = new Hashtable<>();
             PhysicalMachine pm = createNewPM();
             pm.start();
+            VirtualMachine vm = null; 
+            try {
+				vm = new VirtualMachineImpl(pm);
+			} catch (ResourceUnavailableException e) {
+				e.printStackTrace();
+				System.err.println("Something went terrible wrong: not enogh space on a new PM to start VM on it.");
+			}
+            pmAllocations.put(vm, pm);
+            vm.start();
+            overallInfo.setTotalVMs(overallInfo.getTotalVMs() + 1);
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
             return pm;
         } else {
@@ -202,6 +208,16 @@ public class Scheduler2 implements Scheduler {
             //list iterated and no pm could give back -> start new pm
             PhysicalMachine pm = createNewPM();
             pm.start();
+            VirtualMachine vm = null; 
+            try {
+				vm = new VirtualMachineImpl(pm);
+			} catch (ResourceUnavailableException e) {
+				e.printStackTrace();
+				System.err.println("Something went terrible wrong: not enogh space on a new PM to start VM on it.");
+			}
+            pmAllocations.put(vm, pm);
+            vm.start();
+            overallInfo.setTotalVMs(overallInfo.getTotalVMs() + 1);
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
             return pm;
         }
@@ -244,10 +260,13 @@ public class Scheduler2 implements Scheduler {
     }
 
 
+    //Scheduler2: create new PM inclusive VM
     private PhysicalMachine createNewPM() throws SchedulingNotPossibleException {
         if (this.currentPms < maxPMs) {
             this.currentPms++;
-            return new PhysicalMachineImpl();
+            PhysicalMachine pm = new PhysicalMachineImpl();
+           
+            return pm;
         } else {
             throw new SchedulingNotPossibleException();
         }
