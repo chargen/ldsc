@@ -161,6 +161,7 @@ public class Scheduler2 implements Scheduler {
                 PhysicalMachine currentPm = pmAllocations.remove(currentVm);
                 if (currentPm != null && (currentPm.getComponents() == null || currentPm.getComponents().isEmpty())) {
                     currentPm.stop();
+                    currentPms--;
                     pmAllocations.remove(currentPm);
                 }
             }
