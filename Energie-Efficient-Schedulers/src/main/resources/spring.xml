@@ -17,7 +17,7 @@
     </bean>
 
      <bean class="at.ac.tuwien.ldsc.group1.application.CsvWriter" id="scenarioWriter2">
-        <constructor-arg name="baseName" value="results/scenario2"/>
+        <constructor-arg name="baseName" value="results/scenario-scheduler2"/>
         <constructor-arg name="type" value="SCENARIO"/>
     </bean>
     
