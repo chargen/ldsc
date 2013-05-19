@@ -60,5 +60,12 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
         return id;
     }
 
+	public Integer getCpuInMhzMax() {
+		return cpuInMhzMax;
+	}
+	
+	public Integer getRamMax() {
+		return ramMax;
+	}
 
 }

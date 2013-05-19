@@ -11,4 +11,6 @@ public interface PhysicalMachine extends Machine {
      * Time since the machine was started
      */
     long uptime();
+    Integer getCpuInMhzMax();
+    Integer getRamMax();
 }

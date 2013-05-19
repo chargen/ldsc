@@ -21,6 +21,11 @@
         <constructor-arg name="type" value="SCENARIO"/>
     </bean>
     
+    <bean class="at.ac.tuwien.ldsc.group1.application.CsvWriter" id="scenarioWriter3">
+        <constructor-arg name="baseName" value="results/scenario-scheduler3"/>
+        <constructor-arg name="type" value="SCENARIO"/>
+    </bean>
+    
     <bean class="at.ac.tuwien.ldsc.group1.application.CsvWriter" id="overviewWriter">
         <constructor-arg name="baseName" value="results/overview"/>
         <constructor-arg name="type" value="OVERVIEW"/>
@@ -35,6 +40,10 @@
         <bean class="at.ac.tuwien.ldsc.group1.application.Scheduler2" id="scheduler2">
             <!-- Initialize the number of physical machines for this Scheduler -->
             <constructor-arg name="maxPMs" value="5"/>
+        </bean>
+        <bean class="at.ac.tuwien.ldsc.group1.application.Scheduler3" id="scheduler3">
+            <!-- Initialize the number of physical machines for this Scheduler -->
+            <constructor-arg name="maxPMs" value="10"/>
         </bean>
     </util:list>
 
