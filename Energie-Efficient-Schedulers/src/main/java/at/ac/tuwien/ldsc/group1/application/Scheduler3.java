@@ -32,7 +32,7 @@ import java.util.Set;
  *  (more than 15% overprovisioning - without VM base consumption) we doesn't start it and we put it in our queue.
  *  In order to do that we create a penalty list where we save the state how much we overprovide.
  *  Each application running on the PM needs to run slower in relation to the overprovisioning.
- *  We only overprovide RAM or CPU
+ *  We only overprovide RAM and CPU
  *  
  *  Initial State: All PMs switched off. Create for every application that arrives an own VM with the 
  *  parameters of the application (size, CPU and RAM). Fill PMs with VMs until they are full. If the PM cannot 
