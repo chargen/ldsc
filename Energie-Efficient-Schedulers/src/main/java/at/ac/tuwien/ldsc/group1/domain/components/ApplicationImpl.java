@@ -90,4 +90,12 @@ public class ApplicationImpl implements Application {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "ApplicationImpl [duration=" + duration + ", ram=" + ram
+				+ ", hddSize=" + hddSize + ", cpuInMhz=" + cpuInMhz
+				+ ", timeStamp=" + timeStamp + ", id=" + id + "]";
+	}
+	
 }
