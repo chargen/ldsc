@@ -20,6 +20,7 @@ import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
+import at.ac.tuwien.ldsc.group1.domain.components.Component;
 import at.ac.tuwien.ldsc.group1.domain.components.Machine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
@@ -338,15 +339,21 @@ public class Scheduler2 implements Scheduler {
     
     private void doMigration() {
     	
+    	//Is there a distribution so that we can shut down a PM?
     	if(!isMigrationReasonable()) return;
     	
     	//Sorting collection: in order of expensiveness (More expensive Apps -> Less Expensive Apps)
     	sortRunningApps();
     	
+    	clearAssociations();
     	
+    	//all we need to now is the currentPms and the runningApps
+    	binPacking();
 
   		
   	}
+
+
 
 	private void sortRunningApps() {
     	//Sorting collection: in order of expensiveness (More expensive Apps -> Less Expensive Apps)
@@ -375,9 +382,56 @@ public class Scheduler2 implements Scheduler {
 	}
 
 	private boolean isMigrationReasonable() {
+
+		int totalFreeRAM = 0;
+		int totalFreeCPU = 0;
+		int totalFreeSize = 0;
+
+		Set<PhysicalMachine> pms = new HashSet<>(pmAllocations.values());
+		int numPMs = pms.size();
+		
+		for (PhysicalMachine pm : pms) {
+			totalFreeRAM += pm.getRamAvailable();
+			totalFreeCPU += pm.getCpuAvailable();
+			totalFreeSize += pm.getHddAvailable();
+			
+		}
+		
+		//TODO get this PhyisicalMachine Max-attributes somewhere elsewhere from
+		if(((totalFreeRAM / numPMs) > 4700) && ((totalFreeCPU / numPMs) > 2400) && ((totalFreeSize / numPMs) > 50000)	){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	private void clearAssociations() {
+		
+		for (VirtualMachine vm : this.appAllocations.values()) {
+			for(Component app : vm.getComponents()){
+				vm.removeComponent(app);
+			}
+		}
+		
+		for (PhysicalMachine pm : this.pmAllocations.values()) {
+			for(Component vm : pm.getComponents()){
+				pm.removeComponent(vm);
+			}
+		}
+		
+		pmAllocations = new Hashtable<>();
+		appAllocations = new Hashtable<>();
+	}
+	
+	
+	private void binPacking() {
+		
 		
 		
 		// TODO Auto-generated method stub
-		return false;
+		
 	}
+
+	
+	
 }
