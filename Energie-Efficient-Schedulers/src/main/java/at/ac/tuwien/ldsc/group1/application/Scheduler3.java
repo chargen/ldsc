@@ -63,6 +63,7 @@ public class Scheduler3 implements Scheduler {
     private Integer VmCpuInMhzBase;
     private boolean eventHandled = false;
     private boolean overProvide = false;
+    private double penalty = 0.0;
 
     @Autowired
     @Qualifier("scenarioWriter3")
@@ -159,8 +160,11 @@ public class Scheduler3 implements Scheduler {
         	if (overProvide == true) {
         		// TODO: Create // add to penalty list here ?
         		// Application needs to overprovide PM resources
+        		// 1st add resources and check how much this pm needs to overprovide and save to penalty
+        		// 2nd let all applications run slower on that pm until a new stop event arrives on that pm
+	            slowDownPmSpeed(pm, calculateOverprovidePm(pm, neededRam, neededCpuInMHz));
+        		
         		vm.addComponent(application); //resources are allocated inside this method
-	            calculateOverprovidePm(pm, neededRam, neededCpuInMHz);
         		vm.start();
 	            overallInfo.setTotalVMs(overallInfo.getTotalVMs() + 1);
 	            overProvide = false;
@@ -177,10 +181,40 @@ public class Scheduler3 implements Scheduler {
         appAllocations.put(application, vm);
     }
 
-    private void calculateOverprovidePm(PhysicalMachine pm, int neededRam,
-			int neededCpuInMHz) {
+    private void slowDownPmSpeed(PhysicalMachine pm, double pmPenalty) {
 		// TODO Auto-generated method stub
-    	// Delay all Applications on this PM with factor below threshold. Find a rule to apply delay 
+		// go through all applications of this pm and delay stop events
+    	
+	}
+
+	private double calculateOverprovidePm(PhysicalMachine pm, int neededRam,
+			int neededCpuInMHz) { 
+		// calculate penalty with given amount / total amount * 100
+		double tempCpuPenalty = (pm.getCpuAvailable() + neededCpuInMHz / pm.getCpuInMhzMax()) * 100;
+		double tempRamPenalty = (pm.getRamAvailable() + neededRam / pm.getRamMax()) * 100;
+		double tempPenalty = (((tempCpuPenalty + tempRamPenalty) / 2) / 100) + 1;
+		// check if penalty is not null
+		if (penalty == 0) {
+			// first time come in
+			
+			// get average of these and format it to 1,
+			penalty = tempPenalty;
+		} else {
+			// add more penalty
+			if (penalty < tempPenalty) {
+				// previous penalty was less than penalty now, we need to add more penalty
+				
+				
+				penalty = tempPenalty;
+			} else {
+				// penalty reduced ??? shouldnt happen here, but at recalculateOverprovidedPm function
+				
+			}
+			
+		}
+		return penalty;
+		// TODO Auto-generated method stub
+    	// Calculate overprovisioning factor below threshold. Find a rule to apply delay 
     	// maybe a combination of CPU and RAM ?
 		
 	}
@@ -206,9 +240,9 @@ public class Scheduler3 implements Scheduler {
                     currentPms--;
                     pmAllocations.remove(currentPm);
                 }
-                // Application removed, recalculate overprovisioning
-                if (currentPm != null) {
-                	recalculateOverprovidedPm(currentPm, application);
+                // Application removed, pm not killed, recalculate overprovisioning
+                if (currentPm != null && (currentPm.getComponents() != null || !currentPm.getComponents().isEmpty())) {
+                	adjustPmSpeed(currentPm, recalculateOverprovidedPm(currentPm, application));
                 }
             }
         } else {
@@ -217,8 +251,15 @@ public class Scheduler3 implements Scheduler {
         }
     }
 
-    private void recalculateOverprovidedPm(PhysicalMachine currentPm,
+    private void adjustPmSpeed(PhysicalMachine currentPm,
+			double recalculateOverprovidedPm) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private double recalculateOverprovidedPm(PhysicalMachine currentPm,
 			Application application) {
+				return VmCpuInMhzBase;
 		// TODO Auto-generated method stub
     	// recalculate delay of applications
 		
