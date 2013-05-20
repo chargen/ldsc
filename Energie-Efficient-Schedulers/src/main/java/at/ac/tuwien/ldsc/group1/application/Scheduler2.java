@@ -349,10 +349,8 @@ public class Scheduler2 implements Scheduler {
     	
     	//all we need to now is the currentPms and the runningApps
     	binPacking();
-
   		
   	}
-
 
 
 	private void sortRunningApps() {
@@ -407,6 +405,8 @@ public class Scheduler2 implements Scheduler {
 	
 	private void clearAssociations() {
 		
+		//TODO make snapshot about the allocation state -> clone everything in different Hashtables so that in case of error we can recover the original state
+		
 		for (VirtualMachine vm : this.appAllocations.values()) {
 			for(Component app : vm.getComponents()){
 				vm.removeComponent(app);
@@ -423,12 +423,94 @@ public class Scheduler2 implements Scheduler {
 		appAllocations = new Hashtable<>();
 	}
 	
-	
+	/**
+	 * 	implement a bin packing heuristic here:
+	 * 
+	 * 	we create N-1 PMs
+	 * 	start filling them up with the applications
+	 * 	we iterate over the PMs and put into them one Application at one time while the list of applications are sorted by "Weight" (how much resource they consume)
+	 * 	this way in each PM first come the "Bigger" peaces and later the smaller ones
+	 * 	and we hope that this way a better distribution can be made, if no then the rest of remaining apps will be stored on the N-th PM
+	 * 
+	 * 	
+	 * 
+	 */
 	private void binPacking() {
 		
+		//1.)create currentPms-1 PMs, add VMs to every of them
+		for(int i = 0;i< currentPms-1;i++){
+			PhysicalMachine pm = new PhysicalMachineImpl();
+			VirtualMachine vm = null; 
+			try {
+				vm = new VirtualMachineImpl(pm);
+			} catch (ResourceUnavailableException e) {
+				System.err.println("wtf?");
+				e.printStackTrace();
+			}
+			pmAllocations.put(vm, pm);
+		}
 		
+		//2.)try to fill them up if we succeed we do spare 1 Pm else start one more and deploy Apps that wouldnt fit elsewhere
+		List<Application> appsRemained = new ArrayList<>();
+		//TODO can somebody tell me whether there are gaps in the indexing of this list?
+		List<PhysicalMachine> PMliste = (List<PhysicalMachine>) pmAllocations.values();
+		int i = 0;
+		for(Application a : runningApps){
+			VirtualMachine vm = (VirtualMachine) PMliste.get(i % (currentPms-1)).getComponents().get(0);
+			try {
+				vm.addComponent(a);
+				appAllocations.put(a, vm);
+			} catch (ResourceUnavailableException e) {
+				e.printStackTrace();
+				appsRemained.add(a);
+			}
+			i++;
+		}
 		
-		// TODO Auto-generated method stub
+		//3.) if there remained unassigned apps -> try to assign them anywhere in the n-1 container
+		List<Application> appsStillRemained = appsRemained;
+		if(!appsRemained.isEmpty()){
+			for(Application a : appsRemained){
+				for(PhysicalMachine pm : PMliste){
+					VirtualMachine vm = (VirtualMachine) pm.getComponents().get(0);
+					try {
+						vm.addComponent(a);
+						//TODO does this work or do i have to clone the appsRemained liste?
+						appsStillRemained.remove(a);
+						appAllocations.put(a, vm);
+					} catch (ResourceUnavailableException e) {
+						continue;
+					}
+				}
+			}
+		}
+		
+		//4.) if appsStillremained not empty ->  we need to start one more PM (number of PMs will be as much as before)
+		if(!appsStillRemained.isEmpty()){
+			
+			PhysicalMachine pm = new PhysicalMachineImpl();
+			VirtualMachine vm = null;
+			try {
+				vm = new VirtualMachineImpl(pm);
+			} catch (ResourceUnavailableException e) {
+				e.printStackTrace();
+			}
+			pmAllocations.put(vm, pm);
+			
+			for(Application a : appsStillRemained){
+				try {
+					vm.addComponent(a);
+					appAllocations.put(a, vm);
+				} catch (ResourceUnavailableException e) {
+					System.err.println("This exception is bad! it means that the distribution before was more efficient than the one what this Migration-bin packing does");
+					System.err.println("We should save the original allocations and if we ever see this message, the original state must be recovered and migration should stop here");
+					//TODO restore original state here
+				}
+			}
+			
+		}else{
+			System.out.println("#######################################!!!OMG OMG !! MIGRATION ALGORITHM WAS SUCCESSFUL !!!!!!##############################################");
+		}
 		
 	}
 
