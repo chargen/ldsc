@@ -234,7 +234,13 @@ public class Scheduler3 implements Scheduler {
             //TODO use some other datastructure if this will be slow
             for(Event event : events){
                 // delay it
-                if(event.equals(e)) event.setEventTime((long) (event.getEventTime() * pmPenalty));
+            	//internalTime = lastInternalTime = 60000ms
+            	//penalty = 1.1
+            	//newEventTime  = 60000 * 0.1 = 6000ms
+            	int xPenalty = 0; //6000ms
+                if(event.equals(e)) event.setEventTime((long) (event.getEventTime() + xPenalty));
+                events.add(event);
+                
             }
         }
         return foundEventToPm.getPm();

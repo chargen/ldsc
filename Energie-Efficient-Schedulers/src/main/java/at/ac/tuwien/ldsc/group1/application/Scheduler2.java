@@ -81,7 +81,7 @@ public class Scheduler2 implements Scheduler {
                 
                 //MIGRATION
                 //TODO
-//                doMigration();
+                doMigration();
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
@@ -101,7 +101,7 @@ public class Scheduler2 implements Scheduler {
                 events.add(new Event(startTime, EventType.START, nextApplication));
             }
           //TODO
-//            doMigration();
+            doMigration();
         }
     }
 
