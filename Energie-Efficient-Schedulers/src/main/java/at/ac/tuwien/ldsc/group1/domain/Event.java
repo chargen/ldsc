@@ -31,7 +31,11 @@ public class Event implements Comparable<Event> {
 	public void setToBeSkipped(boolean toBeSkipped) {
 		this.toBeSkipped = toBeSkipped;
 	}
-
+	
+	public void setEventTime(long time) {
+        eventTime = time;
+    }
+	
 	@Override
 	public int compareTo(Event e) {
 		final int BEFORE = -1;

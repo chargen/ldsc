@@ -57,4 +57,6 @@ public interface VirtualMachine extends Machine {
      * to the base requirement for this machine.
      */
     void removeCpu(int value);
+
+    void addOverProvidedComponent(Application application) throws ResourceUnavailableException;
 }

@@ -163,4 +163,13 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         System.out.println("    VM " + getId() + " Stopped on Parent: " + parent.getId());
         this.getParent().removeComponent(this);
     }
+
+    @Override
+    public void addOverProvidedComponent(Application application) throws ResourceUnavailableException {
+        // TODO: DELETE THIS METHOD
+        this.addCpu(application.getCpuInMhz());
+        this.addHddSize(application.getHddSize());
+        this.addRam(application.getRam());
+        super.addComponent(application);
+    }
 }

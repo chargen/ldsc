@@ -13,4 +13,10 @@ public interface PhysicalMachine extends Machine {
     long uptime();
     Integer getCpuInMhzMax();
     Integer getRamMax();
+    Integer getOverprovidedCpuInMhz();
+    Integer getOverprovidedRam();
+    void setOverprovidedCpuInMhz(Integer cpuInMhzMax);
+    void setOverprovidedRam(Integer ramMax);
+    void revertOverprovidedRam();
+    void revertOverprovidedCpuInMhz();
 }

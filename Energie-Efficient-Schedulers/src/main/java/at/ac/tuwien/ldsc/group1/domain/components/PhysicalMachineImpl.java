@@ -9,9 +9,11 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     static final Integer ramBase;
     static final Integer hddBase;
     static final Integer cpuInMhzBase;
-    static final Integer ramMax;
+    static Integer ramMax;
     static final Integer hddMax;
-	static final Integer cpuInMhzMax;
+	static Integer cpuInMhzMax;
+	Integer overprovidedCpuInMhz = 0;
+    Integer overprovidedRam = 0;
     private final int id;
     long startTimestamp;
 
@@ -59,7 +61,35 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     public int getId() {
         return id;
     }
+    
+    public Integer getOverprovidedCpuInMhz() {
+        return overprovidedCpuInMhz;
+    }
 
+    public void setOverprovidedCpuInMhz(Integer overprovidedCpuInMhz) {
+        // we swap the values
+        this.overprovidedCpuInMhz = cpuInMhzMax;
+        cpuInMhzMax= overprovidedCpuInMhz ;
+    }
+    
+    public void revertOverprovidedCpuInMhz() {
+        // we swap the values
+        cpuInMhzMax = this.overprovidedCpuInMhz ;
+    }
+
+    public Integer getOverprovidedRam() {
+        return overprovidedRam;
+    }
+
+    public void setOverprovidedRam(Integer overprovidedRam) {
+        this.overprovidedRam = ramMax;
+        ramMax = overprovidedRam;
+    }
+    
+    public void revertOverprovidedRam() {
+        ramMax = this.overprovidedRam;
+    }
+    
 	public Integer getCpuInMhzMax() {
 		return cpuInMhzMax;
 	}
@@ -68,4 +98,31 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
 		return ramMax;
 	}
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + id;
+        result = prime * result
+                + (int) (startTimestamp ^ (startTimestamp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PhysicalMachineImpl other = (PhysicalMachineImpl) obj;
+        if (id != other.id)
+            return false;
+        if (startTimestamp != other.startTimestamp)
+            return false;
+        return true;
+    }
+
+	
 }

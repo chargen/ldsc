@@ -122,7 +122,7 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
+    public PhysicalMachine addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
         //1. Find a physical machine which can host this application
         int neededRam = application.getRam() + this.VmRamBase;
         int neededHddSize = application.getHddSize() + this.VmHddBase;
@@ -143,6 +143,7 @@ public class Scheduler1 implements Scheduler {
 
         //if everything worked, we add the (app, vm) tuple to the map of applications
         appAllocations.put(application, vm);
+        return pm;
     }
 
     @Override

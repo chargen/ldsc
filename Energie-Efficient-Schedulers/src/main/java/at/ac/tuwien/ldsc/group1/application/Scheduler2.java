@@ -55,7 +55,7 @@ public class Scheduler2 implements Scheduler {
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
-
+    
     public Scheduler2(int maxPMs) {
         this.maxPMs = maxPMs;
        
@@ -77,8 +77,11 @@ public class Scheduler2 implements Scheduler {
                 eventHandled = true;
                 //Add stop event
                 events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
+                
+                
                 //MIGRATION
-                doMigration();
+                //TODO
+//                doMigration();
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
@@ -97,7 +100,8 @@ public class Scheduler2 implements Scheduler {
                 long startTime = internalTime;
                 events.add(new Event(startTime, EventType.START, nextApplication));
             }
-            doMigration();
+          //TODO
+//            doMigration();
         }
     }
 
@@ -128,7 +132,7 @@ public class Scheduler2 implements Scheduler {
     }
 
     @Override
-    public void addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
+    public PhysicalMachine addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
         //1. Find a physical machine which can host this application
         int neededRam = application.getRam();
         int neededHddSize = application.getHddSize();
@@ -152,6 +156,7 @@ public class Scheduler2 implements Scheduler {
         //if everything worked, we add the (app, vm) tuple to the map of applications
         appAllocations.put(application, vm);
         runningApps.add(application);
+        return pm;
     }
 
     @Override
