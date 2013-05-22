@@ -1,1 +1,157 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><umlet_diagram></umlet_diagram>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.0">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>910</x>
+      <y>370</y>
+      <w>310</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.application::Scheduler
+--
+--
+~schedule: void
+~addApplication: PhysicalMachine
+~removeApplication: void
+~finalize: void
+~setMaxNumberOfPhysicalMachines: void
+~handleEvents: void
++getOverAllInfo: CloudOverallInfo
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>20</x>
+      <y>230</y>
+      <w>410</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::PhysicalMachine
+--
+--
+~uptime: long
+~getCpuInMhzMax: Integer
+~getRamMax: Integer
+~getOverprovidedCpuInMhz: Integer
+~getOverprovidedRam: Integer
+~setOverprovidedCpuInMhz: void
+~setOverprovidedRam: void
+~revertOverprovidedRam: void
+~revertOverprovidedCpuInMhz: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>630</x>
+      <y>20</y>
+      <w>380</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::Component
+--
+--
+~start: void
+~stop: void
+~getRam: int
+~getHddSize: int
+~getCpuInMhz: int
+~getId: int
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>890</x>
+      <y>230</y>
+      <w>370</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::Application
+--
+--
+~getDuration: long
+~getTimeStamp: long
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1030</x>
+      <y>20</y>
+      <w>370</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::Composite
+--
+--
+~addComponent: void
+~removeComponent: void
+~getComponents: List&lt;Component&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>460</x>
+      <y>230</y>
+      <w>400</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::VirtualMachine
+--
+--
+~suspend: void
+~migrate: void
+~addRam: void
+~addHddSize: void
+~addCpu: void
+~removeHddSize: void
+~removeRam: void
+~removeCpu: void
+~addOverProvidedComponent: void
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>250</x>
+      <y>20</y>
+      <w>360</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+group1.domain.components::Machine
+--
+--
+~getPowerConsumption: double
+~getRamAvailable: int
+~getCpuAvailable: int
+~getHddAvailable: int
+~getParent: Machine
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
