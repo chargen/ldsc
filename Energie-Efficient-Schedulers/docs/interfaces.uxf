@@ -90,7 +90,7 @@ domain.components::
       <w>206</w>
       <h>71</h>
     </coordinates>
-    <panel_attributes/>
+    <panel_attributes>lt=&lt;&lt;</panel_attributes>
     <additional_attributes>27;27;189;54</additional_attributes>
   </element>
   <element>
@@ -101,7 +101,7 @@ domain.components::
       <w>206</w>
       <h>125</h>
     </coordinates>
-    <panel_attributes/>
+    <panel_attributes>lt=&lt;&lt;</panel_attributes>
     <additional_attributes>27;27;189;108</additional_attributes>
   </element>
   <element>
@@ -112,7 +112,7 @@ domain.components::
       <w>152</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes/>
+    <panel_attributes>lt=&lt;&lt;</panel_attributes>
     <additional_attributes>135;27;27;63</additional_attributes>
   </element>
   <element>
@@ -136,7 +136,7 @@ domain.components::
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>1008</x>
-      <y>189</y>
+      <y>180</y>
       <w>288</w>
       <h>153</h>
     </coordinates>
@@ -161,7 +161,7 @@ application::
       <w>206</w>
       <h>71</h>
     </coordinates>
-    <panel_attributes/>
+    <panel_attributes>lt=&lt;&lt;</panel_attributes>
     <additional_attributes>189;27;27;54</additional_attributes>
   </element>
   <element>
@@ -172,7 +172,7 @@ application::
       <w>170</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes/>
+    <panel_attributes>lt=&lt;&lt;</panel_attributes>
     <additional_attributes>27;27;153;63</additional_attributes>
   </element>
   <element>
