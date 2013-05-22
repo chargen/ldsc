@@ -2,10 +2,22 @@
 <diagram program="umlet" version="12.0">
   <zoom_level>9</zoom_level>
   <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>9</x>
+      <y>36</y>
+      <w>684</w>
+      <h>576</h>
+    </coordinates>
+    <panel_attributes>*domain.components*
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>765</x>
-      <y>369</y>
+      <x>522</x>
+      <y>261</y>
       <w>162</w>
       <h>90</h>
     </coordinates>
@@ -20,8 +32,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>297</x>
-      <y>531</y>
+      <x>54</x>
+      <y>423</y>
       <w>252</w>
       <h>180</h>
     </coordinates>
@@ -43,8 +55,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>486</x>
-      <y>369</y>
+      <x>243</x>
+      <y>261</y>
       <w>225</w>
       <h>135</h>
     </coordinates>
@@ -62,8 +74,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>612</x>
-      <y>531</y>
+      <x>369</x>
+      <y>423</y>
       <w>261</w>
       <h>180</h>
     </coordinates>
@@ -85,8 +97,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>558</x>
-      <y>477</y>
+      <x>315</x>
+      <y>369</y>
       <w>206</w>
       <h>71</h>
     </coordinates>
@@ -96,8 +108,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>423</x>
-      <y>261</y>
+      <x>180</x>
+      <y>153</y>
       <w>206</w>
       <h>125</h>
     </coordinates>
@@ -107,8 +119,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>585</x>
-      <y>306</y>
+      <x>342</x>
+      <y>198</y>
       <w>152</w>
       <h>80</h>
     </coordinates>
@@ -118,8 +130,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>360</x>
-      <y>180</y>
+      <x>117</x>
+      <y>72</y>
       <w>189</w>
       <h>108</h>
     </coordinates>
@@ -135,8 +147,8 @@ domain.components::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1008</x>
-      <y>180</y>
+      <x>765</x>
+      <y>72</y>
       <w>288</w>
       <h>153</h>
     </coordinates>
@@ -144,11 +156,11 @@ domain.components::
 application::
 *Scheduler*
 --
-~ schedule: void
+~ schedule(Event): void
 ~ addApplication: PhysicalMachine
 ~ removeApplication: void
 ~ setMaxNumberOfPhysicalMachines: void
-~ handleEvents: void
+~ handleEvents(List): void
 + getOverAllInfo: CloudOverallInfo
 </panel_attributes>
     <additional_attributes/>
@@ -156,8 +168,8 @@ application::
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>396</x>
-      <y>477</y>
+      <x>153</x>
+      <y>369</y>
       <w>206</w>
       <h>71</h>
     </coordinates>
@@ -167,8 +179,8 @@ application::
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>693</x>
-      <y>306</y>
+      <x>450</x>
+      <y>198</y>
       <w>170</w>
       <h>80</h>
     </coordinates>
@@ -178,8 +190,8 @@ application::
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>603</x>
-      <y>180</y>
+      <x>360</x>
+      <y>72</y>
       <w>225</w>
       <h>153</h>
     </coordinates>
@@ -193,6 +205,36 @@ domain.components::
 ~ getHddSize: int
 ~ getCpuInMhz: int
 ~ getId: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>765</x>
+      <y>252</y>
+      <w>207</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;class&gt;&gt;
+application::
+*E2CElasticityManager*
+--
+events: Set;
+--
+startSchedulers(List)
+startScheduler(Scheduler)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>738</x>
+      <y>27</y>
+      <w>342</w>
+      <h>378</h>
+    </coordinates>
+    <panel_attributes>*application*</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>
