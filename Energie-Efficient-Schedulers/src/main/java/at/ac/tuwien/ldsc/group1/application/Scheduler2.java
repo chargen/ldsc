@@ -79,7 +79,7 @@ public class Scheduler2 implements Scheduler {
                 events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
                 
                 
-                //MIGRATION
+//                MIGRATION
                 //TODO
                 doMigration();
             } catch (ResourceUnavailableException e) {
@@ -117,6 +117,9 @@ public class Scheduler2 implements Scheduler {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;
+        System.out.println(" ###########################################################################################################################################");
+        System.out.println(" #########################################                           Scheduler 2                            ################################");
+        System.out.println(" ###########################################################################################################################################");
         while (events.size() > 0) {
             Iterator<Event> iterator = events.iterator();
             Event event = iterator.next();
@@ -392,6 +395,7 @@ public class Scheduler2 implements Scheduler {
 
 		Set<PhysicalMachine> pms = new HashSet<>(pmAllocations.values());
 		int numPMs = pms.size();
+		if(numPMs == 0) return false;
 		
 		for (PhysicalMachine pm : pms) {
 			totalFreeRAM += pm.getRamAvailable();
