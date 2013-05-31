@@ -90,7 +90,8 @@ public class CsvWriter {
 
     public void close() {
         try {
-            bw.close();
+//            bw.close();
+            bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -17,8 +17,22 @@ public class CsvParser {
     BufferedReader bufferedReader;
     List<Application> appList;
     DataInputStream inputStream;
+    String fileNameCache;
 
     public CsvParser(String fileName) {
+    	this.fileNameCache = fileName;
+        appList = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream(fileName);
+            inputStream = new DataInputStream(fis);
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to open file: " + fileName);
+        }
+    }
+    
+    public void setFileName(String fileName){
+    	this.fileNameCache = fileName;
         appList = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(fileName);
@@ -30,6 +44,9 @@ public class CsvParser {
     }
 
     public List<Application> parse() {
+    	
+//    	if(inputStream.)
+    	
         try {
             String strLine;
             while ((strLine = bufferedReader.readLine()) != null) {
@@ -48,7 +65,8 @@ public class CsvParser {
                 }
             }
 
-            inputStream.close();
+//            inputStream.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }

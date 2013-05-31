@@ -65,6 +65,11 @@ public class E2CElasticityManager {
     public List<CloudOverallInfo> getCloudOverAllInfos() {
         return this.infoList;
     }
+    
+    public void startSpecificSimulation(int num){
+    	 appList = csvParser.parse();
+    	 startSimulation(this.schedulers.get(num));
+    }
 
 }
 
