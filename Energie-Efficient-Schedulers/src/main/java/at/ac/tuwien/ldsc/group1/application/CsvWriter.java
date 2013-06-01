@@ -73,7 +73,7 @@ public class CsvWriter {
     public void writeLine(CloudStateInfo cloudInfo) {
         try {
         	if(this.guiLogger != null) {
-        		guiLogger.writeGuiLog(cloudInfo.toString());
+        		guiLogger.writeGuiLog(cloudInfo);
         	}
         	System.out.println("[Writing to LOG:] "+cloudInfo.toString());
             bw.write(cloudInfo.toString());

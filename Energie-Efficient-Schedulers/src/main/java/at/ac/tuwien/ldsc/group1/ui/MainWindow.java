@@ -2,13 +2,16 @@ package at.ac.tuwien.ldsc.group1.ui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -19,10 +22,18 @@ import javax.swing.JSpinner;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.util.Rotation;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -31,7 +42,13 @@ import at.ac.tuwien.ldsc.group1.application.CsvWriter;
 import at.ac.tuwien.ldsc.group1.application.E2CElasticityManager;
 import at.ac.tuwien.ldsc.group1.application.Scheduler;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
+import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 public class MainWindow implements GuiLogger {
 
@@ -47,7 +64,15 @@ public class MainWindow implements GuiLogger {
 	private static CsvParser parser ;
 	private static CsvWriter scenarioWriter;
 	private JTextPane textPane;
+	private JFreeChart chart;
+	XYSeries seriesVm = new XYSeries("VMs");
+	XYSeries seriesPm = new XYSeries("PMs");
+	XYSeries seriesConsumtion = new XYSeries("Consumption");
+	
 	private static final ApplicationContext ac =  new FileSystemXmlApplicationContext("src/main/resources/spring.xml" );
+
+	
+	
 
 	/**
 	 * Launch the application.
@@ -149,6 +174,9 @@ public class MainWindow implements GuiLogger {
 		scrollPane.setBounds(0, 413, 705, 338);
 		frame.getContentPane().add(scrollPane);
 		
+		
+        
+		
 		textPane = new JTextPane();
 		scrollPane.setViewportView(textPane);
 		
@@ -174,6 +202,7 @@ public class MainWindow implements GuiLogger {
 				}
 				
 				
+			
 
 				for(CloudOverallInfo c : manager.getCloudOverAllInfos()){
 					overviewWriter.writeLine(c);
@@ -186,11 +215,39 @@ public class MainWindow implements GuiLogger {
 		btnRun.setBounds(453, 84, 89, 23);
 		frame.getContentPane().add(btnRun);
 		
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu mnChart = new JMenu("Chart");
+		menuBar.add(mnChart);
+		
+		JMenuItem mntmPlotresult = new JMenuItem("PlotResult");
+		mnChart.add(mntmPlotresult);
+		mntmPlotresult.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				XYSeriesCollection dataset = new XYSeriesCollection();
+//		        dataset.addSeries(seriesVm);
+//		        dataset.addSeries(seriesPm);
+//		        dataset.addSeries(seriesConsumtion);
+				ChartFrame ch = new ChartFrame(seriesVm,seriesPm,seriesConsumtion);
+				ch.setVisible(true);
+			}
+		});
+		
 	}
 
 	@Override
-	public void writeGuiLog(String guilog) {
-		this.textPane.setText(this.textPane.getText() + "\n" + guilog);
+	public void writeGuiLog(CloudStateInfo guilog) {
+		seriesVm.add(guilog.getTimestamp(), guilog.getRunningVMs());
+		seriesPm.add(guilog.getTimestamp(), guilog.getRunningPMs());
+		seriesConsumtion.add(guilog.getTimestamp(), guilog.getTotalPowerConsumption());
+		this.textPane.setText(this.textPane.getText() + "\n" + guilog.toString());
 		
 	}
+	
+	
+	
+	
+	
+	
 }
