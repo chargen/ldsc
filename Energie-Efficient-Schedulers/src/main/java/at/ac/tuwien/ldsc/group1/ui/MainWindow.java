@@ -31,8 +31,9 @@ import at.ac.tuwien.ldsc.group1.application.CsvWriter;
 import at.ac.tuwien.ldsc.group1.application.E2CElasticityManager;
 import at.ac.tuwien.ldsc.group1.application.Scheduler;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
+import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
 
-public class MainWindow {
+public class MainWindow implements GuiLogger {
 
 	private JFrame frame;
 	private final String defaultTarget = "data/TestScenario1.csv";
@@ -44,6 +45,8 @@ public class MainWindow {
 	private static CsvWriter overviewWriter;
 	private static List<Scheduler> schedulers;
 	private static CsvParser parser ;
+	private static CsvWriter scenarioWriter;
+	private JTextPane textPane;
 	private static final ApplicationContext ac =  new FileSystemXmlApplicationContext("src/main/resources/spring.xml" );
 
 	/**
@@ -55,6 +58,7 @@ public class MainWindow {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
+					
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -64,7 +68,8 @@ public class MainWindow {
 	}
 
 	private static  void initializeBeans() {
-		CsvWriter scenarioWriter = (CsvWriter) ac.getBean("scenarioWriter");
+		scenarioWriter = (CsvWriter) ac.getBean("scenarioWriter");
+		
 		overviewWriter = (CsvWriter) ac.getBean("overviewWriter");
 		
 		parser = (CsvParser) ac.getBean("csvParser"); 
@@ -94,7 +99,7 @@ public class MainWindow {
 			System.err.println("Look an feel error");
 		}
 		frame = new JFrame();
-		frame.setBounds(100, 100, 721, 510);
+		frame.setBounds(100, 100, 721, 789);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -141,10 +146,10 @@ public class MainWindow {
 		frame.getContentPane().add(comboBox);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 336, 705, 136);
+		scrollPane.setBounds(0, 413, 705, 338);
 		frame.getContentPane().add(scrollPane);
 		
-		JTextPane textPane = new JTextPane();
+		textPane = new JTextPane();
 		scrollPane.setViewportView(textPane);
 		
 		JButton btnRun = new JButton("Run");
@@ -152,8 +157,8 @@ public class MainWindow {
 			public void actionPerformed(ActionEvent e) {
 				
 //				selectedFile
-				parser.setFileName(selectedFile.getAbsolutePath());
-				
+				if(selectedFile != null) parser.setFileName(selectedFile.getAbsolutePath());
+				scenarioWriter.setGuiLogger(MainWindow.this);
 				
 				for(Scheduler s : schedulers){
 					s.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
@@ -180,6 +185,12 @@ public class MainWindow {
 		btnRun.setBackground(Color.RED);
 		btnRun.setBounds(453, 84, 89, 23);
 		frame.getContentPane().add(btnRun);
+		
+	}
+
+	@Override
+	public void writeGuiLog(String guilog) {
+		this.textPane.setText(this.textPane.getText() + "\n" + guilog);
 		
 	}
 }

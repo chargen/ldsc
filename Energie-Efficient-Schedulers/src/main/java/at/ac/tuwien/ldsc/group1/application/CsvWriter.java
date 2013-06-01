@@ -3,6 +3,8 @@ package at.ac.tuwien.ldsc.group1.application;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.WriterType;
+import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
+
 import org.joda.time.DateTime;
 
 import java.io.BufferedWriter;
@@ -15,6 +17,7 @@ public class CsvWriter {
     File file;
     FileWriter fw;
     BufferedWriter bw;
+	private GuiLogger guiLogger = null;
 
     /**
      * @param baseName The base name of the file (the filename will in the style <pre>baseName-yyyy-MM-dd.csv</pre>
@@ -69,6 +72,9 @@ public class CsvWriter {
 
     public void writeLine(CloudStateInfo cloudInfo) {
         try {
+        	if(this.guiLogger != null) {
+        		guiLogger.writeGuiLog(cloudInfo.toString());
+        	}
         	System.out.println("[Writing to LOG:] "+cloudInfo.toString());
             bw.write(cloudInfo.toString());
             bw.newLine();
@@ -95,5 +101,10 @@ public class CsvWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void setGuiLogger(GuiLogger guiLogger){
+    	this.guiLogger  = guiLogger;
+    
     }
 }
