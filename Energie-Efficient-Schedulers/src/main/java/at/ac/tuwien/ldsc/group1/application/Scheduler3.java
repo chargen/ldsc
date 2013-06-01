@@ -156,6 +156,9 @@ public class Scheduler3 implements Scheduler {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;
+        System.out.println(" ###########################################################################################################################################");
+        System.out.println(" #########################################                           Scheduler 3                            ################################");
+        System.out.println(" ###########################################################################################################################################");
         while (events.size() > 0) {
             Iterator<Event> iterator = events.iterator();
             Event event = iterator.next();
