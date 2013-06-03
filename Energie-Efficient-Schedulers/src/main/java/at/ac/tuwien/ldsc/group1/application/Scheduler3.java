@@ -426,6 +426,7 @@ public class Scheduler3 implements Scheduler {
             System.out.println("We check if: " + lowestPM.getCpuInMhzMax() + " * " + cpuThreshold + " - " + lowestPM.getCpuInMhzMax() + " = " + temp);
             System.out.println("bigger than: " + neededCpuInMHz + " - " + lowestPM.getCpuAvailable() + " = " + temp1);
             
+            
 	    	if ((lowestPM.getCpuInMhzMax() * cpuThreshold - lowestPM.getCpuInMhzMax()) > (neededCpuInMHz - lowestPM.getCpuAvailable())) {
 	    	    System.out.println("we overprovide now");
 	    		overProvide = true;

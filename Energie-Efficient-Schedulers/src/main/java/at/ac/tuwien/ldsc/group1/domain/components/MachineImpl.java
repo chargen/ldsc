@@ -31,6 +31,9 @@ public abstract class MachineImpl implements Machine, Composite {
     static final int initialConsumption;
     static final double consumptionPerMHz;
     
+	Integer overprovidedCpuInMhz = 0;
+    Integer overprovidedRam = 0;
+    
     /**
      * A list of components that are managed by this machine
      */
@@ -184,6 +187,34 @@ public abstract class MachineImpl implements Machine, Composite {
     
     protected void setParent(Machine parent) {
         this.parent = parent;
+    }
+    
+    public Integer getOverprovidedCpuInMhz() {
+        return overprovidedCpuInMhz;
+    }
+
+    public void setOverprovidedCpuInMhz(Integer overprovidedCpuInMhz) {
+        // we swap the values
+        this.overprovidedCpuInMhz = cpuInMhzMax;
+        cpuInMhzMax= overprovidedCpuInMhz ;
+    }
+    
+    public void revertOverprovidedCpuInMhz() {
+        // we swap the values
+        cpuInMhzMax = this.overprovidedCpuInMhz ;
+    }
+
+    public Integer getOverprovidedRam() {
+        return overprovidedRam;
+    }
+
+    public void setOverprovidedRam(Integer overprovidedRam) {
+        this.overprovidedRam = ramMax;
+        ramMax = overprovidedRam;
+    }
+    
+    public void revertOverprovidedRam() {
+        ramMax = this.overprovidedRam;
     }
     
    }

@@ -12,8 +12,7 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     static Integer ramMax;
     static final Integer hddMax;
 	static Integer cpuInMhzMax;
-	Integer overprovidedCpuInMhz = 0;
-    Integer overprovidedRam = 0;
+
     private final int id;
     long startTimestamp;
 
@@ -62,33 +61,7 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
         return id;
     }
     
-    public Integer getOverprovidedCpuInMhz() {
-        return overprovidedCpuInMhz;
-    }
-
-    public void setOverprovidedCpuInMhz(Integer overprovidedCpuInMhz) {
-        // we swap the values
-        this.overprovidedCpuInMhz = cpuInMhzMax;
-        cpuInMhzMax= overprovidedCpuInMhz ;
-    }
-    
-    public void revertOverprovidedCpuInMhz() {
-        // we swap the values
-        cpuInMhzMax = this.overprovidedCpuInMhz ;
-    }
-
-    public Integer getOverprovidedRam() {
-        return overprovidedRam;
-    }
-
-    public void setOverprovidedRam(Integer overprovidedRam) {
-        this.overprovidedRam = ramMax;
-        ramMax = overprovidedRam;
-    }
-    
-    public void revertOverprovidedRam() {
-        ramMax = this.overprovidedRam;
-    }
+   
     
 	public Integer getCpuInMhzMax() {
 		return cpuInMhzMax;
@@ -124,5 +97,37 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
         return true;
     }
 
+    public void setOverprovidedCpuInMhz(Integer overprovidedCpuInMhz) {
+        // we swap the values
+    	super.setOverprovidedCpuInMhz(overprovidedCpuInMhz);
+        this.overprovidedCpuInMhz = cpuInMhzMax;
+        cpuInMhzMax= overprovidedCpuInMhz ;
+    }
+    
+    public void revertOverprovidedCpuInMhz() {
+        // we swap the values
+    	super.revertOverprovidedCpuInMhz();
+        cpuInMhzMax = this.overprovidedCpuInMhz ;
+    }
+
+    public Integer getOverprovidedRam() {
+    	
+        return super.getOverprovidedRam();
+    }
+
+    public void setOverprovidedRam(Integer overprovidedRam) {
+    	super.setOverprovidedRam(overprovidedRam);
+        this.overprovidedRam = ramMax;
+        ramMax = overprovidedRam;
+    }
+    
+    public void revertOverprovidedRam() {
+    	super.revertOverprovidedRam();
+        ramMax = this.overprovidedRam;
+    }
+    
+    public Integer getOverprovidedCpuInMhz() {
+        return super.getOverprovidedCpuInMhz();
+    }
 	
 }
