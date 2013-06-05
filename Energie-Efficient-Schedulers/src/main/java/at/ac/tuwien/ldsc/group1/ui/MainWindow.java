@@ -63,6 +63,8 @@ public class MainWindow implements GuiLogger {
 	private static List<Scheduler> schedulers;
 	private static CsvParser parser ;
 	private static CsvWriter scenarioWriter;
+	private static CsvWriter scenarioWriter2;
+	private static CsvWriter scenarioWriter3;
 	private JTextPane textPane;
 	private JFreeChart chart;
 	XYSeries seriesVm = new XYSeries("VMs");
@@ -94,6 +96,8 @@ public class MainWindow implements GuiLogger {
 
 	private static  void initializeBeans() {
 		scenarioWriter = (CsvWriter) ac.getBean("scenarioWriter");
+		scenarioWriter2 = (CsvWriter) ac.getBean("scenarioWriter2");
+		scenarioWriter3 = (CsvWriter) ac.getBean("scenarioWriter3");
 		
 		overviewWriter = (CsvWriter) ac.getBean("overviewWriter");
 		
@@ -187,6 +191,8 @@ public class MainWindow implements GuiLogger {
 //				selectedFile
 				if(selectedFile != null) parser.setFileName(selectedFile.getAbsolutePath());
 				scenarioWriter.setGuiLogger(MainWindow.this);
+				scenarioWriter2.setGuiLogger(MainWindow.this);
+				scenarioWriter3.setGuiLogger(MainWindow.this);
 				
 				for(Scheduler s : schedulers){
 					s.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
