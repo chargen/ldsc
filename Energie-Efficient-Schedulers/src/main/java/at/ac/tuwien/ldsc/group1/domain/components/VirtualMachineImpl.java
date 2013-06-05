@@ -172,4 +172,15 @@ public class VirtualMachineImpl extends MachineImpl implements VirtualMachine {
         this.addRam(application.getRam());
         super.addComponent(application);
     }
+
+	@Override
+	public String toString() {
+		return "VirtualMachineImpl [ram=" + ram + ", hddSize=" + hddSize
+				+ ", cpuInMhz=" + cpuInMhz + ", id=" + id + ", hddMax="
+				+ hddMax + ", cpuInMhzMax=" + cpuInMhzMax + ", ramMax="
+				+ ramMax + ", overprovidedCpuInMhz=" + overprovidedCpuInMhz
+				+ ", overprovidedRam=" + overprovidedRam + "]";
+	}
+    
+    
 }

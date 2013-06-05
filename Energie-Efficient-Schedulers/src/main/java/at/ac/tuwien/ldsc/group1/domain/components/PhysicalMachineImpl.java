@@ -15,6 +15,8 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
 
     private final int id;
     long startTimestamp;
+    private double penalty = 1;
+    
 
 	static{
 		ResourceBundle res = ResourceBundle.getBundle("physicalMachine");
@@ -129,5 +131,50 @@ public class PhysicalMachineImpl extends MachineImpl implements PhysicalMachine 
     public Integer getOverprovidedCpuInMhz() {
         return super.getOverprovidedCpuInMhz();
     }
+
+	public double getPenalty() {
+		return penalty;
+	}
+
+	public void setPenalty(double penalty) {
+		this.penalty = penalty;
+	}
+
+	public double getOverprovidionPercentage() {
+		double overprovidionPercentage = 0;
+		
+		if(this.getCpuInMhz() > 2400 || this.getRam() > 4700){
+			double temp1 = (new Double(new Double(this.getCpuInMhz())/2400))*100;
+			double temp2 = (new Double(new Double(this.getRam())/4700))*100;
+			if(temp1 < 100) temp1 = 100;
+			if(temp2 < 100) temp2 = 100;
+			
+			double temp3 = (temp1+temp2)/2;
+			overprovidionPercentage = temp3-100;
+		}
+		
+		return overprovidionPercentage;
+	}
+
+	@Override
+	public String toString() {
+		return "PhysicalMachineImpl [id=" + id + ", getCpuInMhzMax()="
+				+ getCpuInMhzMax() + ", getRamMax()=" + getRamMax()
+				+ ", getOverprovidionPercentage()="
+				+ getOverprovidionPercentage() + ", getRam()=" + getRam()
+				+ ", getHddSize()=" + getHddSize() + ", getCpuInMhz()="
+				+ getCpuInMhz() + ", getRamAvailable()=" + getRamAvailable()
+				+ ", getCpuAvailable()=" + getCpuAvailable()
+				+ ", getHddAvailable()=" + getHddAvailable() + "]";
+	}
+
 	
+
+	
+
+	
+
+	
+	
+    
 }
