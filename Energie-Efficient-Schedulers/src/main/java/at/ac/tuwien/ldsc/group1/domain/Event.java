@@ -63,7 +63,7 @@ public class Event implements Comparable<Event> {
 
     @Override
 	public String toString(){
-		return "[EventTime: "+this.eventTime + " | EventType: "+ this.eventType.getDescription() +" | Application: " +
+		return "[EventTime: "+this.eventTime + "SKIP" + this.isToBeSkipped() +" | EventType: "+ this.eventType.getDescription() +" | Application: " +
                 "[ Id: " + this.application.getId() +
                 ", Cpu: " + this.application.getCpuInMhz() +
                 ", Dur: " + this.application.getDuration() +
