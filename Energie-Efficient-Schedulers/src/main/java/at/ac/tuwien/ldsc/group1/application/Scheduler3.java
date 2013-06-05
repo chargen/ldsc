@@ -145,14 +145,13 @@ public class Scheduler3 implements Scheduler {
 
     @Override
     public PhysicalMachine addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException {
-    	System.out.println("[Adding APP]"+application.toString());
         //1. Find a physical machine which can host this application
         int neededRam = application.getRam();
         int neededHddSize = application.getHddSize();
         int neededCpuInMHz = application.getCpuInMhz();
         PhysicalMachine pm = selectOptimalPM(neededRam, neededHddSize, neededCpuInMHz);
         
-        System.out.println("PM selected: " + pm.toString());
+//        System.out.println("PM selected: " + pm.toString());
         
         //2 get VM and resize it, every PM will have max 1 VM
         VirtualMachine vm = (VirtualMachine) pm.getComponents().get(0);
@@ -160,6 +159,7 @@ public class Scheduler3 implements Scheduler {
        
         	if(pm.getOverprovidionPercentage() != 0){
         		//there was overproviding before on this machine
+        		System.out.println("overproviding workflow");
         		double overProvidingPercentageBefore = pm.getOverprovidionPercentage();
         		
         		
@@ -167,7 +167,7 @@ public class Scheduler3 implements Scheduler {
         		vm.start();
         		appAllocations.put(application, vm);
         		adjustEventTimes(pm,overProvidingPercentageBefore, pm.getOverprovidionPercentage());
-        		System.out.println("PM after App added2: " + pm.toString());
+//        		System.out.println("PM after App added2: " + pm.toString());
         		return pm;
         		
         	}else{
@@ -181,7 +181,8 @@ public class Scheduler3 implements Scheduler {
                 } catch (ResourceUnavailableException e) {
                     e.printResourceAllocationErrorLog(pm, vm, neededCpuInMHz, neededHddSize, neededRam);
                 }
-
+                if(pm.getOverprovidionPercentage()  != 0)  adjustEventTimes(pm,0, pm.getOverprovidionPercentage());
+                
                 //if everything worked, we add the (app, vm) tuple to the map of applications
                 appAllocations.put(application, vm);
                 runningApps.add(application);
@@ -426,11 +427,11 @@ public class Scheduler3 implements Scheduler {
     	
     	
     	//debug output
-    	System.out.println("################   Events   ##################");
-    	for(Event e : events){
-    		System.out.println(e.toString());
-    	}
-    	System.out.println("##############################################");
+//    	System.out.println("################   Events   ##################");
+//    	for(Event e : events){
+//    		System.out.println(e.toString());
+//    	}
+//    	System.out.println("##############################################");
 		
 	}
 	
