@@ -72,6 +72,9 @@ public class MainWindow implements GuiLogger {
 	XYSeries seriesConsumtion = new XYSeries("Consumption");
 	
 	private static final ApplicationContext ac =  new FileSystemXmlApplicationContext("src/main/resources/spring.xml" );
+	
+	JLabel lblNumberOfFederationpartners;
+	JSpinner spinner_1;
 
 	
 	
@@ -174,6 +177,18 @@ public class MainWindow implements GuiLogger {
 		comboBox.setBounds(213, 84, 125, 22);
 		frame.getContentPane().add(comboBox);
 		
+		comboBox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	if(comboBox.getSelectedIndex() == 3){
+		    	lblNumberOfFederationpartners.setVisible(true);
+		    	spinner_1.setVisible(true);
+		    	}else{
+		    		lblNumberOfFederationpartners.setVisible(false);
+			    	spinner_1.setVisible(false);
+		    	}
+		    }
+		});
+		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 413, 705, 338);
 		frame.getContentPane().add(scrollPane);
@@ -223,6 +238,14 @@ public class MainWindow implements GuiLogger {
 		btnRun.setBounds(453, 84, 89, 23);
 		frame.getContentPane().add(btnRun);
 		
+		lblNumberOfFederationpartners = new JLabel("Number of FederationPartners: ");
+		lblNumberOfFederationpartners.setBounds(66, 131, 162, 14);
+		frame.getContentPane().add(lblNumberOfFederationpartners);
+		lblNumberOfFederationpartners.setVisible(false);
+		spinner_1 = new JSpinner();
+		spinner_1.setBounds(252, 128, 29, 20);
+		frame.getContentPane().add(spinner_1);
+		spinner_1.setVisible(false);
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
@@ -252,10 +275,4 @@ public class MainWindow implements GuiLogger {
 		this.textPane.setText(this.textPane.getText() + "\n" + guilog.toString());
 		
 	}
-	
-	
-	
-	
-	
-	
 }
