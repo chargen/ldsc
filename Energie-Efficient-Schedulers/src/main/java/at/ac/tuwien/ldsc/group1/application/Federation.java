@@ -1,9 +1,11 @@
 package at.ac.tuwien.ldsc.group1.application;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -24,6 +26,8 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
+import at.ac.tuwien.ldsc.group1.domain.federation.ScenarioType;
 
 import com.google.common.collect.TreeMultiset;
 
@@ -52,6 +56,7 @@ public class Federation implements Scheduler {
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
+    private List<FederationPartner> partnerList;
 
     public Federation(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -59,10 +64,12 @@ public class Federation implements Scheduler {
         VmRamBase = Integer.parseInt(res.getString("ramBase"));
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
         VmCpuInMhzBase = Integer.parseInt(res.getString("cpuBase"));
-//        getInitialLoad();
+        getInitialLoad();
     }
 
-    @Override
+  
+
+	@Override
     public void schedule(Event event) {
         Application application = event.getApplication();
         if (event.getEventType() == EventType.START) {
@@ -311,9 +318,35 @@ public class Federation implements Scheduler {
 
 	@Override
 	public void setNumberOfFederationPartners(int nr) {
-		// TODO Auto-generated method stub
 		//todo init federationPartners
+		partnerList = new ArrayList<FederationPartner>();
+		for(int i = 0 ; i < nr; i++){
+			FederationPartner partner = new FederationPartner();
+			partnerList.add(partner);
+		}
 		
+	}
+	
+	private void getInitialLoad() {
+		try {
+			
+			for(FederationPartner f : partnerList){
+				this.addApplication(f.getSourceInApplication(ScenarioType.MIXED));
+			
+			}
+			
+			
+		} catch (SchedulingNotPossibleException e) {
+			// Cloud is full ..return
+			
+			return;
+		
+		} catch (ResourceUnavailableException e) {
+			// Cloud is full ..return
+			
+			return;
+		}
+
 	}
 }
 
