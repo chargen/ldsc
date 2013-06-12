@@ -90,7 +90,21 @@ public class Federation implements Scheduler {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
                 System.out.println("[" + internalTime + "/" + event.getEventTime() + "] Application delayed...");
-                queuedApplications.add(application);
+                
+                //TODO
+                //instead of delaying try to add application to cloudpartner
+                boolean isDeployedInfederation = false;
+                for(FederationPartner f: partnerList){
+                	isDeployedInfederation = f.deploySourceOutApplication(application);
+                }
+                
+                if(isDeployedInfederation){
+                	//TODO count sourceout
+                }else{
+                	
+                	queuedApplications.add(application);
+                }
+                
             }
         } else {
             if(event.getEventTime() != internalTime && eventHandled)
@@ -104,6 +118,7 @@ public class Federation implements Scheduler {
                 long startTime = internalTime;
                 events.add(new Event(startTime, EventType.START, nextApplication));
             }
+            //TODO try to receive new App from FEDERATIONPARNTER
         }
     }
 
@@ -331,6 +346,7 @@ public class Federation implements Scheduler {
 		try {
 			
 			for(FederationPartner f : partnerList){
+				//TODO count sourcIN
 				this.addApplication(f.getSourceInApplication(ScenarioType.MIXED));
 			
 			}
