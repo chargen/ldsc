@@ -170,7 +170,7 @@ public class MainWindow implements GuiLogger {
 		frame.getContentPane().add(lblScheduler);
 		
 		comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Scheduler1", "Scheduler2", "Scheduler3"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Scheduler1", "Scheduler2", "Scheduler3","Federation"}));
 		comboBox.setBounds(213, 84, 125, 22);
 		frame.getContentPane().add(comboBox);
 		
@@ -203,8 +203,10 @@ public class MainWindow implements GuiLogger {
 					manager.startSpecificSimulation(0);
 				}else if(comboBox.getSelectedIndex() == 1){
 					manager.startSpecificSimulation(1);
-				}else{
+				}else if(comboBox.getSelectedIndex() == 2){
 					manager.startSpecificSimulation(2);
+				}else{
+					manager.startSpecificSimulation(3);
 				}
 				
 				
