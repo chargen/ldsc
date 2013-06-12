@@ -12,14 +12,18 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
+
 import com.google.common.collect.TreeMultiset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
@@ -50,6 +54,8 @@ public class Scheduler1 implements Scheduler {
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
+    
+    private List<FederationPartner> partnerList;
 
     public Scheduler1(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -80,7 +86,19 @@ public class Scheduler1 implements Scheduler {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
                 System.out.println("[" + internalTime + "/" + event.getEventTime() + "] Application delayed...");
-                queuedApplications.add(application);
+                //TODO
+                //instead of delaying try to add application to cloudpartner
+                boolean isDeployedInfederation = false;
+                for(FederationPartner f: partnerList){
+                	isDeployedInfederation = f.deploySourceOutApplication(application);
+                }
+                
+                if(isDeployedInfederation){
+                	//TODO count sourceout
+                }else{
+                	
+                	queuedApplications.add(application);
+                }
             }
         } else {
             if(event.getEventTime() != internalTime && eventHandled)
@@ -306,9 +324,14 @@ public class Scheduler1 implements Scheduler {
         this.maxPMs = nr;
     }
 
-	@Override
+    @Override
 	public void setNumberOfFederationPartners(int nr) {
-		//NOT USED HERE
+		//todo init federationPartners
+		partnerList = new ArrayList<FederationPartner>();
+		for(int i = 0 ; i < nr; i++){
+			FederationPartner partner = new FederationPartner();
+			partnerList.add(partner);
+		}
 		
 	}
 }

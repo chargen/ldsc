@@ -50,11 +50,7 @@
             <!-- Initialize the number of physical machines for this Scheduler -->
             <constructor-arg name="maxPMs" value="10"/>
         </bean>
-         <bean class="at.ac.tuwien.ldsc.group1.application.Federation" id="federation">
-            <!-- Initialize the number of physical machines for this Scheduler -->
-            <constructor-arg name="maxPMs" value="10"/>
-            
-        </bean>
+   
     </util:list>
     
    

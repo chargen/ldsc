@@ -31,6 +31,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
 
 import com.google.common.collect.TreeMultiset;
 
@@ -55,6 +56,7 @@ public class Scheduler3 implements Scheduler {
     private Map<Application, VirtualMachine> appAllocations = new Hashtable<>();
     private Queue<Application> queuedApplications = new LinkedList<>();
     
+    private List<FederationPartner> partnerList;
     
     private boolean eventHandled = false;
     private boolean overProvide = false;
@@ -435,9 +437,14 @@ public class Scheduler3 implements Scheduler {
 		
 	}
 
-	@Override
+    @Override
 	public void setNumberOfFederationPartners(int nr) {
-		// NOT USED HERE
+		//todo init federationPartners
+		partnerList = new ArrayList<FederationPartner>();
+		for(int i = 0 ; i < nr; i++){
+			FederationPartner partner = new FederationPartner();
+			partnerList.add(partner);
+		}
 		
 	}
 	

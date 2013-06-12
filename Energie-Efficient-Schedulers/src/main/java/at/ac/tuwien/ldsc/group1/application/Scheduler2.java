@@ -28,6 +28,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
+import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
 
 import com.google.common.collect.TreeMultiset;
 
@@ -55,6 +56,7 @@ public class Scheduler2 implements Scheduler {
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
+    private List<FederationPartner> partnerList;
     
     public Scheduler2(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -405,7 +407,7 @@ public class Scheduler2 implements Scheduler {
 		}
 		
 		//TODO get this PhyisicalMachine Max-attributes somewhere elsewhere from
-		if(((totalFreeRAM / numPMs) > 4700) && ((totalFreeCPU / numPMs) > 2400) && ((totalFreeSize / numPMs) > 50000)	){
+		if((totalFreeRAM > 4700) && (totalFreeCPU > 2400) && (totalFreeSize > 50000)	){
 			return true;
 		}else{
 			return false;
@@ -523,11 +525,16 @@ public class Scheduler2 implements Scheduler {
 		
 	}
 
-	@Override
-	public void setNumberOfFederationPartners(int nr) {
-		// NOT USED HERE
-		
-	}
+	  @Override
+		public void setNumberOfFederationPartners(int nr) {
+			//todo init federationPartners
+			partnerList = new ArrayList<FederationPartner>();
+			for(int i = 0 ; i < nr; i++){
+				FederationPartner partner = new FederationPartner();
+				partnerList.add(partner);
+			}
+			
+		}
 
 	
 	
