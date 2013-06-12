@@ -523,6 +523,12 @@ public class Scheduler2 implements Scheduler {
 		
 	}
 
+	@Override
+	public void setNumberOfFederationPartners(int nr) {
+		// NOT USED HERE
+		
+	}
+
 	
 	
 }

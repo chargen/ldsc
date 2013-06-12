@@ -35,6 +35,7 @@ public interface Scheduler {
     void finalize();
     
     void setMaxNumberOfPhysicalMachines(int nr);
+    void setNumberOfFederationPartners(int nr);
 
     void handleEvents(TreeMultiset<Event> events);
 

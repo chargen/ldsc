@@ -434,5 +434,11 @@ public class Scheduler3 implements Scheduler {
 //    	System.out.println("##############################################");
 		
 	}
+
+	@Override
+	public void setNumberOfFederationPartners(int nr) {
+		// NOT USED HERE
+		
+	}
 	
 }

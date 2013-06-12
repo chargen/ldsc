@@ -305,4 +305,10 @@ public class Scheduler1 implements Scheduler {
     public void setMaxNumberOfPhysicalMachines(int nr) {
         this.maxPMs = nr;
     }
+
+	@Override
+	public void setNumberOfFederationPartners(int nr) {
+		//NOT USED HERE
+		
+	}
 }

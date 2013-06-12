@@ -65,6 +65,7 @@ public class MainWindow implements GuiLogger {
 	private static CsvWriter scenarioWriter;
 	private static CsvWriter scenarioWriter2;
 	private static CsvWriter scenarioWriter3;
+	private static CsvWriter scenarioWriter4;
 	private JTextPane textPane;
 	private JFreeChart chart;
 	XYSeries seriesVm = new XYSeries("VMs");
@@ -101,13 +102,14 @@ public class MainWindow implements GuiLogger {
 		scenarioWriter = (CsvWriter) ac.getBean("scenarioWriter");
 		scenarioWriter2 = (CsvWriter) ac.getBean("scenarioWriter2");
 		scenarioWriter3 = (CsvWriter) ac.getBean("scenarioWriter3");
+		scenarioWriter4 = (CsvWriter) ac.getBean("scenarioWriter4");
 		
 		overviewWriter = (CsvWriter) ac.getBean("overviewWriter");
 		
 		parser = (CsvParser) ac.getBean("csvParser"); 
 		schedulers = (List<Scheduler>) ac.getBean("schedulers");  
 		
-		 manager = new E2CElasticityManager(parser, scenarioWriter, schedulers);
+		manager = new E2CElasticityManager(parser, scenarioWriter, schedulers);
 //	        manager.startSimulations();
 
 	       
@@ -208,9 +210,11 @@ public class MainWindow implements GuiLogger {
 				scenarioWriter.setGuiLogger(MainWindow.this);
 				scenarioWriter2.setGuiLogger(MainWindow.this);
 				scenarioWriter3.setGuiLogger(MainWindow.this);
+				scenarioWriter4.setGuiLogger(MainWindow.this);
 				
 				for(Scheduler s : schedulers){
 					s.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
+					s.setNumberOfFederationPartners((Integer)spinner_1.getValue());
 				}
 				
 				

@@ -308,5 +308,12 @@ public class Federation implements Scheduler {
     public void setMaxNumberOfPhysicalMachines(int nr) {
         this.maxPMs = nr;
     }
+
+	@Override
+	public void setNumberOfFederationPartners(int nr) {
+		// TODO Auto-generated method stub
+		//todo init federationPartners
+		
+	}
 }
 
