@@ -1,6 +1,7 @@
 package at.ac.tuwien.ldsc.group1.application;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
-import at.ac.tuwien.ldsc.group1.domain.components.Component;
 import at.ac.tuwien.ldsc.group1.domain.components.Machine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachineImpl;
@@ -415,19 +415,14 @@ public class Scheduler2 implements Scheduler {
 	}
 	
 	private void clearAssociations() {
-		
 		//TODO make snapshot about the allocation state -> clone everything in different Hashtables so that in case of error we can recover the original state
 		
 		for (VirtualMachine vm : this.appAllocations.values()) {
-			for(Component app : vm.getComponents()){
-				vm.removeComponent(app);
-			}
+			vm.getComponents().clear();
 		}
 		
 		for (PhysicalMachine pm : this.pmAllocations.values()) {
-			for(Component vm : pm.getComponents()){
-				pm.removeComponent(vm);
-			}
+			pm.getComponents().clear();
 		}
 		
 		pmAllocations = new Hashtable<>();
@@ -464,10 +459,11 @@ public class Scheduler2 implements Scheduler {
 		//2.)try to fill them up if we succeed we do spare 1 Pm else start one more and deploy Apps that wouldnt fit elsewhere
 		List<Application> appsRemained = new ArrayList<>();
 		//TODO can somebody tell me whether there are gaps in the indexing of this list?
-		List<PhysicalMachine> PMliste = (List<PhysicalMachine>) pmAllocations.values();
+		Collection<PhysicalMachine> pmCollection = pmAllocations.values();
+		List<PhysicalMachine> pmList = new ArrayList<>(pmCollection);
 		int i = 0;
 		for(Application a : runningApps){
-			VirtualMachine vm = (VirtualMachine) PMliste.get(i % (currentPms-1)).getComponents().get(0);
+			VirtualMachine vm = (VirtualMachine) pmList.get(i % (currentPms-1)).getComponents().get(0);
 			try {
 				vm.addComponent(a);
 				appAllocations.put(a, vm);
@@ -478,11 +474,12 @@ public class Scheduler2 implements Scheduler {
 			i++;
 		}
 		
+		
 		//3.) if there remained unassigned apps -> try to assign them anywhere in the n-1 container
 		List<Application> appsStillRemained = appsRemained;
 		if(!appsRemained.isEmpty()){
 			for(Application a : appsRemained){
-				for(PhysicalMachine pm : PMliste){
+				for(PhysicalMachine pm : pmList){
 					VirtualMachine vm = (VirtualMachine) pm.getComponents().get(0);
 					try {
 						vm.addComponent(a);

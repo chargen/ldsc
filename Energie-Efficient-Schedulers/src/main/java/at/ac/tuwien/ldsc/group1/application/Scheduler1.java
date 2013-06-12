@@ -59,6 +59,9 @@ public class Scheduler1 implements Scheduler {
 
     public Scheduler1(int maxPMs) {
         this.maxPMs = maxPMs;
+        //TODO not here
+        setNumberOfFederationPartners(1);
+        
         ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
         VmRamBase = Integer.parseInt(res.getString("ramBase"));
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
