@@ -11,6 +11,7 @@ import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,8 +34,10 @@ public class ChartFrame extends JFrame {
         JFreeChart chart = createTimeSeriesChart(dataSet1, dataSet2);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setBounds(0, 0, 300, 300);
+
         this.getContentPane().add(chartPanel);
         this.setSize(new Dimension(500, 500));
+        RefineryUtilities.centerFrameOnScreen(this);
     }
 
     private JFreeChart createTimeSeriesChart(XYSeriesCollection dataSet1, XYSeriesCollection dataSet2) {

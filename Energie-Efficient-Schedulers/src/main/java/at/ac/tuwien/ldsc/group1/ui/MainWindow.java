@@ -16,6 +16,8 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.List;
 
@@ -41,10 +43,12 @@ public class MainWindow extends JFrame implements GuiLogger {
     private JSpinner spinner;
     private ActionListener generalActionListener = new GeneralActionListener();
     private JComboBox<String> comboBox;
+    private JCheckBox extrapolateTimestampsCbx;
 
     private XYSeries seriesConsumption;
     private XYSeries seriesVm;
     private XYSeries seriesPm;
+    private boolean extrapolationActivated;
 
 
     private void initializeObjects() {
@@ -100,7 +104,7 @@ public class MainWindow extends JFrame implements GuiLogger {
 
         JPanel configurationPanel = new JPanel();
         GridBagLayout gbl_configurationPanel = new GridBagLayout();
-        gbl_configurationPanel.rowHeights = new int[]{0, 40, 40, 40, 40};
+        gbl_configurationPanel.rowHeights = new int[]{0, 40, 40, 40, 40, 0};
         gbl_configurationPanel.columnWidths = new int[]{120, 60};
         configurationPanel.setLayout(gbl_configurationPanel);
         container.add(configurationPanel);
@@ -194,12 +198,20 @@ public class MainWindow extends JFrame implements GuiLogger {
         gbc_spinner_1.gridx = 1;
         gbc_spinner_1.gridy = 4;
         configurationPanel.add(federationPartnerSpinner, gbc_spinner_1);
+
+        extrapolateTimestampsCbx = new JCheckBox("Extrapolate");
+        GridBagConstraints gbc_extrapolateTimestampsCbx = new GridBagConstraints();
+        gbc_extrapolateTimestampsCbx.insets = new Insets(0, 0, 5, 0);
+        gbc_extrapolateTimestampsCbx.gridx = 1;
+        gbc_extrapolateTimestampsCbx.gridy = 5;
+        extrapolateTimestampsCbx.addItemListener(new CheckboxItemListener());
+        configurationPanel.add(extrapolateTimestampsCbx, gbc_extrapolateTimestampsCbx);
         btnRun.setBackground(Color.RED);
         btnRun.setBounds(453, 84, 89, 23);
         GridBagConstraints gbc_btnRun = new GridBagConstraints();
         gbc_btnRun.anchor = GridBagConstraints.EAST;
         gbc_btnRun.gridx = 1;
-        gbc_btnRun.gridy = 5;
+        gbc_btnRun.gridy = 6;
         configurationPanel.add(btnRun, gbc_btnRun);
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -244,6 +256,8 @@ public class MainWindow extends JFrame implements GuiLogger {
     }
 
     class GeneralActionListener implements ActionListener {
+        ChartFrame ch = null;
+
         @Override
         public void actionPerformed(ActionEvent e) {
             switch (e.getActionCommand()) {
@@ -274,16 +288,22 @@ public class MainWindow extends JFrame implements GuiLogger {
         }
 
         private void showPlotAction() {
-            ChartFrame ch = new ChartFrame(seriesVm, seriesPm, seriesConsumption);
+            ch = new ChartFrame(seriesVm, seriesPm, seriesConsumption);
             ch.setVisible(true);
         }
 
         private void runAction() {
+            if(ch != null) {
+                ch.dispose();
+            }
             initializeObjects();
             if (selectedFile != null) parser.setFileName(selectedFile.getAbsolutePath());
             scenarioWriter1.setGuiLogger(MainWindow.this);
+            scenarioWriter1.activateExtrapolation(extrapolationActivated);
             scenarioWriter2.setGuiLogger(MainWindow.this);
+            scenarioWriter2.activateExtrapolation(extrapolationActivated);
             scenarioWriter3.setGuiLogger(MainWindow.this);
+            scenarioWriter3.activateExtrapolation(extrapolationActivated);
 
             for (Scheduler scheduler : schedulers) {
                 scheduler.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
@@ -296,7 +316,14 @@ public class MainWindow extends JFrame implements GuiLogger {
                 overviewWriter.writeLine(c);
             }
             overviewWriter.close();
+            showPlotAction();
         }
     }
 
+    private class CheckboxItemListener implements ItemListener {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                extrapolationActivated = e.getStateChange() == ItemEvent.SELECTED;
+            }
+    }
 }

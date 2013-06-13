@@ -73,5 +73,11 @@ public class CloudStateInfo {
                 + ";" + this.getInSourced() + ";" + this.getOutSourced();
     }
 
+    public String getExtrapolatableString() {
+        return "%d" + ";" + this.getTotalRAM() + ";" + this.getTotalCPU() + ";" + this.getTotalSize()+ ";" +
+                this.getRunningPMs() + ";" + this.getRunningVMs() + ";" +
+                String.format("%.2f", this.getTotalPowerConsumption())
+                + ";" + this.getInSourced() + ";" + this.getOutSourced();
+    }
 
 }

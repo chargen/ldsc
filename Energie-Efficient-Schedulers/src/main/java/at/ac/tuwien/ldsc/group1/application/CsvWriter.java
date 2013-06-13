@@ -4,7 +4,6 @@ import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.WriterType;
 import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
-
 import org.joda.time.DateTime;
 
 import java.io.BufferedWriter;
@@ -14,10 +13,10 @@ import java.io.IOException;
 
 
 public class CsvWriter {
-    private File file;
-    private FileWriter fw;
-    private BufferedWriter bw;
+    private BufferedWriter bufferedWriter;
     private GuiLogger guiLogger = null;
+    private long lastTimeStamp = 0L;
+    private boolean extrapolationActive;
 
     /**
      * @param baseName The base name of the file (the filename will in the style <pre>baseName-yyyy-MM-dd.csv</pre>
@@ -27,15 +26,15 @@ public class CsvWriter {
         DateTime date = new DateTime();
         String dateString = date.toString("yyyy-MM-dd");
         try {
-            this.file = new File(baseName + "-" + dateString + ".csv");
+            File file = new File(baseName + "-" + dateString + ".csv");
 
             // if file doesn't exist, then create it
             if (!file.exists()) {
                 file.createNewFile();
             }
 
-            fw = new FileWriter(file.getAbsoluteFile());
-            bw = new BufferedWriter(fw);
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            bufferedWriter = new BufferedWriter(fw);
 
             switch (type) {
                 case SCENARIO:
@@ -54,8 +53,8 @@ public class CsvWriter {
 
     public void writeScenarioHeader() {
         try {
-            bw.write("Timestamp; TotalRAM; TotalCPU; TotalSize; RunningPMs; RunningVMs; TotalPowerConsumption; InSourced; OutSourced");
-            bw.newLine();
+            bufferedWriter.write("Timestamp; TotalRAM; TotalCPU; TotalSize; RunningPMs; RunningVMs; TotalPowerConsumption; InSourced; OutSourced");
+            bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,8 +62,8 @@ public class CsvWriter {
 
     public void writeOverviewHeader() {
         try {
-            bw.write("Scheduler;Scenario;TotalPMs;TotalVMs;TotalDuration;TotalPowerConsumption;TotalInSourced;TotalOutSourced");
-            bw.newLine();
+            bufferedWriter.write("Scheduler;Scenario;TotalPMs;TotalVMs;TotalDuration;TotalPowerConsumption;TotalInSourced;TotalOutSourced");
+            bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,8 +75,16 @@ public class CsvWriter {
                 guiLogger.writeGuiLog(cloudInfo);
             }
             System.out.println("[Writing to LOG:] "+cloudInfo.toString());
-            bw.write(cloudInfo.toString());
-            bw.newLine();
+            // This will extrapolate the timestamp gap in the output file by repeating
+            // the same output for the missing files.
+            if(extrapolationActive) {
+                for(long i = lastTimeStamp; i < cloudInfo.getTimestamp(); i++) {
+                    bufferedWriter.write(String.format(cloudInfo.getExtrapolatableString(), i));
+                    bufferedWriter.newLine();
+                }
+            }
+            bufferedWriter.write(cloudInfo.toString());
+            bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -85,8 +92,8 @@ public class CsvWriter {
 
     public void writeLine(CloudOverallInfo cloudInfo) {
         try {
-            bw.write(cloudInfo.toString());
-            bw.newLine();
+            bufferedWriter.write(cloudInfo.toString());
+            bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,7 +101,7 @@ public class CsvWriter {
 
     public void close() {
         try {
-            bw.flush();
+            bufferedWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -102,5 +109,9 @@ public class CsvWriter {
     
     public void setGuiLogger(GuiLogger guiLogger){
         this.guiLogger  = guiLogger;
+    }
+
+    public void activateExtrapolation(boolean activate) {
+        this.extrapolationActive = activate;
     }
 }
