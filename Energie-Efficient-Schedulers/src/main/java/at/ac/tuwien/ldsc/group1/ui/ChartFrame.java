@@ -1,72 +1,76 @@
 package at.ac.tuwien.ldsc.group1.ui;
 
-import java.awt.BorderLayout;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.general.Series;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import java.awt.FlowLayout;
 
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * This class creates a new window which displays two line charts.
+ * One line chart is a bigger one, where the other one is a smaller
+ * chart thats embedded into the bigger one.
+ */
 public class ChartFrame extends JFrame {
 
-	private JPanel contentPane;
-	private XYSeriesCollection fulldataset;
-	private XYSeriesCollection dataset1;
-	private XYSeriesCollection dataset2;
-	
-	/**
-	 * Create the frame.
-	 */
-	public ChartFrame() {
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 761, 645);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-	}
-
-	
-
-	public ChartFrame(XYSeries seriesVm, XYSeries seriesPm,
-			XYSeries seriesConsumtion) {
-		dataset1 = new XYSeriesCollection();
-		dataset1.addSeries(seriesVm);
-		dataset1.addSeries(seriesPm);
-		dataset2 = new XYSeriesCollection();
-		dataset2.addSeries(seriesConsumtion);
-		
-		JFreeChart chart = createTimeSeriesChart(dataset1);
+    public ChartFrame(XYSeries seriesVm,
+                      XYSeries seriesPm,
+                      XYSeries seriesConsumption) {
+        XYSeriesCollection dataSet1 = new XYSeriesCollection();
+        dataSet1.addSeries(seriesConsumption);
+        XYSeriesCollection dataSet2 = new XYSeriesCollection();
+        dataSet2.addSeries(seriesVm);
+        dataSet2.addSeries(seriesPm);
+        JFreeChart chart = createTimeSeriesChart(dataSet1, dataSet2);
         ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(300, 300, 300, 300);
+        chartPanel.setBounds(0, 0, 300, 300);
         this.getContentPane().add(chartPanel);
-        
-        JFreeChart chart1 = createTimeSeriesChart(dataset2);
-        ChartPanel chartPanel1 = new ChartPanel(chart1);
-        chartPanel1.setBounds(0, 0, 300, 300);
-        this.getContentPane().add(chartPanel1);
-	}
+        this.setSize(new Dimension(500, 500));
+    }
 
-	private JFreeChart createTimeSeriesChart(XYSeriesCollection dataset) {
-	
-      return ChartFactory.createXYLineChart(
-          "LogChart",  // chart title
-          "TimeStamp",
-          "Range",
-          dataset,         // data
-          PlotOrientation.VERTICAL,
-          true,            // include legend
-          true,            // tooltips
-          true             // urls
-      );
-	}
+    private JFreeChart createTimeSeriesChart(XYSeriesCollection dataSet1, XYSeriesCollection dataSet2) {
+        JFreeChart xyLineChart = ChartFactory.createXYLineChart(
+                "CloudSimulation Chart",      // Chart title
+                "TimeStamp",                  // x-Axis label
+                "Range",                      // y-Axis label
+                dataSet1,                     // Data
+                PlotOrientation.VERTICAL,
+                true,                         // Include legend
+                true,                         // Tooltips
+                true                          // Urls
+        );
+        XYPlot plot = xyLineChart.getXYPlot();
+
+        final NumberAxis axis2 = new NumberAxis("Machines");
+        axis2.setAutoRangeIncludesZero(false);
+        plot.setRangeAxis(1, axis2)  ;
+        plot.setDataset(1, dataSet2);
+        plot.mapDatasetToRangeAxis(1, 1);
+
+
+        final XYItemRenderer renderer = plot.getRenderer();
+        renderer.setBaseToolTipGenerator(StandardXYToolTipGenerator.getTimeSeriesInstance());
+        if (renderer instanceof StandardXYItemRenderer) {
+            final StandardXYItemRenderer rr = (StandardXYItemRenderer) renderer;
+            rr.setSeriesShapesFilled(0,true);
+        }
+
+        final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
+        renderer2.setSeriesPaint(0, Color.black);
+        renderer.setBaseToolTipGenerator(StandardXYToolTipGenerator.getTimeSeriesInstance());
+        plot.setRenderer(1, renderer2);
+
+
+
+        return xyLineChart;
+    }
 }
