@@ -213,16 +213,6 @@ public class MainWindow extends JFrame implements GuiLogger {
         gbc_btnRun.gridx = 1;
         gbc_btnRun.gridy = 6;
         configurationPanel.add(btnRun, gbc_btnRun);
-        JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
-
-        JMenu mnChart = new JMenu("Chart");
-        menuBar.add(mnChart);
-
-        JMenuItem menuItemPlotResult = new JMenuItem("PlotResult");
-        mnChart.add(menuItemPlotResult);
-        menuItemPlotResult.addActionListener(generalActionListener);
-        menuItemPlotResult.setActionCommand(SHOW_PLOT_ACTION);
 
         return controlPanel;
     }
