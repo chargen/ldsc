@@ -24,14 +24,7 @@ public class CsvParser {
     private DataInputStream inputStream;
 
     public CsvParser(String fileName) {
-        appList = new ArrayList<>();
-        try {
-            FileInputStream fis = new FileInputStream(fileName);
-            inputStream = new DataInputStream(fis);
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to open file: " + fileName);
-        }
+        setFileName(fileName);
     }
 
     public void setFileName(String fileName) {

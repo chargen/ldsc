@@ -83,6 +83,7 @@ public class CsvWriter {
                     bufferedWriter.newLine();
                 }
             }
+            lastTimeStamp = cloudInfo.getTimestamp();
             bufferedWriter.write(cloudInfo.toString());
             bufferedWriter.newLine();
         } catch (IOException e) {

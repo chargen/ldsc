@@ -9,6 +9,8 @@ import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.ui.RefineryUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Resource;
 import javax.swing.*;
@@ -28,11 +30,12 @@ public class MainWindow extends JFrame implements GuiLogger {
 
     private E2CElasticityManager manager;
     @Resource(name = "overviewWriter") private CsvWriter overviewWriter;
-    @Resource(name = "schedulers") private List<Scheduler> schedulers;
+    private List<Scheduler> schedulers;
     @Resource(name = "csvParser") private CsvParser parser;
     @Resource(name = "scenarioWriter1") private CsvWriter scenarioWriter1;
     @Resource(name = "scenarioWriter2") private CsvWriter scenarioWriter2;
     @Resource(name = "scenarioWriter3") private CsvWriter scenarioWriter3;
+    @Autowired ApplicationContext applicationContext;
 
     private File selectedFile = null;
     private JTextPane textPane;
@@ -54,6 +57,7 @@ public class MainWindow extends JFrame implements GuiLogger {
         seriesVm = new XYSeries("VMs");
         seriesPm = new XYSeries("PMs");
         seriesConsumption = new XYSeries("Consumption");
+        schedulers = (List<Scheduler>) applicationContext.getBean("schedulers");
         manager = new E2CElasticityManager(parser, schedulers);
     }
 

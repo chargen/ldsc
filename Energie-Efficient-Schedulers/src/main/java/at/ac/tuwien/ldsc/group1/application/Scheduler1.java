@@ -13,6 +13,7 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
+import at.ac.tuwien.ldsc.group1.domain.federation.ScenarioType;
 import com.google.common.collect.TreeMultiset;
 
 import javax.annotation.Resource;
@@ -50,14 +51,14 @@ public class Scheduler1 implements Scheduler {
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
-    
+
     private List<FederationPartner> partnerList;
 
     public Scheduler1(int maxPMs) {
         this.maxPMs = maxPMs;
         //TODO not here
         setNumberOfFederationPartners(1);
-        
+
         ResourceBundle res = ResourceBundle.getBundle("virtualMachine");
         VmRamBase = Integer.parseInt(res.getString("ramBase"));
         VmHddBase = Integer.parseInt(res.getString("sizeBase"));
@@ -91,11 +92,11 @@ public class Scheduler1 implements Scheduler {
                 for(FederationPartner f: partnerList){
                 	isDeployedInfederation = f.deploySourceOutApplication(application);
                 }
-                
+
                 if(isDeployedInfederation){
                 	//TODO count sourceout
                 }else{
-                	
+
                 	queuedApplications.add(application);
                 }
             }
@@ -192,9 +193,9 @@ public class Scheduler1 implements Scheduler {
     }
 
     private PhysicalMachine selectOptimalPM(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) throws SchedulingNotPossibleException {
-    	
-    	
-    	
+
+
+
         if (this.pmAllocations == null) {
             this.pmAllocations = new Hashtable<>();
             PhysicalMachine pm = createNewPM();
@@ -202,22 +203,22 @@ public class Scheduler1 implements Scheduler {
             overallInfo.setTotalPMs(overallInfo.getTotalPMs() + 1);
             return pm;
         } else {
-      
+
         	if(neededRam/neededCpuInMHz > MAGICPROPORTION){
-        		
+
         		PhysicalMachine pm = selectPMwithMoreRAMProportion(neededRam, neededHddSize, neededCpuInMHz);
         		if(pm != null) return pm;
-        		
+
         	}else{
-        		
+
         		PhysicalMachine pm = selectPMwithMoreCPUProportion(neededRam, neededHddSize, neededCpuInMHz);
         		if(pm != null) return pm;
-        		
+
         	}
-        	
+
         	PhysicalMachine firstPossiblePM = selectFirstPossiblePM(neededRam, neededHddSize, neededCpuInMHz);
         	if(firstPossiblePM != null) return firstPossiblePM;
-        	
+
             //list iterated and no pm could give back -> start new pm
             PhysicalMachine pm = createNewPM();
             pm.start();
@@ -225,7 +226,7 @@ public class Scheduler1 implements Scheduler {
             return pm;
         }
     }
-    
+
     private PhysicalMachine selectPMwithMoreCPUProportion(Integer neededRam, Integer neededHddSize, Integer neededCpuInMHz) {
     	for (PhysicalMachine pm : this.pmAllocations.values()) {
     		if (pm.getCpuAvailable() >= neededCpuInMHz &&
@@ -313,7 +314,7 @@ public class Scheduler1 implements Scheduler {
 
     @Override
     public CloudOverallInfo getOverAllInfo() {
-        overallInfo.setScheduler(this.getClass().getName());
+        overallInfo.setScheduler(this.getClass().getSimpleName());
         overallInfo.setTotalDuration(internalTime);
         return this.overallInfo;
     }
@@ -331,6 +332,6 @@ public class Scheduler1 implements Scheduler {
 			FederationPartner partner = new FederationPartner();
 			partnerList.add(partner);
 		}
-		
+
 	}
 }

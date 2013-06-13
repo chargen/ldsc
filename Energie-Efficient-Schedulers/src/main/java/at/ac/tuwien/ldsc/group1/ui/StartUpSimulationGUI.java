@@ -5,12 +5,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class StartUpSimulationGUI {
 
-
-
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
         final ApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
+        context.getBean(MainWindow.class);
     }
 }

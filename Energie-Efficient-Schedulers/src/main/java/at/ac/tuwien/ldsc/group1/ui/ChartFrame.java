@@ -44,7 +44,7 @@ public class ChartFrame extends JFrame {
         JFreeChart xyLineChart = ChartFactory.createXYLineChart(
                 "CloudSimulation Chart",      // Chart title
                 "TimeStamp",                  // x-Axis label
-                "Range",                      // y-Axis label
+                "Power Consumption",          // y-Axis label
                 dataSet1,                     // Data
                 PlotOrientation.VERTICAL,
                 true,                         // Include legend

@@ -1,26 +1,8 @@
 package at.ac.tuwien.ldsc.group1.application;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
-import javax.management.RuntimeErrorException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
-import at.ac.tuwien.ldsc.group1.domain.EventToPm;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.components.Component;
@@ -32,8 +14,20 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
-
 import com.google.common.collect.TreeMultiset;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 public class Scheduler3 implements Scheduler {
 
@@ -381,7 +375,7 @@ public class Scheduler3 implements Scheduler {
 
     @Override
     public CloudOverallInfo getOverAllInfo() {
-        overallInfo.setScheduler(this.getClass().getName());
+        overallInfo.setScheduler(this.getClass().getSimpleName());
         overallInfo.setTotalDuration(internalTime);
         return this.overallInfo;
     }
