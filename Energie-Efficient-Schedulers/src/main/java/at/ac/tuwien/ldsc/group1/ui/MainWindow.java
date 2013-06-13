@@ -22,7 +22,7 @@ import java.io.File;
 import java.util.List;
 
 public class MainWindow extends JFrame implements GuiLogger {
-    private static final String SHOW_PLOT_ACTION = "showPlot";
+    private static final String RUN_ACTION = "run";
     private static final String OPEN_FILE_ACTION = "openFile";
     private static final String defaultTarget = "data/TestScenario1.csv";
 
@@ -250,8 +250,8 @@ public class MainWindow extends JFrame implements GuiLogger {
         @Override
         public void actionPerformed(ActionEvent e) {
             switch (e.getActionCommand()) {
-                case SHOW_PLOT_ACTION: {
-                    showPlotAction();
+                case RUN_ACTION: {
+                    runAction();
                     break;
                 }
                 case OPEN_FILE_ACTION: {
