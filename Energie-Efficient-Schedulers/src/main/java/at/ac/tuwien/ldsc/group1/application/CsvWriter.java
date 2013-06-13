@@ -14,10 +14,10 @@ import java.io.IOException;
 
 
 public class CsvWriter {
-    File file;
-    FileWriter fw;
-    BufferedWriter bw;
-	private GuiLogger guiLogger = null;
+    private File file;
+    private FileWriter fw;
+    private BufferedWriter bw;
+    private GuiLogger guiLogger = null;
 
     /**
      * @param baseName The base name of the file (the filename will in the style <pre>baseName-yyyy-MM-dd.csv</pre>
@@ -72,16 +72,15 @@ public class CsvWriter {
 
     public void writeLine(CloudStateInfo cloudInfo) {
         try {
-        	if(this.guiLogger != null) {
-        		guiLogger.writeGuiLog(cloudInfo);
-        	}
-        	System.out.println("[Writing to LOG:] "+cloudInfo.toString());
+            if(this.guiLogger != null) {
+                guiLogger.writeGuiLog(cloudInfo);
+            }
+            System.out.println("[Writing to LOG:] "+cloudInfo.toString());
             bw.write(cloudInfo.toString());
             bw.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void writeLine(CloudOverallInfo cloudInfo) {
@@ -91,12 +90,10 @@ public class CsvWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void close() {
         try {
-//            bw.close();
             bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,7 +101,6 @@ public class CsvWriter {
     }
     
     public void setGuiLogger(GuiLogger guiLogger){
-    	this.guiLogger  = guiLogger;
-    
+        this.guiLogger  = guiLogger;
     }
 }

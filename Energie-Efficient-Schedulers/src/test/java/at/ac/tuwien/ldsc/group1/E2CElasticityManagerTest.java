@@ -21,7 +21,7 @@ public class E2CElasticityManagerTest {
     @Autowired CsvParser parser;
 
     @Autowired
-    @Qualifier("scenarioWriter")
+    @Qualifier("scenarioWriter1")
     CsvWriter scenarioWriter;
     
     @Autowired
@@ -33,10 +33,10 @@ public class E2CElasticityManagerTest {
 
     @Test
     public void testSimulation() {
-        E2CElasticityManager manager = new E2CElasticityManager(parser, scenarioWriter, schedulers);
+        E2CElasticityManager manager = new E2CElasticityManager(parser, schedulers);
         manager.startSimulations();
 
-        for(CloudOverallInfo c : manager.getCloudOverAllInfos()){
+        for(CloudOverallInfo c : manager.getCloudOverAllInfo()){
             overviewWriter.writeLine(c);
         }
         overviewWriter.close();

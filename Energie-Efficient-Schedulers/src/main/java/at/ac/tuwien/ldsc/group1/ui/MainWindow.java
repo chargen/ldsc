@@ -7,238 +7,296 @@ import at.ac.tuwien.ldsc.group1.application.Scheduler;
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.CloudStateInfo;
 import at.ac.tuwien.ldsc.group1.ui.interfaces.GuiLogger;
-import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.jfree.ui.RefineryUtilities;
 
+import javax.annotation.Resource;
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.List;
 
-public class MainWindow implements GuiLogger {
+public class MainWindow extends JFrame implements GuiLogger {
+    private static final String SHOW_PLOT_ACTION = "showPlot";
+    private static final String RUN_ACTION = "run";
+    private static final String OPEN_FILE_ACTION = "openFile";
+    private static final String defaultTarget = "data/TestScenario1.csv";
 
-    private JFrame frame;
-    private final String defaultTarget = "data/TestScenario1.csv";
-    JLabel lblPleaseSelectScenario;
+    private E2CElasticityManager manager;
+    @Resource(name = "overviewWriter") private CsvWriter overviewWriter;
+    @Resource(name = "schedulers") private List<Scheduler> schedulers;
+    @Resource(name = "csvParser") private CsvParser parser;
+    @Resource(name = "scenarioWriter1") private CsvWriter scenarioWriter1;
+    @Resource(name = "scenarioWriter2") private CsvWriter scenarioWriter2;
+    @Resource(name = "scenarioWriter3") private CsvWriter scenarioWriter3;
+
     private File selectedFile = null;
-    JSpinner spinner;
-    JComboBox comboBox;
-    private static E2CElasticityManager manager;
-    private static CsvWriter overviewWriter;
-    private static List<Scheduler> schedulers;
-    private static CsvParser parser;
-    private static CsvWriter scenarioWriter;
-    private static CsvWriter scenarioWriter2;
-    private static CsvWriter scenarioWriter3;
-    private static CsvWriter scenarioWriter4;
     private JTextPane textPane;
-    private JFreeChart chart;
-    XYSeries seriesVm = new XYSeries("VMs");
-    XYSeries seriesPm = new XYSeries("PMs");
-    XYSeries seriesConsumtion = new XYSeries("Consumption");
+    private JLabel selectedFileLabel;
+    private JLabel lblNumberOfFederationPartners;
+    private JSpinner federationPartnerSpinner;
+    private JSpinner spinner;
+    private ActionListener generalActionListener = new GeneralActionListener();
+    private JComboBox<String> comboBox;
 
-    private static final ApplicationContext ac = new FileSystemXmlApplicationContext("src/main/resources/spring.xml");
+    private XYSeries seriesConsumption;
+    private XYSeries seriesVm;
+    private XYSeries seriesPm;
 
-    JLabel lblNumberOfFederationpartners;
-    JSpinner spinner_1;
 
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        initializeBeans();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    MainWindow window = new MainWindow();
-
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+    private void initializeObjects() {
+        seriesVm = new XYSeries("VMs");
+        seriesPm = new XYSeries("PMs");
+        seriesConsumption = new XYSeries("Consumption");
+        manager = new E2CElasticityManager(parser, schedulers);
     }
 
-    private static void initializeBeans() {
-        scenarioWriter = (CsvWriter) ac.getBean("scenarioWriter");
-        scenarioWriter2 = (CsvWriter) ac.getBean("scenarioWriter2");
-        scenarioWriter3 = (CsvWriter) ac.getBean("scenarioWriter3");
-        scenarioWriter4 = (CsvWriter) ac.getBean("scenarioWriter4");
-
-        overviewWriter = (CsvWriter) ac.getBean("overviewWriter");
-
-        parser = (CsvParser) ac.getBean("csvParser");
-        schedulers = (List<Scheduler>) ac.getBean("schedulers");
-
-        manager = new E2CElasticityManager(parser, scenarioWriter, schedulers);
-//	        manager.startSimulations();
-
-
-    }
-
-    /**
-     * Create the application.
-     */
     public MainWindow() {
-        initialize();
+        initializeGuiComponents();
+        this.pack();
+        RefineryUtilities.centerFrameOnScreen(this);
+        this.setVisible(true);
+        this.setSize(600, 700);
     }
 
     /**
      * Initialize the contents of the frame.
      */
-    private void initialize() {
+    private void initializeGuiComponents() {
         try {
+            //This works only on windows.
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (Exception e) {
-            System.err.println("Look an feel error");
         }
-        frame = new JFrame();
-        frame.setBounds(100, 100, 721, 789);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setLayout(null);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JButton btnOpenFile = new JButton("Open File");
-        btnOpenFile.addActionListener(new ActionListener() {
+        //Prepare the control area in the top region of the frame
+        JPanel northContainer = new JPanel();
+        BoxLayout layout = new BoxLayout(northContainer, BoxLayout.Y_AXIS);
+        northContainer.setLayout(layout);
+        this.getContentPane().add(northContainer, BorderLayout.NORTH);
 
+        JPanel controlPanel = buildControlPanel();
+        northContainer.add(controlPanel);
 
-            public void actionPerformed(ActionEvent e) {
+        //Prepare the text output area in the center region of the frame
+        JPanel textContainer = buildTextArea();
+        this.getContentPane().add(textContainer, BorderLayout.CENTER);
+    }
 
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(defaultTarget));
-                int returnVal = fileChooser.showOpenDialog(null);
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File f = fileChooser.getSelectedFile();
-                    lblPleaseSelectScenario.setText("Selected Scenario: " + f.getName());
-                    selectedFile = f;
-                }
-            }
-        });
+    private JPanel buildControlPanel() {
+        JPanel container = new JPanel();
+        container.setBorder(new LineBorder(Color.GRAY));
+        BoxLayout layout = new BoxLayout(container, BoxLayout.PAGE_AXIS);
+        container.setLayout(layout);
+        JPanel controlPanel = new JPanel();
+        controlPanel.add(container);
 
-        btnOpenFile.setBounds(56, 13, 95, 25);
-        frame.getContentPane().add(btnOpenFile);
+        JLabel label = new JLabel("Configure simulation");
+        container.add(label);
 
-        lblPleaseSelectScenario = new JLabel("Please Select Scenario...(default Selected: TestScenario1)");
-        lblPleaseSelectScenario.setBounds(213, 22, 287, 16);
-        frame.getContentPane().add(lblPleaseSelectScenario);
+        JPanel configurationPanel = new JPanel();
+        GridBagLayout gbl_configurationPanel = new GridBagLayout();
+        gbl_configurationPanel.rowHeights = new int[]{0, 40, 40, 40, 40};
+        gbl_configurationPanel.columnWidths = new int[]{120, 60};
+        configurationPanel.setLayout(gbl_configurationPanel);
+        container.add(configurationPanel);
+
+        JLabel lblPleaseSelectThe = new JLabel("Select the scenario file:");
+        GridBagConstraints gbc_lblPleaseSelectThe = new GridBagConstraints();
+        gbc_lblPleaseSelectThe.anchor = GridBagConstraints.EAST;
+        gbc_lblPleaseSelectThe.insets = new Insets(0, 0, 5, 5);
+        gbc_lblPleaseSelectThe.gridx = 0;
+        gbc_lblPleaseSelectThe.gridy = 0;
+        configurationPanel.add(lblPleaseSelectThe, gbc_lblPleaseSelectThe);
+
+        JButton openFileButton = new JButton("Open File");
+        GridBagConstraints gbc_openFileButton = new GridBagConstraints();
+        gbc_openFileButton.anchor = GridBagConstraints.EAST;
+        gbc_openFileButton.insets = new Insets(0, 0, 5, 0);
+        gbc_openFileButton.gridx = 1;
+        gbc_openFileButton.gridy = 0;
+        configurationPanel.add(openFileButton, gbc_openFileButton);
+        openFileButton.addActionListener(generalActionListener);
+        openFileButton.setActionCommand(OPEN_FILE_ACTION);
+
+        openFileButton.setBounds(56, 13, 95, 25);
+        selectedFileLabel = new JLabel("TestScenario1.csv");
+        GridBagConstraints gbc_selectedFileLabel = new GridBagConstraints();
+        gbc_selectedFileLabel.anchor = GridBagConstraints.NORTH;
+        gbc_selectedFileLabel.insets = new Insets(0, 0, 5, 0);
+        gbc_selectedFileLabel.gridx = 1;
+        gbc_selectedFileLabel.gridy = 1;
+        configurationPanel.add(selectedFileLabel, gbc_selectedFileLabel);
+
+        JLabel lblNumberOPms = new JLabel("Number of PMs:");
+        lblNumberOPms.setBounds(66, 51, 85, 16);
+        GridBagConstraints gbc_lblNumberOPms = new GridBagConstraints();
+        gbc_lblNumberOPms.anchor = GridBagConstraints.EAST;
+        gbc_lblNumberOPms.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNumberOPms.gridx = 0;
+        gbc_lblNumberOPms.gridy = 2;
+        configurationPanel.add(lblNumberOPms, gbc_lblNumberOPms);
 
         spinner = new JSpinner();
         spinner.setModel(new SpinnerNumberModel(new Integer(5), new Integer(1), null, new Integer(1)));
         spinner.setBounds(213, 51, 29, 20);
-        frame.getContentPane().add(spinner);
-
-        JLabel lblNumberOPms = new JLabel("Number of PMs:");
-        lblNumberOPms.setBounds(66, 51, 85, 16);
-        frame.getContentPane().add(lblNumberOPms);
+        GridBagConstraints gbc_spinner = new GridBagConstraints();
+        gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
+        gbc_spinner.insets = new Insets(0, 0, 5, 0);
+        gbc_spinner.gridx = 1;
+        gbc_spinner.gridy = 2;
+        configurationPanel.add(spinner, gbc_spinner);
 
         JLabel lblScheduler = new JLabel("Scheduler:");
         lblScheduler.setBounds(65, 87, 86, 16);
-        frame.getContentPane().add(lblScheduler);
+        GridBagConstraints gbc_lblScheduler = new GridBagConstraints();
+        gbc_lblScheduler.anchor = GridBagConstraints.EAST;
+        gbc_lblScheduler.insets = new Insets(0, 0, 5, 5);
+        gbc_lblScheduler.gridx = 0;
+        gbc_lblScheduler.gridy = 3;
+        configurationPanel.add(lblScheduler, gbc_lblScheduler);
 
         comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[]{"Scheduler1", "Scheduler2", "Scheduler3", "Federation"}));
+        comboBox.setModel(new DefaultComboBoxModel(new String[]{
+                "Scheduler1",
+                "Scheduler2",
+                "Scheduler3"}));
         comboBox.setBounds(213, 84, 125, 22);
-        frame.getContentPane().add(comboBox);
 
-        comboBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (comboBox.getSelectedIndex() == 3) {
-                    lblNumberOfFederationpartners.setVisible(true);
-                    spinner_1.setVisible(true);
-                } else {
-                    lblNumberOfFederationpartners.setVisible(false);
-                    spinner_1.setVisible(false);
-                }
-            }
-        });
-
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(0, 413, 705, 338);
-        frame.getContentPane().add(scrollPane);
-
-
-        textPane = new JTextPane();
-        scrollPane.setViewportView(textPane);
+        GridBagConstraints gbc_comboBox = new GridBagConstraints();
+        gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_comboBox.insets = new Insets(0, 0, 5, 0);
+        gbc_comboBox.gridx = 1;
+        gbc_comboBox.gridy = 3;
+        configurationPanel.add(comboBox, gbc_comboBox);
 
         JButton btnRun = new JButton("Run");
-        btnRun.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        btnRun.addActionListener(generalActionListener);
+        btnRun.setActionCommand(RUN_ACTION);
 
-//				selectedFile
-                if (selectedFile != null) parser.setFileName(selectedFile.getAbsolutePath());
-                scenarioWriter.setGuiLogger(MainWindow.this);
-                scenarioWriter2.setGuiLogger(MainWindow.this);
-                scenarioWriter3.setGuiLogger(MainWindow.this);
-                scenarioWriter4.setGuiLogger(MainWindow.this);
+        lblNumberOfFederationPartners = new JLabel("Number of FederationPartners: ");
+        lblNumberOfFederationPartners.setBounds(66, 131, 162, 14);
+        GridBagConstraints gbc_lblNumberOfFederationPartners = new GridBagConstraints();
+        gbc_lblNumberOfFederationPartners.insets = new Insets(0, 0, 5, 5);
+        gbc_lblNumberOfFederationPartners.gridx = 0;
+        gbc_lblNumberOfFederationPartners.gridy = 4;
+        configurationPanel.add(lblNumberOfFederationPartners, gbc_lblNumberOfFederationPartners);
 
-                for (Scheduler s : schedulers) {
-                    s.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
-                    s.setNumberOfFederationPartners((Integer) spinner_1.getValue());
-                }
-
-
-                if (comboBox.getSelectedIndex() == 0) {
-                    manager.startSpecificSimulation(0);
-                } else if (comboBox.getSelectedIndex() == 1) {
-                    manager.startSpecificSimulation(1);
-                } else if (comboBox.getSelectedIndex() == 2) {
-                    manager.startSpecificSimulation(2);
-                } else {
-                    manager.startSpecificSimulation(3);
-                }
-
-
-                for (CloudOverallInfo c : manager.getCloudOverAllInfos()) {
-                    overviewWriter.writeLine(c);
-                }
-                overviewWriter.close();
-
-            }
-        });
+        federationPartnerSpinner = new JSpinner();
+        federationPartnerSpinner.setBounds(252, 128, 29, 20);
+        GridBagConstraints gbc_spinner_1 = new GridBagConstraints();
+        gbc_spinner_1.fill = GridBagConstraints.HORIZONTAL;
+        gbc_spinner_1.insets = new Insets(0, 0, 5, 0);
+        gbc_spinner_1.gridx = 1;
+        gbc_spinner_1.gridy = 4;
+        configurationPanel.add(federationPartnerSpinner, gbc_spinner_1);
         btnRun.setBackground(Color.RED);
         btnRun.setBounds(453, 84, 89, 23);
-        frame.getContentPane().add(btnRun);
-
-        lblNumberOfFederationpartners = new JLabel("Number of FederationPartners: ");
-        lblNumberOfFederationpartners.setBounds(66, 131, 162, 14);
-        frame.getContentPane().add(lblNumberOfFederationpartners);
-        lblNumberOfFederationpartners.setVisible(false);
-        spinner_1 = new JSpinner();
-        spinner_1.setBounds(252, 128, 29, 20);
-        frame.getContentPane().add(spinner_1);
-        spinner_1.setVisible(false);
+        GridBagConstraints gbc_btnRun = new GridBagConstraints();
+        gbc_btnRun.anchor = GridBagConstraints.EAST;
+        gbc_btnRun.gridx = 1;
+        gbc_btnRun.gridy = 5;
+        configurationPanel.add(btnRun, gbc_btnRun);
         JMenuBar menuBar = new JMenuBar();
-        frame.setJMenuBar(menuBar);
+        setJMenuBar(menuBar);
 
         JMenu mnChart = new JMenu("Chart");
         menuBar.add(mnChart);
 
-        JMenuItem mntmPlotresult = new JMenuItem("PlotResult");
-        mnChart.add(mntmPlotresult);
-        mntmPlotresult.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//				XYSeriesCollection dataset = new XYSeriesCollection();
-//		        dataset.addSeries(seriesVm);
-//		        dataset.addSeries(seriesPm);
-//		        dataset.addSeries(seriesConsumtion);
-                ChartFrame ch = new ChartFrame(seriesVm, seriesPm, seriesConsumtion);
-                ch.setVisible(true);
-            }
-        });
+        JMenuItem menuItemPlotResult = new JMenuItem("PlotResult");
+        mnChart.add(menuItemPlotResult);
+        menuItemPlotResult.addActionListener(generalActionListener);
+        menuItemPlotResult.setActionCommand(SHOW_PLOT_ACTION);
 
+        return controlPanel;
+    }
+
+    private JPanel buildTextArea() {
+        JPanel textAreaPanel = new JPanel();
+        BoxLayout layout = new BoxLayout(textAreaPanel, BoxLayout.Y_AXIS);
+        textAreaPanel.setLayout(layout);
+        JPanel container = new JPanel();
+        BoxLayout layout2 = new BoxLayout(container, BoxLayout.Y_AXIS);
+        container.setLayout(layout2);
+        textAreaPanel.add(container);
+        container.setSize(300, 300);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(0, 0, 705, 338);
+
+        textPane = new JTextPane();
+        textPane.setMargin(new Insets(5, 5, 5, 5));
+        textPane.setSize(400, 400);
+        scrollPane.setViewportView(textPane);
+        container.add(scrollPane);
+        return textAreaPanel;
     }
 
     @Override
-    public void writeGuiLog(CloudStateInfo guilog) {
-        seriesVm.add(guilog.getTimestamp(), guilog.getRunningVMs());
-        seriesPm.add(guilog.getTimestamp(), guilog.getRunningPMs());
-        seriesConsumtion.add(guilog.getTimestamp(), guilog.getTotalPowerConsumption());
-        this.textPane.setText(this.textPane.getText() + "\n" + guilog.toString());
-
+    public void writeGuiLog(CloudStateInfo guiLog) {
+        seriesVm.add(guiLog.getTimestamp(), guiLog.getRunningVMs());
+        seriesPm.add(guiLog.getTimestamp(), guiLog.getRunningPMs());
+        seriesConsumption.add(guiLog.getTimestamp(), guiLog.getTotalPowerConsumption());
+        this.textPane.setText(this.textPane.getText() + "\n" + guiLog.toString());
     }
+
+    class GeneralActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            switch (e.getActionCommand()) {
+                case SHOW_PLOT_ACTION: {
+                    showPlotAction();
+                    break;
+                }
+                case RUN_ACTION: {
+                    runAction();
+                    break;
+                }
+                case OPEN_FILE_ACTION: {
+                    openFileAction();
+                    break;
+                }
+            }
+        }
+
+        private void openFileAction() {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(defaultTarget));
+            int returnVal = fileChooser.showOpenDialog(null);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                selectedFileLabel.setText(file.getName());
+                selectedFile = file;
+            }
+        }
+
+        private void showPlotAction() {
+            ChartFrame ch = new ChartFrame(seriesVm, seriesPm, seriesConsumption);
+            ch.setVisible(true);
+        }
+
+        private void runAction() {
+            initializeObjects();
+            if (selectedFile != null) parser.setFileName(selectedFile.getAbsolutePath());
+            scenarioWriter1.setGuiLogger(MainWindow.this);
+            scenarioWriter2.setGuiLogger(MainWindow.this);
+            scenarioWriter3.setGuiLogger(MainWindow.this);
+
+            for (Scheduler scheduler : schedulers) {
+                scheduler.setMaxNumberOfPhysicalMachines((Integer) spinner.getValue());
+                scheduler.setNumberOfFederationPartners((Integer) federationPartnerSpinner.getValue());
+            }
+            int index = comboBox.getSelectedIndex();
+            manager.startSpecificSimulation(index);
+
+            for (CloudOverallInfo c : manager.getCloudOverAllInfo()) {
+                overviewWriter.writeLine(c);
+            }
+            overviewWriter.close();
+        }
+    }
+
 }

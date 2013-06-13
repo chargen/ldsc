@@ -13,11 +13,9 @@ import at.ac.tuwien.ldsc.group1.domain.components.VirtualMachineImpl;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
-
 import com.google.common.collect.TreeMultiset;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -48,9 +46,7 @@ public class Scheduler1 implements Scheduler {
     private Integer VmCpuInMhzBase;
     private boolean eventHandled = false;
 
-    @Autowired
-    @Qualifier("scenarioWriter")
-    CsvWriter scenarioWriter;
+    @Resource(name = "scenarioWriter1") CsvWriter scenarioWriter;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
     private TreeMultiset<Event> events;
@@ -330,7 +326,7 @@ public class Scheduler1 implements Scheduler {
     @Override
 	public void setNumberOfFederationPartners(int nr) {
 		//todo init federationPartners
-		partnerList = new ArrayList<FederationPartner>();
+		partnerList = new ArrayList<>();
 		for(int i = 0 ; i < nr; i++){
 			FederationPartner partner = new FederationPartner();
 			partnerList.add(partner);

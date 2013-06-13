@@ -3,7 +3,12 @@ package at.ac.tuwien.ldsc.group1.application;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.components.ApplicationImpl;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +19,11 @@ import java.util.List;
  * @author Sebastian Geiger, Peter Patonai
  */
 public class CsvParser {
-    BufferedReader bufferedReader;
-    List<Application> appList;
-    DataInputStream inputStream;
-    String fileNameCache;
+    private BufferedReader bufferedReader;
+    private List<Application> appList;
+    private DataInputStream inputStream;
 
     public CsvParser(String fileName) {
-    	this.fileNameCache = fileName;
         appList = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(fileName);
@@ -30,9 +33,8 @@ public class CsvParser {
             System.out.println("Unable to open file: " + fileName);
         }
     }
-    
-    public void setFileName(String fileName){
-    	this.fileNameCache = fileName;
+
+    public void setFileName(String fileName) {
         appList = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(fileName);
@@ -44,9 +46,6 @@ public class CsvParser {
     }
 
     public List<Application> parse() {
-    	
-//    	if(inputStream.)
-    	
         try {
             String strLine;
             while ((strLine = bufferedReader.readLine()) != null) {
@@ -64,14 +63,10 @@ public class CsvParser {
                     continue; //skip header in the first row
                 }
             }
-
-//            inputStream.close();
-            
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return appList;
-
     }
 }
