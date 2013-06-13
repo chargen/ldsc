@@ -8,6 +8,8 @@ public class ApplicationImpl implements Application {
     private long timeStamp;
     private static int nextId = 0;
     private final int id;
+    private boolean isOutSourced;
+    private boolean isInSourced;
 
     public ApplicationImpl(int ram, int hddSize, int cpuInMhz, long duration, long timeStamp) {
         this.duration = duration;
@@ -57,7 +59,27 @@ public class ApplicationImpl implements Application {
 		return timeStamp;
 	}
 
-	@Override
+    @Override
+    public boolean isOutSourced() {
+        return isOutSourced;
+    }
+
+    @Override
+    public void setIsOutSourced(boolean isOutSourced) {
+        this.isOutSourced = isOutSourced;
+    }
+
+    @Override
+    public void setIsInSourced(boolean inSourced) {
+        this.isInSourced = inSourced;
+    }
+
+    @Override
+    public boolean isInSourced() {
+        return isInSourced;
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -97,5 +119,4 @@ public class ApplicationImpl implements Application {
 				+ ", hddSize=" + hddSize + ", cpuInMhz=" + cpuInMhz
 				+ ", timeStamp=" + timeStamp + ", id=" + id + "]";
 	}
-	
 }

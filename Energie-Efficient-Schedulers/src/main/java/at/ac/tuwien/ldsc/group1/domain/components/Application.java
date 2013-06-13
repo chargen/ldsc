@@ -16,4 +16,12 @@ public interface Application extends Component {
      * Returns the timeStamp in [ms] when the application start is requested.
      */
     long getTimeStamp();
+
+    boolean isOutSourced();
+
+    void setIsOutSourced(boolean isOutSourced);
+
+    void setIsInSourced(boolean b);
+
+    boolean isInSourced();
 }

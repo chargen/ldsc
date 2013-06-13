@@ -30,7 +30,8 @@ import java.util.Set;
 
 public class Scheduler1 implements Scheduler {
 
-	private final double MAGICPROPORTION = 4400/1900;
+    public static final double FEDERATION_CHANCE = 0.05;
+    private final double MAGICPROPORTION = 4400/1900;
     private int maxPMs;
     private int currentPms = 0;
     private long internalTime = 0L;
@@ -53,6 +54,8 @@ public class Scheduler1 implements Scheduler {
     private TreeMultiset<Event> events;
 
     private List<FederationPartner> partnerList;
+    private int outSourced;
+    private int inSourced;
 
     public Scheduler1(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -66,7 +69,7 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void schedule(Event event) {
+    public void schedule(Event event) throws SchedulingNotPossibleException {
         Application application = event.getApplication();
         if (event.getEventType() == EventType.START) {
             try {
@@ -78,6 +81,10 @@ public class Scheduler1 implements Scheduler {
                 this.addApplication(application);
                 application.start();
                 updateEventTime(event);
+                if(application.isInSourced()) {
+                    this.inSourced++;
+                    overallInfo.setTotalInSourced(overallInfo.getTotalInSourced()+1);
+                }
                 eventHandled = true;
 
                 //Add stop event
@@ -85,25 +92,29 @@ public class Scheduler1 implements Scheduler {
             } catch (ResourceUnavailableException e) {
                 e.printErrorMsg();
             } catch (SchedulingNotPossibleException e) {
+                if(application.isInSourced()) throw e;
                 System.out.println("[" + internalTime + "/" + event.getEventTime() + "] Application delayed...");
-                //TODO
-                //instead of delaying try to add application to cloudpartner
-                boolean isDeployedInfederation = false;
-                for(FederationPartner f: partnerList){
-                	isDeployedInfederation = f.deploySourceOutApplication(application);
+                boolean isDeployedInFederation = false;
+                for(FederationPartner f: partnerList) {
+                    isDeployedInFederation = f.deploySourceOutApplication(application);
+                    if(isDeployedInFederation) break;
                 }
 
-                if(isDeployedInfederation){
-                	//TODO count sourceout
-                }else{
-
-                	queuedApplications.add(application);
+                if(isDeployedInFederation) {
+                    overallInfo.setTotalOutSourced(overallInfo.getTotalOutSourced()+1);
+                    application.setIsOutSourced(true);
+                    events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
+                    this.outSourced++;
+                } else{
+                    queuedApplications.add(application);
                 }
             }
         } else {
             if(event.getEventTime() != internalTime && eventHandled)
-                this.writeLog();
-            this.removeApplication(application);
+                this.writeLog(); //This logs the last events details
+            if(!application.isOutSourced()) this.removeApplication(application);
+            if(application.isOutSourced()) this.outSourced--; //An outsourced application was finished, we decrement the counter
+            if(application.isInSourced()) this.inSourced--;
             application.stop();
             updateEventTime(event);
             eventHandled = true;
@@ -126,10 +137,21 @@ public class Scheduler1 implements Scheduler {
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;
         while (events.size() > 0) {
-            Iterator<Event> iterator = events.iterator();
-            Event event = iterator.next();
-            iterator.remove();
-            schedule(event);
+            if(Math.random() <= FEDERATION_CHANCE && partnerList.size() > 0) {
+                Application sourceInApplication = partnerList.get(0).getSourceInApplication(ScenarioType.MIXED);
+                sourceInApplication.setIsInSourced(true);
+                Event event = new Event(internalTime, EventType.START, sourceInApplication);
+                try {
+                    schedule(event);
+                } catch(SchedulingNotPossibleException e) {
+                    //Tell the cloud partner that we cannot schedule his application.
+                }
+            } else {
+                Iterator<Event> iterator = events.iterator();
+                Event event = iterator.next();
+                iterator.remove();
+                schedule(event);
+            }
         }
         System.out.println("Number of queued applications:" + queuedApplications.size());
         /* TODO: check if queue still contains some applications and schedule them
@@ -280,8 +302,8 @@ public class Scheduler1 implements Scheduler {
         int totalSize = 0;
         int runningVMs = 0;
         double totalPowerConsumption = 0;
-        int inSourced = 0;        //TODO
-        int outSourced = 0;        //TODO
+        int inSourced = this.inSourced;
+        int outSourced = this.outSourced;
 
         timestamp = (int) internalTime;
         //Note that the pmAllocations map can contain each PM several times, thus we need to create a set from it first

@@ -1,7 +1,5 @@
 package at.ac.tuwien.ldsc.group1.application;
 
-import java.util.Map;
-
 import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
@@ -11,7 +9,7 @@ import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException
 import com.google.common.collect.TreeMultiset;
 
 public interface Scheduler {
-    void schedule(Event event);
+    void schedule(Event event) throws SchedulingNotPossibleException;
 
     /**
      * Template method for use inside the scheduler
@@ -19,9 +17,6 @@ public interface Scheduler {
      * @throws SchedulingNotPossibleException 
      */
     PhysicalMachine addApplication(Application application) throws ResourceUnavailableException, SchedulingNotPossibleException;
-    
-    
-    
 
     /**
      * Template method for use inside the scheduler,
