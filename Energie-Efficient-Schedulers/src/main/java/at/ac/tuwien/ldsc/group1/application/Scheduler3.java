@@ -62,7 +62,7 @@ public class Scheduler3 implements Scheduler {
     CsvWriter scenarioWriter;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
-    private TreeSet<Event> events;
+    private TreeMultiset<Event> events;
     
     public Scheduler3(int maxPMs) {
         this.maxPMs = maxPMs;
@@ -121,16 +121,15 @@ public class Scheduler3 implements Scheduler {
     public void handleEvents(TreeSet<Event> events) {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
-        this.events = events;
+        TreeMultiset<Event> multiset = TreeMultiset.create(events);
+        this.events = multiset;
         System.out.println(" ###########################################################################################################################################");
         System.out.println(" #########################################                           Scheduler 3_New                            ################################");
         System.out.println(" ###########################################################################################################################################");
-        for(Event event: events){
-        	           
-//            iterator.remove();
+
+        for(Event event: events) {
             if(!event.isToBeSkipped()) schedule(event);
             event.setToBeSkipped(true);
-            
         }
         System.out.println("Number of queued applications:" + queuedApplications.size());
         /* TODO: check if queue still contains some applications and schedule them

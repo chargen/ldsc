@@ -18,7 +18,9 @@ import java.util.List;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:spring.xml")
 public class E2CElasticityManagerTest {
-    @Autowired CsvParser parser;
+    @Autowired
+    @Qualifier("csvParser")
+    CsvParser parser;
 
     @Autowired
     @Qualifier("scenarioWriter1")
