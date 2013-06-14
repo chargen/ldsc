@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class CsvParser {
     private BufferedReader bufferedReader;
-    private List<Application> appList;
     private DataInputStream inputStream;
     private String filename;
 
@@ -30,17 +29,22 @@ public class CsvParser {
 
     public void setFileName(String fileName) {
         this.filename = fileName;
-        appList = new ArrayList<>();
+    }
+
+    private void openFileStream() {
         try {
-            FileInputStream fis = new FileInputStream(fileName);
+            FileInputStream fis = new FileInputStream(this.filename);
             inputStream = new DataInputStream(fis);
             bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to open file: " + fileName);
+            System.out.println("Unable to open file: " + this.filename);
         }
     }
 
     public List<Application> parse() {
+        openFileStream(); // reopen the file stream each time we start a new simulation
+        List<Application> appList = new ArrayList<>();
+        int count = 0;
         try {
             String strLine;
             while ((strLine = bufferedReader.readLine()) != null) {
@@ -54,14 +58,16 @@ public class CsvParser {
 
                     Application app = new ApplicationImpl(ram, hddSize, cpuInMhz, duration, timeStamp);
                     appList.add(app);
+                    count++;
                 } catch (NumberFormatException e) {
                     continue; //skip header in the first row
                 }
             }
+            bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        assert (count == appList.size());
         return appList;
     }
 

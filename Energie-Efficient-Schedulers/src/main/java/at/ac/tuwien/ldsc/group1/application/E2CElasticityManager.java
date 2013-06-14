@@ -64,9 +64,9 @@ public class E2CElasticityManager {
         return this.infoList;
     }
     
-    public void startSpecificSimulation(int num){
+    public void startSpecificSimulation(int num) {
         appList = csvParser.parse();
-        scenario = csvParser.getFilename();
+        scenario = csvParser.getFilename().substring(csvParser.getFilename().lastIndexOf('/'));
         startSimulation(this.schedulers.get(num));
     }
 
