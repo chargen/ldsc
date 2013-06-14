@@ -22,12 +22,14 @@ public class CsvParser {
     private BufferedReader bufferedReader;
     private List<Application> appList;
     private DataInputStream inputStream;
+    private String filename;
 
     public CsvParser(String fileName) {
         setFileName(fileName);
     }
 
     public void setFileName(String fileName) {
+        this.filename = fileName;
         appList = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(fileName);
@@ -61,5 +63,9 @@ public class CsvParser {
         }
 
         return appList;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }

@@ -80,40 +80,38 @@ public class ApplicationImpl implements Application {
     }
 
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + cpuInMhz;
-		result = prime * result + (int) (duration ^ (duration >>> 32));
-		result = prime * result + hddSize;
-		result = prime * result + ram;
-		result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
-		return result;
-	}
+    public int hashCode() {
+        int result = (int) (duration ^ (duration >>> 32));
+        result = 31 * result + ram;
+        result = 31 * result + hddSize;
+        result = 31 * result + cpuInMhz;
+        result = 31 * result + (int) (timeStamp ^ (timeStamp >>> 32));
+        result = 31 * result + id;
+        result = 31 * result + (isOutSourced ? 1 : 0);
+        result = 31 * result + (isInSourced ? 1 : 0);
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ApplicationImpl other = (ApplicationImpl) obj;
-		if (cpuInMhz != other.cpuInMhz)
-			return false;
-		if (duration != other.duration)
-			return false;
-		if (hddSize != other.hddSize)
-			return false;
-		if (ram != other.ram)
-			return false;
-		if (timeStamp != other.timeStamp)
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	@Override
+        ApplicationImpl that = (ApplicationImpl) o;
+
+        if (cpuInMhz != that.cpuInMhz) return false;
+        if (duration != that.duration) return false;
+        if (hddSize != that.hddSize) return false;
+        if (id != that.id) return false;
+        if (isInSourced != that.isInSourced) return false;
+        if (isOutSourced != that.isOutSourced) return false;
+        if (ram != that.ram) return false;
+        if (timeStamp != that.timeStamp) return false;
+
+        return true;
+    }
+
+    @Override
 	public String toString() {
 		return "ApplicationImpl [duration=" + duration + ", ram=" + ram
 				+ ", hddSize=" + hddSize + ", cpuInMhz=" + cpuInMhz

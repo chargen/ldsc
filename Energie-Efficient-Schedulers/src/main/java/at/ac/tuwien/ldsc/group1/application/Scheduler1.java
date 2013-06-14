@@ -14,7 +14,6 @@ import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
 import at.ac.tuwien.ldsc.group1.domain.federation.FederationPartner;
 import at.ac.tuwien.ldsc.group1.domain.federation.ScenarioType;
-import com.google.common.collect.TreeMultiset;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Scheduler1 implements Scheduler {
 
@@ -51,7 +51,7 @@ public class Scheduler1 implements Scheduler {
     @Resource(name = "scenarioWriter1") CsvWriter scenarioWriter;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
-    private TreeMultiset<Event> events;
+    private TreeSet<Event> events;
 
     private List<FederationPartner> partnerList;
     private int outSourced;
@@ -95,16 +95,16 @@ public class Scheduler1 implements Scheduler {
                 if(application.isInSourced()) throw e;
                 System.out.println("[" + internalTime + "/" + event.getEventTime() + "] Application delayed...");
                 boolean isDeployedInFederation = false;
-                for(FederationPartner f: partnerList) {
-                    isDeployedInFederation = f.deploySourceOutApplication(application);
+                for(FederationPartner partner : partnerList) {
+                    isDeployedInFederation = partner.deploySourceOutApplication(application);
                     if(isDeployedInFederation) break;
                 }
 
                 if(isDeployedInFederation) {
+                    this.outSourced++;
                     overallInfo.setTotalOutSourced(overallInfo.getTotalOutSourced()+1);
                     application.setIsOutSourced(true);
                     events.add(new Event(event.getEventTime() + application.getDuration(), EventType.STOP, application));
-                    this.outSourced++;
                 } else{
                     queuedApplications.add(application);
                 }
@@ -132,7 +132,7 @@ public class Scheduler1 implements Scheduler {
     }
 
     @Override
-    public void handleEvents(TreeMultiset<Event> events) {
+    public void handleEvents(TreeSet<Event> events) {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;

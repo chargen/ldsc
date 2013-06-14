@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Scheduler2 implements Scheduler {
 
@@ -53,7 +54,7 @@ public class Scheduler2 implements Scheduler {
     CsvWriter scenarioWriter;
 
     private final CloudOverallInfo overallInfo = new CloudOverallInfo();
-    private TreeMultiset<Event> events;
+    private TreeSet<Event> events;
     private List<FederationPartner> partnerList;
     
     public Scheduler2(int maxPMs) {
@@ -113,7 +114,7 @@ public class Scheduler2 implements Scheduler {
     }
 
     @Override
-    public void handleEvents(TreeMultiset<Event> events) {
+    public void handleEvents(TreeSet<Event> events) {
         if(maxPMs <= 0)
             throw new RuntimeException("The cloud does not contain any physical machines");
         this.events = events;

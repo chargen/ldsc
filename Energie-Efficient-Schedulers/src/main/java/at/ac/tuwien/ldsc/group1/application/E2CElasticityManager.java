@@ -4,10 +4,10 @@ import at.ac.tuwien.ldsc.group1.domain.CloudOverallInfo;
 import at.ac.tuwien.ldsc.group1.domain.Event;
 import at.ac.tuwien.ldsc.group1.domain.EventType;
 import at.ac.tuwien.ldsc.group1.domain.components.Application;
-import com.google.common.collect.TreeMultiset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * This is our Energy-Efficient Cloud Elasticity Manager (E2CEM).
@@ -19,9 +19,10 @@ import java.util.List;
 public class E2CElasticityManager {
     List<Scheduler> schedulers;
     CsvParser csvParser;
-    TreeMultiset<Event> events;
+    TreeSet<Event> events;
     List<CloudOverallInfo> infoList = new ArrayList<>();
     List<Application> appList;
+    private String scenario;
 
     public E2CElasticityManager(CsvParser parser, List<Scheduler> schedulers) {
         this.csvParser = parser;
@@ -39,7 +40,7 @@ public class E2CElasticityManager {
     public void startSimulation(Scheduler scheduler) {
         //2. Build interval list that transforms the list of applications from the parser
         //   into events
-        events = TreeMultiset.create();
+        events = new TreeSet<>();
 
         for (Application app : appList) {
             // For each Application there is one Event when the app STARTS, a stop event will be created by
@@ -53,7 +54,9 @@ public class E2CElasticityManager {
 
         //close streams
         scheduler.finalize();
-        infoList.add(scheduler.getOverAllInfo());
+        CloudOverallInfo overAllInfo = scheduler.getOverAllInfo();
+        overAllInfo.setScenario(scenario);
+        infoList.add(overAllInfo);
     }
 
 
@@ -63,6 +66,7 @@ public class E2CElasticityManager {
     
     public void startSpecificSimulation(int num){
         appList = csvParser.parse();
+        scenario = csvParser.getFilename();
         startSimulation(this.schedulers.get(num));
     }
 

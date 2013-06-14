@@ -6,7 +6,8 @@ import at.ac.tuwien.ldsc.group1.domain.components.Application;
 import at.ac.tuwien.ldsc.group1.domain.components.PhysicalMachine;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.ResourceUnavailableException;
 import at.ac.tuwien.ldsc.group1.domain.exceptions.SchedulingNotPossibleException;
-import com.google.common.collect.TreeMultiset;
+
+import java.util.TreeSet;
 
 public interface Scheduler {
     void schedule(Event event) throws SchedulingNotPossibleException;
@@ -32,7 +33,7 @@ public interface Scheduler {
     void setMaxNumberOfPhysicalMachines(int nr);
     void setNumberOfFederationPartners(int nr);
 
-    void handleEvents(TreeMultiset<Event> events);
+    void handleEvents(TreeSet<Event> events);
 
     public CloudOverallInfo getOverAllInfo();
 }
